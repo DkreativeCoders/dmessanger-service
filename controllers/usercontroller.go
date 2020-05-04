@@ -9,7 +9,7 @@ import (
 	"github.com/danieloluwadare/dmessanger/service"
 )
 
-var userController UserHandler
+var UserController UserHandler
 
 func init() {
 
@@ -18,7 +18,7 @@ func init() {
 	service := service.NewService(repository)
 	handler := NewBookHandler(service)
 
-	userController = handler
+	UserController = handler
 
 }
 
@@ -30,12 +30,9 @@ type UserHandler struct {
 	userService iservice.IUserService
 }
 
-func (u UserHandler) CreateBook(w http.ResponseWriter, r *http.Request) error {
-	var err error
-	return err
+func (u UserHandler) CreateBook(w http.ResponseWriter, r *http.Request) {
 }
 
-func (u UserHandler) GetBook(w http.ResponseWriter, r *http.Request) error {
-	var err error
-	return err
+func (u UserHandler) GetBook(w http.ResponseWriter, r *http.Request) {
+
 }
