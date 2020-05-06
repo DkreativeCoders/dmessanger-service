@@ -12,7 +12,6 @@ func Server() *http.Server {
 
 	router := mux.NewRouter()
 
-	//GetAllUser
 	router.HandleFunc("/api/create/user", controllers.UserController.CreateUser).Methods("POST")
 	router.HandleFunc("/api/get/users", controllers.UserController.GetAllUser).Methods("GET")
 
