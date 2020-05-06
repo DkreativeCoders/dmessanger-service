@@ -20,7 +20,7 @@ func (u userRepository) FindByID(id int) *models.User {
 	return &user
 }
 
-
+//FindAll Users
 func (u userRepository) FindAll() []models.User {
 	users := make([]models.User, 0) // same as []int{0, 0}
 	u.db.Find(&users)
