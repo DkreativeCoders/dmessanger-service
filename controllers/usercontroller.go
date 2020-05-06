@@ -16,8 +16,8 @@ var UserController UserControllerHandler
 func init() {
 
 	db := models.GetDB()
-	userRepository := repository.NewUserRepository(db)
-	userService := service.NewService(userRepository)
+	userRepository := repository.INewUserRepository(db)
+	userService := service.INewService(userRepository)
 	usehandler := NewUserHandler(userService)
 	UserController = usehandler
 }
