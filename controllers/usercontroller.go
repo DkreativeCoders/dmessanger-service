@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"encoding/json"
+	util "github.com/danieloluwadare/dmessanger/utils"
 	"net/http"
 
 	"github.com/danieloluwadare/dmessanger/interfaces/iservice"
@@ -9,30 +11,52 @@ import (
 	"github.com/danieloluwadare/dmessanger/service"
 )
 
-var UserController UserHandler
+var UserController UserControllerHandler
 
 func init() {
 
 	db := models.GetDB()
-	repository := repository.NewInMemoryRepository(db)
-	service := service.NewService(repository)
-	handler := NewBookHandler(service)
-
-	UserController = handler
-
+	userRepository := repository.NewInMemoryRepository(db)
+	userService := service.NewService(userRepository)
+	usehandler := NewUserHandler(userService)
+	UserController = usehandler
 }
 
-func NewBookHandler(userService iservice.IUserService) UserHandler {
-	return UserHandler{userService}
+func NewUserHandler(userService iservice.IUserService) UserControllerHandler {
+	return UserControllerHandler{userService}
 }
 
-type UserHandler struct {
+type UserControllerHandler struct {
 	userService iservice.IUserService
 }
 
-func (u UserHandler) CreateBook(w http.ResponseWriter, r *http.Request) {
+//CreateUser calls the IUserService which is implemented by UserService
+func (u UserControllerHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
+	var user models.User
+	err := json.NewDecoder(r.Body).Decode(&user)
+	if err != nil {
+		util.Respond(w, util.Message(false, "Error while decoding request body"))
+		//return
+	}
+	response := u.userService.CreateUser(user)
+	util.Respond(w, response)
 }
 
-func (u UserHandler) GetBook(w http.ResponseWriter, r *http.Request) {
+func (u UserControllerHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 
 }
+
+//func createEvent(w http.ResponseWriter, r *http.Request) {
+//	var newEvent event
+//	reqBody, err := ioutil.ReadAll(r.Body)
+//	if err != nil {
+//		fmt.Fprintf(w, "Kindly enter data with the event title and description only in order to update")
+//	}
+//
+//	json.Unmarshal(reqBody, &newEvent)
+//	events = append(events, newEvent)
+//	w.WriteHeader(http.StatusCreated)
+//
+//	json.NewEncoder(w).Encode(newEvent)
+//}
+

@@ -12,7 +12,7 @@ import (
 func main() {
 	router := mux.NewRouter()
 
-	router.HandleFunc("/api/user/new", controllers.UserController.CreateBook).Methods("POST")
+	router.HandleFunc("/api/create/user", controllers.UserController.CreateUser).Methods("POST")
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8000" //localhost

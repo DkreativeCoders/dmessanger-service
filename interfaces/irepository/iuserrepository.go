@@ -7,5 +7,5 @@ import "github.com/danieloluwadare/dmessanger/models"
 
 type IUserRepository interface {
 	FindByID(id int) *models.User
-	Save(user models.User) error
+	Save(user models.User) (*models.User, error)
 }
