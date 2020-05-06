@@ -42,6 +42,7 @@ func (u UserControllerHandler) CreateUser(w http.ResponseWriter, r *http.Request
 	util.Respond(w, response)
 }
 
+//GetAllUser This is the method called from the route to fetch all user from the service class
 func (u UserControllerHandler) GetAllUser(w http.ResponseWriter, r *http.Request) {
 	response := u.userService.GetAllUser()
 	util.Respond(w, response)
@@ -51,17 +52,5 @@ func (u UserControllerHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 
 }
 
-//func createEvent(w http.ResponseWriter, r *http.Request) {
-//	var newEvent event
-//	reqBody, err := ioutil.ReadAll(r.Body)
-//	if err != nil {
-//		fmt.Fprintf(w, "Kindly enter data with the event title and description only in order to update")
-//	}
-//
-//	json.Unmarshal(reqBody, &newEvent)
-//	events = append(events, newEvent)
-//	w.WriteHeader(http.StatusCreated)
-//
-//	json.NewEncoder(w).Encode(newEvent)
-//}
+
 
