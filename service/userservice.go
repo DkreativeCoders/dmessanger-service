@@ -7,12 +7,18 @@ import (
 	"github.com/danieloluwadare/dmessanger/utils"
 )
 
-func NewService(repository irepository.IUserRepository) iservice.IUserService {
+//INewService return an interface that's why Constrictor/Method name is preceded with I
+func INewService(repository irepository.IUserRepository) iservice.IUserService {
 	return service{repository}
 }
 
 type service struct {
 	repository irepository.IUserRepository
+}
+
+//NewService Return the very instance of the class
+func NewService(repository irepository.IUserRepository) *service {
+	return &service{repository: repository}
 }
 
 //perform validation on user and let UserRepository save user

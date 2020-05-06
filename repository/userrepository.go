@@ -7,13 +7,15 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-func NewUserRepository(db *gorm.DB) irepository.IUserRepository {
+//INewUserRepository This returns an interface of the struct
+func INewUserRepository(db *gorm.DB) irepository.IUserRepository {
 	return userRepository{db}
 }
 
 type userRepository struct {
 	db *gorm.DB
 }
+
 
 func (u userRepository) FindByID(id int) *models.User {
 	var user models.User
