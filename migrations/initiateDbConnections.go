@@ -1,4 +1,4 @@
-package models
+package migrations
 
 import (
 	"fmt"
@@ -30,16 +30,10 @@ func init() {
 	if err != nil {
 		fmt.Print(err)
 	}
-
 	db = conn
-	initialMigration()
 }
 
-func initialMigration() {
 
-	// Migrate the schema
-	db.AutoMigrate(&User{})
-}
 
 // function to export global db object
 func GetDB() *gorm.DB {

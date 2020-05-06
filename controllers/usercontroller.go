@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"github.com/danieloluwadare/dmessanger/migrations"
 	util "github.com/danieloluwadare/dmessanger/utils"
 	"net/http"
 
@@ -15,7 +16,7 @@ var UserController UserControllerHandler
 
 func init() {
 
-	db := models.GetDB()
+	db := migrations.GetDB()
 	userRepository := repository.INewUserRepository(db)
 	userService := service.INewService(userRepository)
 	usehandler := NewUserHandler(userService)
