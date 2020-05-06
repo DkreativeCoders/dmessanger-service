@@ -16,7 +16,7 @@ var UserController UserControllerHandler
 func init() {
 
 	db := models.GetDB()
-	userRepository := repository.NewInMemoryRepository(db)
+	userRepository := repository.NewUserRepository(db)
 	userService := service.NewService(userRepository)
 	usehandler := NewUserHandler(userService)
 	UserController = usehandler
@@ -39,6 +39,11 @@ func (u UserControllerHandler) CreateUser(w http.ResponseWriter, r *http.Request
 		//return
 	}
 	response := u.userService.CreateUser(user)
+	util.Respond(w, response)
+}
+
+func (u UserControllerHandler) GetAllUser(w http.ResponseWriter, r *http.Request) {
+	response := u.userService.GetAllUser()
 	util.Respond(w, response)
 }
 

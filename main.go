@@ -12,7 +12,10 @@ import (
 func main() {
 	router := mux.NewRouter()
 
+	//GetAllUser
 	router.HandleFunc("/api/create/user", controllers.UserController.CreateUser).Methods("POST")
+	router.HandleFunc("/api/get/users", controllers.UserController.GetAllUser).Methods("GET")
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8000" //localhost

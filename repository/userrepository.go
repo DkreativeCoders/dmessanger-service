@@ -7,7 +7,7 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-func NewInMemoryRepository(db *gorm.DB) irepository.IUserRepository {
+func NewUserRepository(db *gorm.DB) irepository.IUserRepository {
 	return userRepository{db}
 }
 
@@ -20,10 +20,17 @@ func (u userRepository) FindByID(id int) *models.User {
 	return &user
 }
 
-//Save And retrieves Saved user
+
+func (u userRepository) FindAll() []models.User {
+	users := make([]models.User, 0) // same as []int{0, 0}
+	u.db.Find(&users)
+	return users
+}
+
+//Save User or Return error
 func (u userRepository) Save(user models.User) (*models.User, error) {
+	// Create failed, do something e.g. return, panic etc.
 	if dbc :=  u.db.Create(&user); dbc.Error != nil {
-		// Create failed, do something e.g. return, panic etc.
 		return nil,dbc.Error
 	}
 	//u.db.Where("email = ?", user.Email).First(&newUser)

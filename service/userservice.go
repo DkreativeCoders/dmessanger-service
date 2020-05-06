@@ -32,6 +32,13 @@ func (s service) CreateUser(user models.User) map[string]interface{} {
 	return resp
 }
 
+func (s service) GetAllUser() map[string]interface{} {
+	users := s.repository.FindAll()
+	resp := utils.Message(true, "success")
+	resp["data"] = users
+	return resp
+}
+
 func (s service) GetUser(id int) (*models.User, error) {
 	var user models.User
 	return &user, nil
