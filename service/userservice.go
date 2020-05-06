@@ -32,6 +32,8 @@ func (s service) CreateUser(user models.User) map[string]interface{} {
 	return resp
 }
 
+//GetAllUser performs all necessary validation if need be and
+//returns a map of data
 func (s service) GetAllUser() map[string]interface{} {
 	users := s.repository.FindAll()
 	resp := utils.Message(true, "success")
@@ -39,6 +41,7 @@ func (s service) GetAllUser() map[string]interface{} {
 	return resp
 }
 
+//
 func (s service) GetUser(id int) (*models.User, error) {
 	var user models.User
 	return &user, nil
