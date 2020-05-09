@@ -7,14 +7,17 @@ import (
 	 "github.com/danieloluwadare/dmessanger/newstructure/user/repository/orm"
 	"github.com/danieloluwadare/dmessanger/newstructure/user/service"
 	"github.com/gorilla/mux"
+	"github.com/jinzhu/gorm"
 	"net/http"
 	"os"
 )
 
-func NewServer() *http.Server {
+func NewServer() (*http.Server, *gorm.DB) {
 
+	//Get database connection
 	dbConnection := migrations.GetDataBaseConnection()
-	InitiateModelMigration
+	//Migrate all models
+	migrations.InitiateModelMigration(dbConnection)
 	router := mux.NewRouter()
 
 
@@ -42,5 +45,5 @@ func NewServer() *http.Server {
 		fmt.Print(err)
 	}
 
-	return srv
+	return srv,dbConnection
 }
