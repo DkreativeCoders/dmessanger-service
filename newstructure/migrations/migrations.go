@@ -10,5 +10,4 @@ func InitiateModelMigration(db *gorm.DB)  *gorm.DB{
 	// Migrate the schema
 	db.AutoMigrate(&domain.User{})
 	return  db
-
 }
