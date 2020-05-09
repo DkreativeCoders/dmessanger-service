@@ -1,7 +1,7 @@
-package models
+package domain
 
 import (
-	"github.com/danieloluwadare/dmessanger/utils"
+	"github.com/danieloluwadare/dmessanger/oldstructure/utils"
 	"github.com/jinzhu/gorm"
 )
 

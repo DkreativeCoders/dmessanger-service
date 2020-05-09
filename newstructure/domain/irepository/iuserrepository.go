@@ -1,6 +1,6 @@
 package irepository
 
-import "github.com/danieloluwadare/dmessanger/models"
+import "github.com/danieloluwadare/dmessanger/oldstructure/models"
 
 // IUserRepository
 // Define your basic crud operation in this interface

@@ -2,8 +2,8 @@ package repository
 
 import (
 	"fmt"
-	"github.com/danieloluwadare/dmessanger/interfaces/irepository"
-	"github.com/danieloluwadare/dmessanger/models"
+	"github.com/danieloluwadare/dmessanger/oldstructure/interfaces/irepository"
+	"github.com/danieloluwadare/dmessanger/oldstructure/models"
 	"github.com/jinzhu/gorm"
 )
 
