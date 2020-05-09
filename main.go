@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
+	"github.com/danieloluwadare/dmessanger/newstructure"
 	"log"
 )
 
 func main() {
 
-	srv, db := NewServer()
+	srv, db := newstructure.NewServer()
 	defer func() {
 		fmt.Print("Closing Db")
 		err := db.Close()
