@@ -4,7 +4,7 @@ import "log"
 
 func main() {
 
-	srv := Server()
+	srv := NewServer()
 	log.Println("Server listening on", srv.Addr)
 	log.Fatal(srv.ListenAndServe())
 }
