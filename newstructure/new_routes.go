@@ -18,6 +18,7 @@ func NewServer() (*http.Server, *gorm.DB) {
 	dbConnection := migrations.GetDataBaseConnection()
 	//Migrate all models
 	migrations.InitiateModelMigration(dbConnection)
+	//router created
 	router := mux.NewRouter()
 
 
