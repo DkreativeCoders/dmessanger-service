@@ -2,14 +2,14 @@ package controllers
 
 import (
 	"encoding/json"
-	"github.com/danieloluwadare/dmessanger/migrations"
-	util "github.com/danieloluwadare/dmessanger/utils"
+	"github.com/danieloluwadare/dmessanger/oldstructure/migrations"
+	util "github.com/danieloluwadare/dmessanger/oldstructure/utils"
 	"net/http"
 
-	"github.com/danieloluwadare/dmessanger/interfaces/iservice"
-	"github.com/danieloluwadare/dmessanger/models"
-	"github.com/danieloluwadare/dmessanger/repository"
-	"github.com/danieloluwadare/dmessanger/service"
+	"github.com/danieloluwadare/dmessanger/oldstructure/interfaces/iservice"
+	"github.com/danieloluwadare/dmessanger/oldstructure/models"
+	"github.com/danieloluwadare/dmessanger/oldstructure/repository"
+	"github.com/danieloluwadare/dmessanger/oldstructure/service"
 )
 
 var UserController UserControllerHandler

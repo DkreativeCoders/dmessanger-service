@@ -1,8 +1,8 @@
-package main
+package oldstructure
 
 import (
 	"fmt"
-	"github.com/danieloluwadare/dmessanger/controllers"
+	"github.com/danieloluwadare/dmessanger/oldstructure/controllers"
 	"github.com/gorilla/mux"
 	"net/http"
 	"os"
@@ -14,6 +14,7 @@ func Server() *http.Server {
 
 	router.HandleFunc("/api/create/user", controllers.UserController.CreateUser).Methods("POST")
 	router.HandleFunc("/api/get/users", controllers.UserController.GetAllUser).Methods("GET")
+	
 
 	port := os.Getenv("PORT")
 	if port == "" {

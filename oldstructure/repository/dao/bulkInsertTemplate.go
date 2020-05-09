@@ -2,7 +2,7 @@ package dao
 
 import (
 	"fmt"
-	"github.com/danieloluwadare/dmessanger/migrations"
+	"github.com/danieloluwadare/dmessanger/oldstructure/migrations"
 	"strings"
 )
 

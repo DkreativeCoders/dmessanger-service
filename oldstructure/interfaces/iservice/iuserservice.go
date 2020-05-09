@@ -1,6 +1,6 @@
 package iservice
 
-import "github.com/danieloluwadare/dmessanger/models"
+import "github.com/danieloluwadare/dmessanger/oldstructure/models"
 
 type IUserService interface {
 	GetUser(id int) (*models.User, error)

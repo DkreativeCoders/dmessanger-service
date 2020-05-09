@@ -1,6 +1,6 @@
 package migrations
 
-import "github.com/danieloluwadare/dmessanger/models"
+import "github.com/danieloluwadare/dmessanger/oldstructure/models"
 
 func init() {
 	initiateModelMigration()

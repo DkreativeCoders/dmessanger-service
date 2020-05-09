@@ -1,10 +1,10 @@
 package service
 
 import (
-	"github.com/danieloluwadare/dmessanger/interfaces/irepository"
-	"github.com/danieloluwadare/dmessanger/interfaces/iservice"
-	"github.com/danieloluwadare/dmessanger/models"
-	"github.com/danieloluwadare/dmessanger/utils"
+	"github.com/danieloluwadare/dmessanger/newstructure/domain"
+	"github.com/danieloluwadare/dmessanger/newstructure/domain/irepository"
+	"github.com/danieloluwadare/dmessanger/newstructure/domain/iservice"
+	"github.com/danieloluwadare/dmessanger/newstructure/utils"
 )
 
 //INewService return an interface that's why Constrictor/Method name is preceded with I
@@ -16,13 +16,9 @@ type service struct {
 	repository irepository.IUserRepository
 }
 
-//NewService Return the very instance of the class
-func NewService(repository irepository.IUserRepository) *service {
-	return &service{repository: repository}
-}
 
 //perform validation on user and let UserRepository save user
-func (s service) CreateUser(user models.User) map[string]interface{} {
+func (s service) CreateUser(user domain.User) map[string]interface{} {
 	//user.Validate()
 	if resp, ok := user.Validate(); !ok {
 		return resp
@@ -48,8 +44,8 @@ func (s service) GetAllUser() map[string]interface{} {
 }
 
 //
-func (s service) GetUser(id int) (*models.User, error) {
-	var user models.User
+func (s service) GetUser(id int) (*domain.User, error) {
+	var user domain.User
 	return &user, nil
 
 }
