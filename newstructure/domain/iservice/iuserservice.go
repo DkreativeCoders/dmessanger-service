@@ -1,9 +1,11 @@
 package iservice
 
-import "github.com/danieloluwadare/dmessanger/oldstructure/models"
+import (
+	"github.com/danieloluwadare/dmessanger/newstructure/domain"
+)
 
 type IUserService interface {
-	GetUser(id int) (*models.User, error)
+	GetUser(id int) (*domain.User, error)
 	GetAllUser()map[string]interface{}
-	CreateUser(user models.User) map[string]interface{}
+	CreateUser(user domain.User) map[string]interface{}
 }
