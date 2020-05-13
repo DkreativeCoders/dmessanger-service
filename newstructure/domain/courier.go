@@ -4,8 +4,8 @@ import "github.com/jinzhu/gorm"
 
 type Courier struct {
 	gorm.Model
-	UserID uint
-	User User  `gorm:"foreignkey:UserID"`
+	UserId uint
+	User User  `gorm:"foreignkey:UserId"`
 	Rating int
 	NumberOfRides int
 	NumberOfCompletedRides int
