@@ -13,7 +13,7 @@ func InitiateModelMigration(db *gorm.DB)  {
 		&domain.Courier{},
 		&domain.Customer{},
 		)
-//	define foreign key relationship here
+//	define foreign key relationship for any necessary model
 	db.Model(&domain.Courier{}).AddForeignKey("user_id", "users(id)", "RESTRICT", "RESTRICT")
 	db.Model(&domain.Customer{}).AddForeignKey("user_id", "users(id)", "RESTRICT", "RESTRICT")
 
