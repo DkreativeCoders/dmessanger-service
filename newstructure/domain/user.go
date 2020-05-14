@@ -1,20 +1,23 @@
-package models
+package domain
 
 import (
-	"github.com/danieloluwadare/dmessanger/utils"
+	"github.com/danieloluwadare/dmessanger/oldstructure/utils"
 	"github.com/jinzhu/gorm"
 )
 
+//User Entity  containing basic fields
 type User struct {
 	gorm.Model
-	FirstName  string
-	LastName  string
-	Age string
-	Email string
-	PhoneNumber string
-	Address string
+	FirstName  string `json:"firstName"`
+	LastName  string `json:"lastName"`
+	Age string `json:"age"`
+	Email string `json:"email"`
+	PhoneNumber string `json:"phoneNumber"`
+	Password string `json:"-"`
+	Address string `json:"address"`
 }
 
+//Validate All the fields for User
 func (user *User) Validate() (map[string]interface{}, bool) {
 
 	if user.FirstName == "" {
