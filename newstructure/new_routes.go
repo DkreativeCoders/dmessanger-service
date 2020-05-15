@@ -38,7 +38,7 @@ func NewServer() (*http.Server, *gorm.DB) {
 	}
 
 	fmt.Println(port)
-	srv := &http.Server{Handler: router, Addr: ":"+port,}
+	srv := &http.Server{Handler: router, Addr: ":"+port}
 
 	err := http.ListenAndServe(":"+port, router) //Launch the app, visit localhost:8000/api
 	if err != nil {
