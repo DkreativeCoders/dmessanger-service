@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"github.com/danieloluwadare/dmessanger/cmd/domain"
 	"github.com/danieloluwadare/dmessanger/cmd/domain/iservice"
-	util "github.com/danieloluwadare/dmessanger/oldstructure/utils"
+	"github.com/danieloluwadare/dmessanger/cmd/utils"
 	"github.com/gorilla/mux"
 	"net/http"
 )
@@ -31,17 +31,17 @@ func (u userControllerHandler) create(w http.ResponseWriter, r *http.Request) {
 	var user domain.User
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
-		util.Respond(w, util.Message(false, "Error while decoding request body"))
+		utils.Respond(w, utils.Message(false, "Error while decoding request body"))
 		//return
 	}
 	response := u.userService.CreateUser(user)
-	util.Respond(w, response)
+	utils.Respond(w, response)
 }
 
 //GetAllUser This is the method called from the route to fetch all user from the service class
 func (u userControllerHandler) getAll(w http.ResponseWriter, r *http.Request) {
 	response := u.userService.GetAllUser()
-	util.Respond(w, response)
+	utils.Respond(w, response)
 }
 
 func (u userControllerHandler) getUser(w http.ResponseWriter, r *http.Request) {
