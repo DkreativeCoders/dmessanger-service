@@ -1,4 +1,4 @@
 # golang-crud-app-db
-A service for real time delivery in go 
-has to be refactored
+A service for real time delivery in golang 
+
 
