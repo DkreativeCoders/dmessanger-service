@@ -81,7 +81,7 @@ Variable name is generally using Camel Case style, but when you have unique noun
 Here is a list of words which are commonly identified as unique nouns:
 
 ```go
-// A GonicMapper that contains a list of common initialisms taken from golang/lint
+// Json example
 type User struct {
 	gorm.Model
 	FirstName  string `json:"firstName"`
@@ -96,4 +96,4 @@ type User struct {
 
 ```
 ### link to docs
-- https://docs.google.com/document/d/1txDyiV84GxpxBJw61p4RBsn3ekBXqGaNMZS3Pb5RcS0/edit#
+- https://docs.google.com/document/d/1txDyiV84GxpxBJw61p4RBsn3ekBXqGaNMZS3Pb5RcS0/edit?usp=sharing
