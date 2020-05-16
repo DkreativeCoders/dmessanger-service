@@ -28,76 +28,50 @@ A resource should be a noun, not a verb. Examples:
 
 	```
 
-### Constants
+### URLs and Actions — Relations
+If a relationship can only exist within another resource, RESTful principles provide useful guidance. Let us look at few examples:
 
-- Constant should use all capital letters and use underscore `_` to separate words.
+A ticket in enchants consists of a number of messages. These messages can be logically mapped to the /tickets endpoint as follows:
 
-	```go
-	const APP_VER = "0.7.0.1110 Beta"
-	```
+- GET /tickets/12/messages — Retrieves a list of messages for ticket #12
+- GET /tickets/12/messages/5 — Retrieves message #5 for ticket #12
+- POST /tickets/12/messages — Creates a new message in ticket #12
+- PUT /tickets/12/messages/5 — Updates message #5 for ticket #12
+- PATCH /tickets/12/messages/5 — Partially updates message #5 for ticket #12
+- DELETE /tickets/12/messages/5 — Deletes message #5 for ticket #12
 
-- If you need enumerated type, you should define the corresponding type first:
 
-	```go
-	type Scheme string
-
-	const (
-		HTTP  Scheme = "http"
-		HTTPS Scheme = "https"
-	)
-	```
-
-- If functionality of the module is relatively complicated and easy to mixed up with constant name, you can add prefix to every constant:
 
 	```go
-	type PullRequestStatus int
 
-	const (
-		PULL_REQUEST_STATUS_CONFLICT PullRequestStatus = iota
-		PULL_REQUEST_STATUS_CHECKING
-		PULL_REQUEST_STATUS_MERGEABLE
-	)
+	router.HandleFunc("/api/couriers/2/deliveries", handler.create).Methods("GET")
+
+	```
+### Versioning
+
+Always version your API. Versioning helps you iterate faster and prevents invalid requests from hitting updated endpoints. It also helps smooth over any major API version transitions as you can continue to offer old API versions for a period of time.
+
+Use the version number in the URL. Example: 
+
+- /v1/tickets/
+    ```go
+      router.HandleFunc("/api/v1/users", handler.create).Methods("POST")
 	```
 
-### Variables
+- /V2/tickets/
 
-- A variable name should follow general English expression or shorthand.
-- In relatively simple (less objects and more specific) context, variable name can use simplified form as follows:
-    - `user` to `u`
-    - `userID` to `uid`
-- If variable type is `bool`, its name should start with `Has`, `Is`, `Can` or `Allow`, etc.
-
-	```go
-	var isExist bool
-	var hasConflict bool
-	var canManage bool
-	var allowGitHook bool
+    ```go
+      router.HandleFunc("/api/v2/users", handler.create).Methods("POST")
 	```
+ 
+#### JSON and XML
 
-- The last rule also applies for defining structs:
+The API should either return JSON or XML data. Those two data formats are easily parsable. The recommended one is the JSON data type. One can also return other datatypes if needed.
 
-	```go
-	// Webhook represents a web hook object.
-	type Webhook struct {
-		ID           int64 `xorm:"pk autoincr"`
-		RepoID       int64
-		OrgID        int64
-		URL          string `xorm:"url TEXT"`
-		ContentType  HookContentType
-		Secret       string `xorm:"TEXT"`
-		Events       string `xorm:"TEXT"`
-		*HookEvent   `xorm:"-"`
-		IsSSL        bool `xorm:"is_ssl"`
-		IsActive     bool
-		HookTaskType HookTaskType
-		Meta         string     `xorm:"TEXT"` // store hook-specific attributes
-		LastStatus   HookStatus // Last delivery status
-		Created      time.Time  `xorm:"CREATED"`
-		Updated      time.Time  `xorm:"UPDATED"`
-	}
-	```
+If you are using JSON the "right" thing to do is to follow JavaScript naming conventions - and that means camelCase for field names.
 
-#### Variable Naming Convention
+By default the following naming conventions are adopted:
+
 
 Variable name is generally using Camel Case style, but when you have unique nouns, should apply following rules:
 
@@ -108,39 +82,15 @@ Here is a list of words which are commonly identified as unique nouns:
 
 ```go
 // A GonicMapper that contains a list of common initialisms taken from golang/lint
-var LintGonicMapper = GonicMapper{
-	"API":   true,
-	"ASCII": true,
-	"CPU":   true,
-	"CSS":   true,
-	"DNS":   true,
-	"EOF":   true,
-	"GUID":  true,
-	"HTML":  true,
-	"HTTP":  true,
-	"HTTPS": true,
-	"ID":    true,
-	"IP":    true,
-	"JSON":  true,
-	"LHS":   true,
-	"QPS":   true,
-	"RAM":   true,
-	"RHS":   true,
-	"RPC":   true,
-	"SLA":   true,
-	"SMTP":  true,
-	"SSH":   true,
-	"TLS":   true,
-	"TTL":   true,
-	"UI":    true,
-	"UID":   true,
-	"UUID":  true,
-	"URI":   true,
-	"URL":   true,
-	"UTF8":  true,
-	"VM":    true,
-	"XML":   true,
-	"XSRF":  true,
-	"XSS":   true,
+type User struct {
+	gorm.Model
+	FirstName  string `json:"firstName"`
+	LastName  string `json:"lastName"`
+	Age string `json:"age"`
+	Email string `json:"email"`
+	PhoneNumber string `json:"phoneNumber"`
+	Password string `json:"-"`
+	Address string `json:"address"`
 }
+
 ```
