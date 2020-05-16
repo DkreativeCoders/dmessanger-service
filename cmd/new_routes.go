@@ -1,25 +1,39 @@
-package newstructure
+package cmd
 
 import (
 	"fmt"
-	"github.com/danieloluwadare/dmessanger/newstructure/migrations"
-	"github.com/danieloluwadare/dmessanger/newstructure/user/controller/chttp"
-	 "github.com/danieloluwadare/dmessanger/newstructure/user/repository/orm"
-	"github.com/danieloluwadare/dmessanger/newstructure/user/service"
+	"github.com/danieloluwadare/dmessanger/cmd/migrations/gmorm"
+	"github.com/danieloluwadare/dmessanger/cmd/user/controller/chttp"
+	"github.com/danieloluwadare/dmessanger/cmd/user/repository/orm"
+	"github.com/danieloluwadare/dmessanger/cmd/user/service"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
+	"github.com/joho/godotenv"
 	"net/http"
 	"os"
 )
 
 func NewServer() (*http.Server, *gorm.DB) {
 
+	e := godotenv.Load()
+	if e != nil {
+		fmt.Print(e)
+	}
+
+	sqlUsername := os.Getenv("db_user")
+	sqlPassword := os.Getenv("db_pass")
+	sqlDbName := os.Getenv("db_name")
+	sqlDbHost := os.Getenv("db_host")
+
 	//Get database connection
-	dbConnection := migrations.GetDataBaseConnection()
+	dbConnection := gmorm.GetDataBaseConnection(sqlUsername,sqlPassword,sqlDbName,sqlDbHost)
+	gmorm.InitiateModelMigration(dbConnection)
 	//Migrate all models
-	migrations.InitiateModelMigration(dbConnection)
+	gmorm.InitiateModelMigration(dbConnection)
 	//router created
 	router := mux.NewRouter()
+
+
 
 
 

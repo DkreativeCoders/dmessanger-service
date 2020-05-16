@@ -2,8 +2,8 @@ package chttp
 
 import (
 	"encoding/json"
-	"github.com/danieloluwadare/dmessanger/newstructure/domain"
-	"github.com/danieloluwadare/dmessanger/newstructure/domain/iservice"
+	"github.com/danieloluwadare/dmessanger/cmd/domain"
+	"github.com/danieloluwadare/dmessanger/cmd/domain/iservice"
 	util "github.com/danieloluwadare/dmessanger/oldstructure/utils"
 	"github.com/gorilla/mux"
 	"net/http"

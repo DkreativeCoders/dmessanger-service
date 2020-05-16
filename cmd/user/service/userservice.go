@@ -1,10 +1,10 @@
 package service
 
 import (
-	"github.com/danieloluwadare/dmessanger/newstructure/domain"
-	"github.com/danieloluwadare/dmessanger/newstructure/domain/irepository"
-	"github.com/danieloluwadare/dmessanger/newstructure/domain/iservice"
-	"github.com/danieloluwadare/dmessanger/newstructure/utils"
+	"github.com/danieloluwadare/dmessanger/cmd/domain"
+	"github.com/danieloluwadare/dmessanger/cmd/domain/irepository"
+	"github.com/danieloluwadare/dmessanger/cmd/domain/iservice"
+	"github.com/danieloluwadare/dmessanger/cmd/utils"
 )
 
 //INewService return an interface that's why Constrictor/Method name is preceded with I
