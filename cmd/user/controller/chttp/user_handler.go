@@ -16,8 +16,8 @@ func NewUserHandler(router *mux.Router, userService iservice.IUserService)  {
 		userService: userService,
 	}
 
-	router.HandleFunc("/api/create/user", handler.create).Methods("POST")
-	router.HandleFunc("/api/get/users", handler.getAll).Methods("GET")
+	router.HandleFunc("/api/v1/users", handler.create).Methods("POST")
+	router.HandleFunc("/api/v1/users", handler.getAll).Methods("GET")
 
 	//return userControllerHandler{userService}
 }
