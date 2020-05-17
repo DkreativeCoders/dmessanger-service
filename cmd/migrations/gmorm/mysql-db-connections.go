@@ -8,12 +8,12 @@ import (
 )
 
 
-func GetDataBaseConnection(username string, password string, dbName string, dbHost string) *gorm.DB{
+func GetDataBaseConnection(dialect string, username string, password string, dbName string, dbHost string, dbPort string) *gorm.DB{
 
 	dbUrl := fmt.Sprintf("%s:%s@(%s)/%s?charset=utf8&parseTime=True&loc=Local", username, password, dbHost, dbName)
 	fmt.Println(dbUrl)
 
-	conn, err := gorm.Open("mysql", dbUrl)
+	conn, err := gorm.Open(dialect, dbUrl)
 	if err != nil {
 		fmt.Print(err)
 	}
