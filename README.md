@@ -8,3 +8,4 @@ Use the [guide](https://goswagger.io/use/spec.html) to comment your code
 
 Run <code>swagger generate spec -o ./swagger.json</code> to generate swagger specs
 
+paste the generated swagger.json code into this [editor](https://editor.swagger.io/)
