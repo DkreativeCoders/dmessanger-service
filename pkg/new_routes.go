@@ -20,13 +20,17 @@ func NewServer() (*http.Server, *gorm.DB) {
 		fmt.Print(e)
 	}
 
-	sqlUsername := os.Getenv("db_user")
-	sqlPassword := os.Getenv("db_pass")
-	sqlDbName := os.Getenv("db_name")
-	sqlDbHost := os.Getenv("db_host")
+
+	dialect := os.Getenv("DB_CONNECTION")
+	username := os.Getenv("DB_USERNAME")
+	password := os.Getenv("DB_PASSWORD")
+	dbName := os.Getenv("DB_DATABASE")
+	dbHost := os.Getenv("DB_HOST")
+	dbPort := os.Getenv("DB_PORT")
+
 
 	//Get database connection
-	dbConnection := gmorm.GetDataBaseConnection(sqlUsername,sqlPassword,sqlDbName,sqlDbHost)
+	dbConnection := gmorm.GetDataBaseConnection(dialect,username,password,dbName,dbHost,dbPort)
 	gmorm.InitiateModelMigration(dbConnection)
 	//Migrate all models
 	gmorm.InitiateModelMigration(dbConnection)
