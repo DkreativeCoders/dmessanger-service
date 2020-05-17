@@ -1,0 +1,20 @@
+{
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "schemes": [
+    "http"
+  ],
+  "swagger": "2.0",
+  "info": {
+    "description": "De-messenger",
+    "title": "De-messenger",
+    "version": "0.0.1"
+  },
+  "host": "localhost:8080",
+  "basePath": "/api",
+  "paths": {}
+}
