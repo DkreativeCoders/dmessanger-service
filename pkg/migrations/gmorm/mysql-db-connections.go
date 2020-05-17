@@ -2,7 +2,7 @@ package gmorm
 
 import (
 	"fmt"
-	"github.com/danieloluwadare/dmessanger/cmd/domain"
+	"github.com/danieloluwadare/dmessanger/pkg/domain"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )

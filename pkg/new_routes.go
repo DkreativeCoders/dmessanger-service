@@ -1,11 +1,11 @@
-package cmd
+package pkg
 
 import (
 	"fmt"
-	"github.com/danieloluwadare/dmessanger/cmd/migrations/gmorm"
-	"github.com/danieloluwadare/dmessanger/cmd/user/controller/chttp"
-	"github.com/danieloluwadare/dmessanger/cmd/user/repository/orm"
-	"github.com/danieloluwadare/dmessanger/cmd/user/service"
+	"github.com/danieloluwadare/dmessanger/pkg/migrations/gmorm"
+	"github.com/danieloluwadare/dmessanger/pkg/user/controller/chttp"
+	"github.com/danieloluwadare/dmessanger/pkg/user/repository/orm"
+	"github.com/danieloluwadare/dmessanger/pkg/user/service"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	"github.com/joho/godotenv"

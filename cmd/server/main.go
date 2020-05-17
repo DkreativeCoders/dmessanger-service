@@ -18,13 +18,13 @@ package main
 
 import (
 	"fmt"
-	"github.com/danieloluwadare/dmessanger/cmd"
+	"github.com/danieloluwadare/dmessanger/pkg"
 	"log"
 )
 
 func main() {
 
-	srv, db := cmd.NewServer()
+	srv, db := pkg.NewServer()
 	defer func() {
 		fmt.Print("Closing Db")
 		err := db.Close()
