@@ -2,9 +2,9 @@ package chttp
 
 import (
 	"encoding/json"
-	"github.com/danieloluwadare/dmessanger/pkg/domain"
-	"github.com/danieloluwadare/dmessanger/pkg/domain/iservice"
-	"github.com/danieloluwadare/dmessanger/pkg/utils"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/domain"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/iservice"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/utils"
 	"github.com/gorilla/mux"
 	"net/http"
 )

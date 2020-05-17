@@ -2,8 +2,8 @@ package orm
 
 import (
 	"fmt"
-	"github.com/danieloluwadare/dmessanger/pkg/domain"
-	"github.com/danieloluwadare/dmessanger/pkg/domain/irepository"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/domain"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/irepository"
 	"github.com/jinzhu/gorm"
 )
 

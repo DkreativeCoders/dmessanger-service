@@ -18,7 +18,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/danieloluwadare/dmessanger/pkg"
+	"github.com/DkreativeCoders/dmessanger-service/pkg"
 	"log"
 )
 

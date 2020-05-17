@@ -1,4 +1,4 @@
-module github.com/danieloluwadare/dmessanger
+module github.com/DkreativeCoders/dmessanger-service
 
 go 1.13
 
