@@ -1,7 +1,7 @@
 package irepository
 
 import (
-	"github.com/danieloluwadare/dmessanger/cmd/domain"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/domain"
 )
 
 // IUserRepository

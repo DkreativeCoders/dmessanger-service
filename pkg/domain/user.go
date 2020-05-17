@@ -1,7 +1,7 @@
 package domain
 
 import (
-	"github.com/danieloluwadare/dmessanger/oldstructure/utils"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/utils"
 	"github.com/jinzhu/gorm"
 )
 
