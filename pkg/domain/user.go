@@ -6,6 +6,7 @@ import (
 )
 
 //User Entity  containing basic fields
+//swagger:model userModel
 type User struct {
 	gorm.Model
 	FirstName  string `json:"firstName"`

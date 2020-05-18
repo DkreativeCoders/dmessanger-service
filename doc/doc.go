@@ -18,8 +18,6 @@ package doc
 
 
 
-// swagger:parameters updatePassword
-type UserID struct{
-	// in: path
-	UserID int
-}
+
+
+
