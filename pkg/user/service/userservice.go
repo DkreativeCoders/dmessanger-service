@@ -14,6 +14,7 @@ func INewService(repository irepository.IUserRepository) iservice.IUserService {
 
 type service struct {
 	repository irepository.IUserRepository
+
 }
 
 
