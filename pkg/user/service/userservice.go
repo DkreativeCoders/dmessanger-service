@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/binding"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/irepository"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/iservice"
@@ -47,5 +48,42 @@ func (s service) GetAllUser() map[string]interface{} {
 func (s service) GetUser(id int) (*domain.User, error) {
 	var user domain.User
 	return &user, nil
+
+}
+
+func (s service) UpdatePassword(id int, request binding.UpdatePasswordRequest) binding.ResponseDto {
+	// swagger:operation PUT /api/vi/users/update-password/{UserID} updatePassword
+	//
+	// Updates a user's password
+	// ---
+	// responses:
+	//   default:
+	//     "$ref": "#/responses/responseDto"
+
+
+
+	err := request.Validate()
+	if err != nil {
+		return *binding.NewResponseDto(false, err.Error())
+	}
+
+	user, err := s.repository.FindByID(id)
+
+	if err != nil {
+		return *binding.NewResponseDto(false, err.Error())
+	}
+
+	if user.Password == request.OldPassword  {
+		user.Password = request.NewPassword
+		_, err := s.repository.Update(*user)
+		if err != nil {
+			return *binding.NewResponseDto(false, err.Error())
+		} 
+		return *binding.NewResponseDto(true, "Successful")
+	} 
+
+
+	return *binding.NewResponseDto(false, "Incorrect password supplied")
+
 
 }

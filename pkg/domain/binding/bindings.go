@@ -1,7 +1,7 @@
 package binding
 
 //swagger:model responseData
-type responseData struct {
+type ResponseData struct {
 	Status bool `json:"status"`
 	Message string `json:"message"`
 	Data interface{} `json:"data"`
@@ -9,7 +9,13 @@ type responseData struct {
 
 // swagger:response responseDto
 type ResponseDto struct {
-	responseData
+	ResponseData
 }
 
+func NewResponseDto(status bool, message string) *ResponseDto {
+	response := ResponseDto {}
+	response.Status = status
+	response.Message = message
+	return &response
+}
 
