@@ -7,8 +7,7 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
-
-func GetDataBaseConnection(dialect string, username string, password string, dbName string, dbHost string, dbPort string) *gorm.DB{
+func GetDataBaseConnection(dialect string, username string, password string, dbName string, dbHost string, dbPort string) *gorm.DB {
 
 	dbUrl := fmt.Sprintf("%s:%s@(%s)/%s?charset=utf8&parseTime=True&loc=Local", username, password, dbHost, dbName)
 	fmt.Println(dbUrl)
@@ -22,7 +21,7 @@ func GetDataBaseConnection(dialect string, username string, password string, dbN
 	return db
 }
 
-func InitiateModelMigration(db *gorm.DB)  {
+func InitiateModelMigration(db *gorm.DB) {
 	// Migrate the schema
 	db.AutoMigrate(
 		&domain.User{},
@@ -34,8 +33,6 @@ func InitiateModelMigration(db *gorm.DB)  {
 	db.Model(&domain.Customer{}).AddForeignKey("user_id", "users(id)", "RESTRICT", "RESTRICT")
 
 }
-
-
 
 // function to export global db object
 //func GetDB() *gorm.DB {
