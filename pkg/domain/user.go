@@ -9,13 +9,13 @@ import (
 //swagger:model userModel
 type User struct {
 	gorm.Model
-	FirstName  string `json:"firstName"`
-	LastName  string `json:"lastName"`
-	Age string `json:"age"`
-	Email string `json:"email"`
+	FirstName   string `json:"firstName"`
+	LastName    string `json:"lastName"`
+	Age         string `json:"age"`
+	Email       string `json:"email"`
 	PhoneNumber string `json:"phoneNumber"`
-	Password string `json:"-"`
-	Address string `json:"address"`
+	Password    string `json:"-"`
+	Address     string `json:"address"`
 }
 
 //Validate All the fields for User

@@ -2,11 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/DkreativeCoders/dmessanger-service/pkg"
 	_ "github.com/DkreativeCoders/dmessanger-service/doc"
+	"github.com/DkreativeCoders/dmessanger-service/pkg"
 	"log"
 )
-
 
 func main() {
 
@@ -18,7 +17,6 @@ func main() {
 			log.Fatal(err)
 		}
 	}()
-
 
 	log.Println("Server listening on", srv.Addr)
 	log.Fatal(srv.ListenAndServe())

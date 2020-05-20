@@ -16,18 +16,17 @@ type ormUserRepository struct {
 	db *gorm.DB
 }
 
-
 func (u ormUserRepository) FindByID(id int) (*domain.User, error) {
-	
+
 	var user domain.User
 	dbc := u.db.Where(domain.User{Model: gorm.Model{
-        ID: uint(id),
+		ID: uint(id),
 	}}).First(&user)
-	
+
 	if dbc.Error != nil {
 		return nil, dbc.Error
 	}
-	
+
 	return &user, nil
 }
 
@@ -41,28 +40,27 @@ func (u ormUserRepository) FindAll() []domain.User {
 //Save User or Return error
 func (u ormUserRepository) Save(user domain.User) (*domain.User, error) {
 	// Create failed, do something e.g. return, panic etc.
-	if dbc :=  u.db.Create(&user); dbc.Error != nil {
-		return nil,dbc.Error
+	if dbc := u.db.Create(&user); dbc.Error != nil {
+		return nil, dbc.Error
 	}
 	//u.db.Where("email = ?", user.Email).First(&newUser)
 	fmt.Println("user created =>", user)
 
 	//return &user
-	return &user,nil
+	return &user, nil
 }
-
 
 //Update User or Return error
 func (u ormUserRepository) Update(user domain.User) (*domain.User, error) {
 	// Update failed, do something e.g. return, panic etc.
-	
-	if dbc :=  u.db.Where(domain.User{Model: gorm.Model{
-        ID: user.ID,
-    }}).Assign(user).FirstOrCreate(&user); dbc.Error != nil {
+
+	if dbc := u.db.Where(domain.User{Model: gorm.Model{
+		ID: user.ID,
+	}}).Assign(user).FirstOrCreate(&user); dbc.Error != nil {
 		return nil, dbc.Error
 	}
 	//u.db.Where("email = ?", user.Email).First(&newUser)
-	
+
 	//return &user
-	return &user,nil
+	return &user, nil
 }

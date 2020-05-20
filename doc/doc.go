@@ -15,9 +15,3 @@
 //
 // swagger:meta
 package doc
-
-
-
-
-
-

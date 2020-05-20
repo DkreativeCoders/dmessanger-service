@@ -1,8 +1,8 @@
 package service
 
 import (
-	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/binding"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/binding"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/irepository"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/iservice"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/utils"
@@ -17,15 +17,14 @@ type service struct {
 	repository irepository.IUserRepository
 }
 
-
 //perform validation on user and let UserRepository save user
 func (s service) CreateUser(user domain.User) map[string]interface{} {
 	//user.Validate()
 	if resp, ok := user.Validate(); !ok {
 		return resp
 	}
-	 newUser, err := s.repository.Save(user)
-	if err != nil{
+	newUser, err := s.repository.Save(user)
+	if err != nil {
 		resp := utils.Message(false, "Error")
 		resp["error_message"] = err
 		return resp
@@ -60,8 +59,6 @@ func (s service) UpdatePassword(id int, request binding.UpdatePasswordRequest) b
 	//   default:
 	//     "$ref": "#/responses/responseDto"
 
-
-
 	err := request.Validate()
 	if err != nil {
 		return *binding.NewResponseDto(false, err.Error())
@@ -73,17 +70,15 @@ func (s service) UpdatePassword(id int, request binding.UpdatePasswordRequest) b
 		return *binding.NewResponseDto(false, err.Error())
 	}
 
-	if user.Password == request.OldPassword  {
+	if user.Password == request.OldPassword {
 		user.Password = request.NewPassword
 		_, err := s.repository.Update(*user)
 		if err != nil {
 			return *binding.NewResponseDto(false, err.Error())
-		} 
+		}
 		return *binding.NewResponseDto(true, "Successful")
-	} 
-
+	}
 
 	return *binding.NewResponseDto(false, "Incorrect password supplied")
-
 
 }

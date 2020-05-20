@@ -1,6 +1,5 @@
 package doc
 
-
 import (
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/binding"
 )
@@ -12,9 +11,8 @@ type UserResponseWrapper struct {
 	}
 }
 
-
 // swagger:parameters updatePassword
-type UpdatePasswordRequestWrapper struct { 
+type UpdatePasswordRequestWrapper struct {
 	// in: body
 	Body struct {
 		binding.UpdatePasswordRequest
@@ -22,10 +20,7 @@ type UpdatePasswordRequestWrapper struct {
 }
 
 // swagger:parameters updatePassword
-type UserID struct{
+type UserID struct {
 	// in: path
 	UserID int
 }
-
-
-

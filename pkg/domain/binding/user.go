@@ -1,10 +1,9 @@
 package binding
 
 import (
-	"github.com/DkreativeCoders/dmessanger-service/pkg/domain"
 	"errors"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/domain"
 )
-
 
 //swagger:model
 type UserResponse struct {
@@ -13,9 +12,9 @@ type UserResponse struct {
 }
 
 //swagger:model
-type UpdatePasswordRequest struct { 
-	OldPassword string `json:"OldPassword"`
-	NewPassword string `json:"NewPassword"`
+type UpdatePasswordRequest struct {
+	OldPassword        string `json:"OldPassword"`
+	NewPassword        string `json:"NewPassword"`
 	ConfirmNewPassword string `json:"ConfirmNewPassword"`
 }
 
@@ -28,5 +27,3 @@ func (request *UpdatePasswordRequest) Validate() error {
 
 	return nil
 }
-
-
