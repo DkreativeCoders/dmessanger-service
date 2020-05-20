@@ -11,7 +11,7 @@ import (
 	"strconv"
 )
 
-func NewUserHandler(router *mux.Router, userService iservice.IUserService) {
+func NewUserHandler(router *mux.Router,       userService iservice.IUserService) {
 	handler := &userControllerHandler{
 		userService: userService,
 	}
@@ -50,6 +50,14 @@ func (u userControllerHandler) getUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (u userControllerHandler) updatePassword(w http.ResponseWriter, r *http.Request) {
+	// swagger:operation PUT /api/vi/users/update-password/{UserID} updatePassword
+	//
+	// Updates a user's password
+	// ---
+	// responses:
+	//   default:
+	//     "$ref": "#/responses/responseDto"
+	
 	var updatePasswordRequest binding.UpdatePasswordRequest
 	vars := mux.Vars(r)
 	userIDVar := vars["userID"]
