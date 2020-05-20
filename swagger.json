@@ -14,7 +14,135 @@
     "title": "De-messenger",
     "version": "0.0.1"
   },
-  "host": "localhost:8080",
+  "host": "localhost:8900",
   "basePath": "/api",
-  "paths": {}
+  "paths": {
+    "/api/vi/users/update-password/{UserID}": {
+      "put": {
+        "description": "Updates a user's password",
+        "operationId": "updatePassword",
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ConfirmNewPassword": {
+                  "type": "string"
+                },
+                "NewPassword": {
+                  "type": "string"
+                },
+                "OldPassword": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          {
+            "type": "integer",
+            "format": "int64",
+            "name": "UserID",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "default": {
+            "$ref": "#/responses/responseDto"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "userModel": {
+      "description": "User Entity  containing basic fields",
+      "type": "object",
+      "properties": {
+        "CreatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "DeletedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "ID": {
+          "type": "integer",
+          "format": "uint64"
+        },
+        "UpdatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "address": {
+          "type": "string",
+          "x-go-name": "Address"
+        },
+        "age": {
+          "type": "string",
+          "x-go-name": "Age"
+        },
+        "email": {
+          "type": "string",
+          "x-go-name": "Email"
+        },
+        "firstName": {
+          "type": "string",
+          "x-go-name": "FirstName"
+        },
+        "lastName": {
+          "type": "string",
+          "x-go-name": "LastName"
+        },
+        "phoneNumber": {
+          "type": "string",
+          "x-go-name": "PhoneNumber"
+        }
+      },
+      "x-go-name": "User",
+      "x-go-package": "github.com/DkreativeCoders/dmessanger-service/pkg/domain"
+    }
+  },
+  "responses": {
+    "responseDto": {
+      "schema": {
+        "type": "object"
+      },
+      "headers": {
+        "data": {},
+        "message": {
+          "type": "string"
+        },
+        "status": {
+          "type": "boolean"
+        }
+      }
+    },
+    "userResponse": {
+      "schema": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "x-go-name": "Data",
+            "$ref": "#/definitions/userModel"
+          },
+          "message": {
+            "type": "string",
+            "x-go-name": "Message"
+          },
+          "status": {
+            "type": "boolean",
+            "x-go-name": "Status"
+          }
+        }
+      },
+      "headers": {
+        "Body": {}
+      }
+    }
+  }
 }
