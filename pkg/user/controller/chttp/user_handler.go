@@ -11,7 +11,7 @@ import (
 	"strconv"
 )
 
-func NewUserHandler(router *mux.Router,       userService iservice.IUserService) {
+func NewUserHandler(router *mux.Router, userService iservice.IUserService) {
 	handler := &userControllerHandler{
 		userService: userService,
 	}
