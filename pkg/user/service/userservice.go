@@ -51,13 +51,6 @@ func (s service) GetUser(id int) (*domain.User, error) {
 }
 
 func (s service) UpdatePassword(id int, request binding.UpdatePasswordRequest) binding.ResponseDto {
-	// swagger:operation PUT /api/vi/users/update-password/{UserID} updatePassword
-	//
-	// Updates a user's password
-	// ---
-	// responses:
-	//   default:
-	//     "$ref": "#/responses/responseDto"
 
 	err := request.Validate()
 	if err != nil {
