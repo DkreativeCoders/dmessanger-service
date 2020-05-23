@@ -24,6 +24,7 @@ type customerControllerHandler struct {
 	customerService iservice.ICustomerService
 }
 
+//swagger definition
 //Write test case for it
 //create extract request to
 func (c customerControllerHandler) create(w http.ResponseWriter, r *http.Request) {
