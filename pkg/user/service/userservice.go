@@ -19,20 +19,16 @@ type service struct {
 }
 
 //perform validation on user and let UserRepository save user
-func (s service) CreateUser(user domain.User) map[string]interface{} {
+func (s service) CreateUser(user domain.User) (*domain.User, error) {
 	//user.Validate()
-	if resp, ok := user.Validate(); !ok {
-		return resp
+	if err := user.ValidateToError(); err!=nil {
+		return nil, err
 	}
 	newUser, err := s.repository.Save(user)
 	if err != nil {
-		resp := utils.Message(false, "Error")
-		resp["error_message"] = err
-		return resp
+		return nil, err
 	}
-	resp := utils.Message(true, "success")
-	resp["data"] = newUser
-	return resp
+	return newUser, nil
 }
 
 //GetAllUser performs all necessary validation if need be and
