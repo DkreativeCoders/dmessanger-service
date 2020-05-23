@@ -24,7 +24,7 @@ type customerControllerHandler struct {
 	customerService iservice.ICustomerService
 }
 
-//CreateUser calls the IUserService which is implemented by UserService
+///create extract request to
 func (c customerControllerHandler) create(w http.ResponseWriter, r *http.Request) {
 	var request dto.CustomerRequest
 	err := json.NewDecoder(r.Body).Decode(&request)
@@ -46,7 +46,4 @@ func (c customerControllerHandler) create(w http.ResponseWriter, r *http.Request
 
 	json.NewEncoder(w).Encode(response)
 
-
-
-	//utils.Respond(w, response)
 }

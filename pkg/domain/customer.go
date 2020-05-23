@@ -6,6 +6,6 @@ type Customer struct {
 	gorm.Model
 	UserId                 uint
 	User                   User `gorm:"foreignkey:UserId"`
-	defaultShippingAddress string
-	totalNumberOfOrders         int `gorm:"default:0"`
+	DefaultShippingAddress string
+	TotalNumberOfOrders    int `gorm:"default:0"`
 }
