@@ -73,14 +73,8 @@ func (u ormUserRepository)FindByEmail(email string) (*domain.User, error){
 
 func (u ormUserRepository) 	FindUserExist(email string) bool{
 	var count int
-	//u.db.Where(&domain.User{Email: email}).Count(&count)
 	u.db.Model(&domain.User{}).Where("email = ?", email).Count(&count)
-
 	fmt.Println("count user =>", count)
-
-	//return true
-
-
 	if count <= 0{
 		return false
 	}else {
