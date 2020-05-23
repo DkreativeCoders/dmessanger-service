@@ -57,6 +57,8 @@ func (s service) CreateUser(request dto.CustomerRequest) (*domain.Customer, erro
 		UserId: newUser.ID,
 	}
 
+	s.repository.Save(customer)
+
 	panic("implement me")
 }
 
