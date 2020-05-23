@@ -8,7 +8,7 @@ import (
 )
 
 //INewService return an interface that's why Constrictor/Method name is preceded with I
-func INewService(repository irepository.ICustomerRepository,userService iservice.IUserService ) iservice.ICustomerService{
+func INewCustomerService(repository irepository.ICustomerRepository,userService iservice.IUserService ) iservice.ICustomerService{
 	return service{repository, userService}
 }
 
