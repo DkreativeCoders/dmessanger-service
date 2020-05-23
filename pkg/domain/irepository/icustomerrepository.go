@@ -9,9 +9,9 @@ import (
 
 type ICustomerRepository interface {
 	FindByID(id int) (*domain.Customer, error)
-	FindByUserId(userId int) (*domain.Customer, error)
+	FindByUserId(customerId int) (*domain.Customer, error)
 	FindByEmail(email string) (*domain.Customer, error)
 	FindAll() []domain.Customer
-	Save(user domain.Customer) (*domain.Customer, error)
-	Update(user domain.Customer) (*domain.Customer, error)
+	Save(customer domain.Customer) (*domain.Customer, error)
+	Update(customer domain.Customer) (*domain.Customer, error)
 }

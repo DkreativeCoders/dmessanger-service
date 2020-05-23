@@ -1,6 +1,7 @@
 package orm
 
 import (
+	"fmt"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/irepository"
 	"github.com/jinzhu/gorm"
@@ -31,11 +32,18 @@ func (o ormCustomerRepository) FindAll() []domain.Customer {
 	panic("implement me")
 }
 
-func (o ormCustomerRepository) Save(user domain.Customer) (*domain.Customer, error) {
-	panic("implement me")
+func (o ormCustomerRepository) Save(customer domain.Customer) (*domain.Customer, error) {
+	if dbc := o.db.Create(&customer); dbc.Error != nil {
+		return nil, dbc.Error
+	}
+	//u.db.Where("email = ?", user.Email).First(&newUser)
+	fmt.Println("user created =>", customer)
+
+	//return &user
+	return &customer, nil
 }
 
-func (o ormCustomerRepository) Update(user domain.Customer) (*domain.Customer, error) {
+func (o ormCustomerRepository) Update(customer domain.Customer) (*domain.Customer, error) {
 	panic("implement me")
 }
 
