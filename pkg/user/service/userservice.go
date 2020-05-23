@@ -28,6 +28,7 @@ func (s service) CreateUser(user domain.User) (*domain.User, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	return newUser, nil
 }
 
