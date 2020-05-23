@@ -4,18 +4,18 @@ import (
 	"github.com/DkreativeCoders/dmessanger-service/pkg/customer/dto"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/binding"
-	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/defaultresponse"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/irepository"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/iservice"
 )
 
 //INewService return an interface that's why Constrictor/Method name is preceded with I
-func INewService(repository irepository.ICustomerRepository) iservice.ICustomerService{
-	return service{repository}
+func INewService(repository irepository.ICustomerRepository,userService iservice.IUserService ) iservice.ICustomerService{
+	return service{repository, userService}
 }
 
 type service struct {
 	repository irepository.ICustomerRepository
+	userService iservice.IUserService
 
 }
 
@@ -33,7 +33,7 @@ func (s service) CreateUser(request dto.CustomerRequest) (*domain.Customer, erro
 	//PhoneNumber string `json:"phoneNumber"`
 	//Password    string `json:"-"`
 	//Address     string `json:"address"`
-	user := &domain.User{
+	user := domain.User{
 		FirstName: request.FirstName,
 		LastName: request.LastName,
 		Age: request.Age,
@@ -43,7 +43,19 @@ func (s service) CreateUser(request dto.CustomerRequest) (*domain.Customer, erro
 		Address: request.Address,
 	}
 
+	if err := user.ValidateToError(); err!=nil {
+		return nil, err
+	}
 
+	newUser, err := s.userService.CreateUser(user)
+
+	if err != nil {
+		return nil, err
+	}
+
+	customer := domain.Customer{
+		UserId: newUser.ID,
+	}
 
 	panic("implement me")
 }
