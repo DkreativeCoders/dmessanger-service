@@ -26,6 +26,13 @@ func (s service) CreateUser(user domain.User) (*domain.User, error) {
 	if err := user.ValidateToError(); err!=nil {
 		return nil, err
 	}
+
+	s.repository.FindUserExist(user.Email)
+	if found := s.repository.FindUserExist(user.Email); found{
+		return nil,errors.New("user Already Exist with email")
+	}
+
+
 	newUser, err := s.repository.Save(user)
 	if err != nil {
 		return nil, err

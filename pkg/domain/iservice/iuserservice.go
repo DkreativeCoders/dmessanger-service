@@ -2,7 +2,7 @@ package iservice
 
 import (
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain"
-	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/binding"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/user/dto"
 )
 
 type IUserService interface {

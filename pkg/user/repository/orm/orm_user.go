@@ -64,3 +64,20 @@ func (u ormUserRepository) Update(user domain.User) (*domain.User, error) {
 	//return &user
 	return &user, nil
 }
+
+func (u ormUserRepository)FindByEmail(email string) (*domain.User, error){
+	var user domain.User
+	u.db.Where(&domain.User{Email: email}).First(&user)
+	return &user, nil
+}
+
+func (u ormUserRepository) 	FindUserExist(email string) bool{
+	var count int
+	u.db.Where(&domain.User{Email: email}).Count(&count)
+	if count <= 0{
+		return false
+	}else {
+		return true
+	}
+
+}
