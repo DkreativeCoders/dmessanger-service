@@ -24,7 +24,8 @@ type customerControllerHandler struct {
 	customerService iservice.ICustomerService
 }
 
-///create extract request to
+//Write test case for it
+//create extract request to
 func (c customerControllerHandler) create(w http.ResponseWriter, r *http.Request) {
 	var request dto.CustomerRequest
 	err := json.NewDecoder(r.Body).Decode(&request)
