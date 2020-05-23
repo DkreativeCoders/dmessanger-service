@@ -29,7 +29,7 @@ func (s cutomerservice) CreateUser(request dto.CustomerRequest) (*domain.Custome
 		FirstName: request.FirstName,
 		LastName: request.LastName,
 		Age: request.Age,
-		Email: request.Age,
+		Email: request.Email,
 		PhoneNumber: request.PhoneNumber,
 		Password: request.Password,
 		Address: request.Address,

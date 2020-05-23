@@ -27,7 +27,7 @@ func (s service) CreateUser(user domain.User) (*domain.User, error) {
 		return nil, err
 	}
 
-	s.repository.FindUserExist(user.Email)
+	//s.repository.FindUserExist(user.Email)
 	if found := s.repository.FindUserExist(user.Email); found{
 		return nil,errors.New("user Already Exist with email")
 	}
