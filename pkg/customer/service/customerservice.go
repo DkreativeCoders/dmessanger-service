@@ -22,7 +22,6 @@ func (s service) CreateUser(request dto.CustomerRequest) (*domain.Customer, erro
 	 err := request.Validate()
 	if err != nil {
 		return nil, err
-		//return *defaultresponse.NewResponseDto(false, err.Error(),nil)
 	}
 
 	user := domain.User{
@@ -47,12 +46,12 @@ func (s service) CreateUser(request dto.CustomerRequest) (*domain.Customer, erro
 
 	customer := domain.Customer{
 		UserId: newUser.ID,
+		User: user,
 	}
 
 	newCustomer, err :=s.repository.Save(customer)
 	if err != nil {
 		return nil, err
 	}
-
 	return newCustomer,nil
 }

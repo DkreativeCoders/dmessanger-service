@@ -2,6 +2,7 @@ package pkg
 
 import (
 	"fmt"
+	chttp2 "github.com/DkreativeCoders/dmessanger-service/pkg/customer/controller/chttp"
 	orm2 "github.com/DkreativeCoders/dmessanger-service/pkg/customer/repository/orm"
 	service2 "github.com/DkreativeCoders/dmessanger-service/pkg/customer/service"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/migrations/gmorm"
@@ -49,6 +50,8 @@ func NewServer() (*http.Server, *gorm.DB) {
 	customerRepository := orm2.NewOrmCustomerRepository(dbConnection)
 	//Initialize the Service for any the handler
 	customerService := service2.INewCustomerService(customerRepository,userService)
+	//pass in the route and the user service
+	chttp2.NewCustomerHandler(router,customerService)
 
 
 

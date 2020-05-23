@@ -30,16 +30,18 @@ func (c customerControllerHandler) create(w http.ResponseWriter, r *http.Request
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
 		errResponse := defaultresponse.NewResponseDto(false, "Error while decoding request body",nil)
+		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(errResponse)
 		return
 		//return
 	}
-
 	customer, errorRes := c.customerService.CreateUser(request)
 
 	if errorRes != nil{
-		errResponse := defaultresponse.NewResponseDto(false, "service",errorRes)
+		errResponse := defaultresponse.NewResponseDto(false, "service",errorRes.Error())
+		w.WriteHeader(http.StatusUnprocessableEntity)
 		json.NewEncoder(w).Encode(errResponse)
+		return
 	}
 
 	response := defaultresponse.NewResponseDto(true, "Successful",customer)
