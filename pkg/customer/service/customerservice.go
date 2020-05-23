@@ -17,6 +17,7 @@ type service struct {
 	userService iservice.IUserService
 
 }
+//refactor and test case needed
 //Validate and crease customer
 func (s service) CreateUser(request dto.CustomerRequest) (*domain.Customer, error){
 	 err := request.Validate()
