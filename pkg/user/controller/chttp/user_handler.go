@@ -35,8 +35,8 @@ func (u userControllerHandler) create(w http.ResponseWriter, r *http.Request) {
 		utils.Respond(w, utils.Message(false, "Error while decoding request body"))
 		//return
 	}
-	response := u.userService.CreateUser(user)
-	utils.Respond(w, response)
+	//response := u.userService.CreateUser(user)
+	//utils.Respond(w, response)
 }
 
 //GetAllUser This is the method called from the route to fetch all user from the service class

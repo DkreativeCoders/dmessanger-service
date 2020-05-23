@@ -5,24 +5,48 @@ import (
 	"github.com/DkreativeCoders/dmessanger-service/pkg/customer/dto"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/defaultresponse"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/iservice"
+	"github.com/gorilla/mux"
 	"net/http"
 )
 
+
+func NewCustomerHandler(router *mux.Router, customerService iservice.ICustomerService) {
+	handler := &customerControllerHandler{
+		customerService: customerService,
+	}
+
+	router.HandleFunc("/api/v1/customers", handler.create).Methods("POST")
+
+	//return userControllerHandler{userService}
+}
+
 type customerControllerHandler struct {
-	userService iservice.ICustomerService
+	customerService iservice.ICustomerService
 }
 
 //CreateUser calls the IUserService which is implemented by UserService
-func (u customerControllerHandler) create(w http.ResponseWriter, r *http.Request) {
+func (c customerControllerHandler) create(w http.ResponseWriter, r *http.Request) {
 	var request dto.CustomerRequest
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
-		response := defaultresponse.NewResponseDto(false, "Error while decoding request body",nil)
-		json.NewEncoder(w).Encode(response)
+		errResponse := defaultresponse.NewResponseDto(false, "Error while decoding request body",nil)
+		json.NewEncoder(w).Encode(errResponse)
 		return
 		//return
 	}
 
-	//response := u.userService.CreateUser(user)
+	customer, errorRes := c.customerService.CreateUser(request)
+
+	if errorRes != nil{
+		errResponse := defaultresponse.NewResponseDto(false, "service",errorRes)
+		json.NewEncoder(w).Encode(errResponse)
+	}
+
+	response := defaultresponse.NewResponseDto(true, "Successful",customer)
+
+	json.NewEncoder(w).Encode(response)
+
+
+
 	//utils.Respond(w, response)
 }
