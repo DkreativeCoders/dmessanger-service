@@ -109,15 +109,16 @@
   "responses": {
     "responseDto": {
       "schema": {
-        "type": "object"
-      },
-      "headers": {
-        "data": {},
-        "message": {
-          "type": "string"
-        },
-        "status": {
-          "type": "boolean"
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "x-go-name": "Message"
+          },
+          "status": {
+            "type": "boolean",
+            "x-go-name": "Status"
+          }
         }
       }
     },
@@ -126,8 +127,6 @@
         "type": "object",
         "properties": {
           "data": {
-            "type": "object",
-            "x-go-name": "Data",
             "$ref": "#/definitions/userModel"
           },
           "message": {
@@ -139,9 +138,6 @@
             "x-go-name": "Status"
           }
         }
-      },
-      "headers": {
-        "Body": {}
       }
     }
   }
