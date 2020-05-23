@@ -7,7 +7,7 @@ import (
 
 //swagger:model
 type UserResponse struct {
-	ResponseDto
+	ResponseData
 	Data domain.User `json:"data"`
 }
 

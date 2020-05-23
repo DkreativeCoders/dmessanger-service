@@ -4,7 +4,7 @@ import (
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/binding"
 )
 
-//swagger:response userResponse
+//swagger:defaultresponse userResponse
 type UserResponseWrapper struct {
 	Body struct {
 		binding.UserResponse

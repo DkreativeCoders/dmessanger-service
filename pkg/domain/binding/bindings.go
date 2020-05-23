@@ -7,7 +7,7 @@ type ResponseData struct {
 	Data    interface{} `json:"data"`
 }
 
-// swagger:response responseDto
+// swagger:defaultresponse responseDto
 type ResponseDto struct {
 	ResponseData
 }
