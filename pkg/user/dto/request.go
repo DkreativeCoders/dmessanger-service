@@ -1,17 +1,10 @@
-package binding
+package dto
 
 import (
 	"errors"
-	"github.com/DkreativeCoders/dmessanger-service/pkg/domain"
 )
 
-//swagger:model
-type UserResponse struct {
-	ResponseData
-	Data domain.User `json:"data"`
-}
-
-//swagger:model
+//swagger:model updatePasswordRequestModel
 type UpdatePasswordRequest struct {
 	OldPassword        string `json:"OldPassword"`
 	NewPassword        string `json:"NewPassword"`
@@ -27,3 +20,5 @@ func (request *UpdatePasswordRequest) Validate() error {
 
 	return nil
 }
+
+

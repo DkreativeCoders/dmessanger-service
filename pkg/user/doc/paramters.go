@@ -1,21 +1,14 @@
 package doc
 
 import (
-	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/binding"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/user/dto"
 )
-
-//swagger:defaultresponse userResponse
-type UserResponseWrapper struct {
-	Body struct {
-		binding.UserResponse
-	}
-}
 
 // swagger:parameters updatePassword
 type UpdatePasswordRequestWrapper struct {
 	// in: body
 	Body struct {
-		binding.UpdatePasswordRequest
+		dto.UpdatePasswordRequest
 	}
 }
 

@@ -9,5 +9,5 @@ type IUserService interface {
 	GetUser(id int) (*domain.User, error)
 	GetAllUser() map[string]interface{}
 	CreateUser(user domain.User) (*domain.User, error)
-	UpdatePassword(id int, request binding.UpdatePasswordRequest) binding.ResponseDto
+	UpdatePassword(id int, request dto.UpdatePasswordRequest) error
 }
