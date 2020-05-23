@@ -5,10 +5,9 @@ type ResponseData struct {
 	Data    interface{} `json:"data"`
 }
 
-func NewResponseDto(status bool, message string, data interface{}) *ResponseData {
+func NewResponseDto(status bool, message string) *ResponseData {
 	response := ResponseData{}
 	response.Status = status
 	response.Message = message
-	response.Data=data
 	return &response
 }
