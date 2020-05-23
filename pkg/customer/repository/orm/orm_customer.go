@@ -12,6 +12,7 @@ func NewOrmCustomerRepository(db *gorm.DB) irepository.ICustomerRepository {
 	return ormCustomerRepository{db}
 }
 
+//ormCustomerRepository and testing required
 type ormCustomerRepository struct {
 	db *gorm.DB
 }
