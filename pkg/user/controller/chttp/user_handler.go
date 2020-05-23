@@ -3,7 +3,7 @@ package chttp
 import (
 	"encoding/json"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain"
-	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/binding"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/user/dto"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/iservice"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/utils"
 	"github.com/gorilla/mux"
@@ -58,14 +58,16 @@ func (u userControllerHandler) updatePassword(w http.ResponseWriter, r *http.Req
 	//   default:
 	//     "$ref": "#/responses/responseDto"
 	
-	var updatePasswordRequest binding.UpdatePasswordRequest
+	var updatePasswordRequest dto.UpdatePasswordRequest
 	vars := mux.Vars(r)
 	userIDVar := vars["userID"]
 	userID, err := strconv.Atoi(userIDVar)
 	w.Header().Add("Content-Type", "application/json")
 
+	var response *utils.ResponseDto
+
 	if err != nil {
-		response := binding.NewResponseDto(false, "User Id must be an integer")
+		response = utils.NewResponseDto(false, "User Id must be an integer")
 		json.NewEncoder(w).Encode(response)
 		return
 	}
@@ -73,12 +75,19 @@ func (u userControllerHandler) updatePassword(w http.ResponseWriter, r *http.Req
 	err = json.NewDecoder(r.Body).Decode(&updatePasswordRequest)
 
 	if err != nil {
-		response := binding.NewResponseDto(false, "Error while decoding request body")
+		response := utils.NewResponseDto(false, "Error while decoding request body")
 		json.NewEncoder(w).Encode(response)
 		return
 	}
 
-	response := u.userService.UpdatePassword(userID, updatePasswordRequest)
+	serviceError := u.userService.UpdatePassword(userID, updatePasswordRequest)
+	if serviceError != nil {
+		response = utils.NewResponseDto(false, serviceError.Error())
+	} else {
+		response = utils.NewResponseDto(true, "Successful")
+	}
+
+
 	json.NewEncoder(w).Encode(response)
 
 }
