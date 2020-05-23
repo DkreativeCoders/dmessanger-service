@@ -9,17 +9,17 @@ import (
 
 //INewService return an interface that's why Constrictor/Method name is preceded with I
 func INewCustomerService(repository irepository.ICustomerRepository,userService iservice.IUserService ) iservice.ICustomerService{
-	return service{repository, userService}
+	return cutomerservice{repository, userService}
 }
 
-type service struct {
+type cutomerservice struct {
 	repository irepository.ICustomerRepository
 	userService iservice.IUserService
 
 }
 //refactor and test case needed
 //Validate and crease customer
-func (s service) CreateUser(request dto.CustomerRequest) (*domain.Customer, error){
+func (s cutomerservice) CreateUser(request dto.CustomerRequest) (*domain.Customer, error){
 	 err := request.Validate()
 	if err != nil {
 		return nil, err
