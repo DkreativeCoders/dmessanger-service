@@ -34,6 +34,7 @@ func (o ormCustomerRepository) FindAll() []domain.Customer {
 }
 
 func (o ormCustomerRepository) Save(customer domain.Customer) (*domain.Customer, error) {
+
 	if dbc := o.db.Create(&customer); dbc.Error != nil {
 		return nil, dbc.Error
 	}
