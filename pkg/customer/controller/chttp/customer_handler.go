@@ -28,6 +28,25 @@ type customerControllerHandler struct {
 //Write test case for it
 //create extract request to
 func (c customerControllerHandler) create(w http.ResponseWriter, r *http.Request) {
+	// swagger:operation POST /api/v1/customers createCustomer
+	//
+	// Creates a new customer
+	// ---
+	// Consumes:
+	//	- application/json
+	// Produces:
+	//  - application/json
+	// Responses:
+	//   default:
+	//     "$ref": "#/responses/customerCreatedResponse"
+	//   200:
+	//     "$ref": "#/responses/customerCreatedResponse"
+	//   400:
+	//     "$ref": "#/responses/customerBadRequestResponse"
+	//   422:
+	//     "$ref": "#/responses/customerErrorResponse"
+
+
 	var request dto.CustomerRequest
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {

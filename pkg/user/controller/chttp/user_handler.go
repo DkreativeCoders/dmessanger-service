@@ -51,7 +51,7 @@ func (u userControllerHandler) getUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (u userControllerHandler) updatePassword(w http.ResponseWriter, r *http.Request) {
-	// swagger:operation PUT /api/vi/users/update-password/{UserID} updatePassword
+	// swagger:operation PUT /api/v1/users/update-password/{UserID} updatePassword
 	//
 	// Updates a user's password
 	// ---
