@@ -6,12 +6,19 @@ import (
 
 //swagger:model
 type CustomerRequest struct {
+	// Required: true
 	FirstName   string `json:"firstName"`
+	// Required: true
 	LastName    string `json:"lastName"`
+	// Required: true
 	Age         string `json:"age"`
+	// Required: true
 	Email       string `json:"email"`
+	// Required: true
 	PhoneNumber string `json:"phoneNumber"`
+	// Required: true
 	Password    string `json:"-"`
+	// Required: true
 	Address     string `json:"address"`
 	//defaultShippingAddress 		string
 	//totalNumberOfOrders         string
