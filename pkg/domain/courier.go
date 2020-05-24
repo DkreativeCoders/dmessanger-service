@@ -3,7 +3,7 @@ package domain
 import "github.com/jinzhu/gorm"
 
 //Customer Entity containing basic fields and userDetails
-//swagger:model customerModel
+//swagger:model courierModel
 type Courier struct {
 	gorm.Model
 	UserId                 uint
