@@ -40,7 +40,7 @@ func (c customerControllerHandler) create(w http.ResponseWriter, r *http.Request
 	//  - application/json
 	// Responses:
 	//   default:
-	//     "$ref": "#/responses/customerCreatedResponse"
+	//     "$ref": "#/responses/responseDto"
 	//   200:
 	//     "$ref": "#/responses/customerCreatedResponse"
 	//   400:
