@@ -5,10 +5,10 @@ import (
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/defaultresponse"
 )
 
-//swagger:model UserResponseDtoModel
+//swagger:model CustomerResponseDtoModel
 type UserResponseDto struct {
 	// The ResponseData status
 	//
 	defaultresponse.ResponseData
-	Data domain.User `json:"data"`
+	Data domain.Customer `json:"data"`
 }

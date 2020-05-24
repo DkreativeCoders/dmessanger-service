@@ -5,21 +5,93 @@
   "produces": [
     "application/json"
   ],
-  "schemes": [
-    "http"
-  ],
   "swagger": "2.0",
   "info": {
-    "description": "De-messenger",
+    "description": "De-messenger\n\nSchemes: http,https,127.0.0.1",
     "title": "De-messenger",
     "version": "0.0.1"
   },
   "host": "localhost:8900",
   "basePath": "/api",
   "paths": {
-    "/api/vi/users/update-password/{UserID}": {
+    "/api/v1/customers": {
+      "post": {
+        "description": "Creates a new customer",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "createCustomer",
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "required": [
+                "firstName",
+                "lastName",
+                "age",
+                "email",
+                "phoneNumber",
+                "address"
+              ],
+              "properties": {
+                "address": {
+                  "type": "string",
+                  "x-go-name": "Address"
+                },
+                "age": {
+                  "type": "string",
+                  "x-go-name": "Age"
+                },
+                "email": {
+                  "type": "string",
+                  "x-go-name": "Email"
+                },
+                "firstName": {
+                  "type": "string",
+                  "x-go-name": "FirstName"
+                },
+                "lastName": {
+                  "type": "string",
+                  "x-go-name": "LastName"
+                },
+                "phoneNumber": {
+                  "type": "string",
+                  "x-go-name": "PhoneNumber"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/customerCreatedResponse"
+          },
+          "400": {
+            "$ref": "#/responses/customerBadRequestResponse"
+          },
+          "422": {
+            "$ref": "#/responses/customerErrorResponse"
+          },
+          "default": {
+            "$ref": "#/responses/responseDto"
+          }
+        }
+      }
+    },
+    "/api/v1/users/update-password/{UserID}": {
       "put": {
         "description": "Updates a user's password",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
         "operationId": "updatePassword",
         "parameters": [
           {
@@ -107,15 +179,101 @@
     }
   },
   "responses": {
-    "responseDto": {
+    "customerBadRequestResponse": {
+      "description": "A Customer Bad Request Error Response .",
       "schema": {
         "type": "object",
+        "required": [
+          "status",
+          "message"
+        ],
         "properties": {
           "message": {
             "type": "string",
             "x-go-name": "Message"
           },
           "status": {
+            "description": "The ResponseData status",
+            "type": "boolean",
+            "x-go-name": "Status"
+          }
+        }
+      }
+    },
+    "customerCreatedResponse": {
+      "description": "A Customer Created Response .",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "CreatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "DefaultShippingAddress": {
+            "type": "string"
+          },
+          "DeletedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "ID": {
+            "type": "integer",
+            "format": "uint64"
+          },
+          "TotalNumberOfOrders": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "UpdatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "User": {
+            "$ref": "#/definitions/userModel"
+          },
+          "UserId": {
+            "type": "integer",
+            "format": "uint64"
+          }
+        }
+      }
+    },
+    "customerErrorResponse": {
+      "description": "A Customer Error Response .",
+      "schema": {
+        "type": "object",
+        "required": [
+          "status",
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "x-go-name": "Message"
+          },
+          "status": {
+            "description": "The ResponseData status",
+            "type": "boolean",
+            "x-go-name": "Status"
+          }
+        }
+      }
+    },
+    "responseDto": {
+      "description": "A Default is the default Response.",
+      "schema": {
+        "type": "object",
+        "required": [
+          "status",
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "x-go-name": "Message"
+          },
+          "status": {
+            "description": "The ResponseData status",
             "type": "boolean",
             "x-go-name": "Status"
           }
@@ -123,8 +281,13 @@
       }
     },
     "userResponse": {
+      "description": "A UserResponse .",
       "schema": {
         "type": "object",
+        "required": [
+          "status",
+          "message"
+        ],
         "properties": {
           "data": {
             "$ref": "#/definitions/userModel"
@@ -134,6 +297,7 @@
             "x-go-name": "Message"
           },
           "status": {
+            "description": "The ResponseData status",
             "type": "boolean",
             "x-go-name": "Status"
           }

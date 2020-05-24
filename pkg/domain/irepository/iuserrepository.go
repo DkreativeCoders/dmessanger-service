@@ -12,4 +12,6 @@ type IUserRepository interface {
 	FindAll() []domain.User
 	Save(user domain.User) (*domain.User, error)
 	Update(user domain.User) (*domain.User, error)
+	FindByEmail(email string) (*domain.User, error)
+	FindUserExist(email string) bool
 }
