@@ -21,7 +21,6 @@ type CustomerRequest struct {
 	// Required: true
 	Address     string `json:"address"`
 	//defaultShippingAddress 		string
-	//totalNumberOfOrders         string
 }
 
 

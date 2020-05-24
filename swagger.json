@@ -30,6 +30,14 @@
             "in": "body",
             "schema": {
               "type": "object",
+              "required": [
+                "firstName",
+                "lastName",
+                "age",
+                "email",
+                "phoneNumber",
+                "address"
+              ],
               "properties": {
                 "address": {
                   "type": "string",
