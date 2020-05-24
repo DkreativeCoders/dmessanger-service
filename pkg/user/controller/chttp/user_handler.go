@@ -3,8 +3,9 @@ package chttp
 import (
 	"encoding/json"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain"
-	"github.com/DkreativeCoders/dmessanger-service/pkg/user/dto"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/defaultresponse"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/iservice"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/user/dto"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/utils"
 	"github.com/gorilla/mux"
 	"net/http"
@@ -54,7 +55,11 @@ func (u userControllerHandler) updatePassword(w http.ResponseWriter, r *http.Req
 	//
 	// Updates a user's password
 	// ---
-	// responses:
+	// Consumes:
+	//	- application/json
+	// Produces:
+	//  - application/json
+	// Responses:
 	//   default:
 	//     "$ref": "#/responses/responseDto"
 	
@@ -64,10 +69,10 @@ func (u userControllerHandler) updatePassword(w http.ResponseWriter, r *http.Req
 	userID, err := strconv.Atoi(userIDVar)
 	w.Header().Add("Content-Type", "application/json")
 
-	var response *utils.ResponseDto
+	var response *defaultresponse.ResponseData
 
 	if err != nil {
-		response = utils.NewResponseDto(false, "User Id must be an integer")
+		response = defaultresponse.NewResponseDto(false, "User Id must be an integer")
 		json.NewEncoder(w).Encode(response)
 		return
 	}
@@ -75,16 +80,16 @@ func (u userControllerHandler) updatePassword(w http.ResponseWriter, r *http.Req
 	err = json.NewDecoder(r.Body).Decode(&updatePasswordRequest)
 
 	if err != nil {
-		response := utils.NewResponseDto(false, "Error while decoding request body")
+		response := defaultresponse.NewResponseDto(false, "Error while decoding request body")
 		json.NewEncoder(w).Encode(response)
 		return
 	}
 
 	serviceError := u.userService.UpdatePassword(userID, updatePasswordRequest)
 	if serviceError != nil {
-		response = utils.NewResponseDto(false, serviceError.Error())
+		response = defaultresponse.NewResponseDto(false, serviceError.Error())
 	} else {
-		response = utils.NewResponseDto(true, "Successful")
+		response = defaultresponse.NewResponseDto(true, "Successful")
 	}
 
 

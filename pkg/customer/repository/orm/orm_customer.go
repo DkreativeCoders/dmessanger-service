@@ -37,7 +37,6 @@ func (o ormCustomerRepository) Save(customer domain.Customer) (*domain.Customer,
 	if dbc := o.db.Create(&customer); dbc.Error != nil {
 		return nil, dbc.Error
 	}
-	//u.db.Where("email = ?", user.Email).First(&newUser)
 	fmt.Println("user created =>", customer)
 
 	//return &user

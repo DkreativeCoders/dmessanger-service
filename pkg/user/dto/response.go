@@ -7,6 +7,8 @@ import (
 
 //swagger:model UserResponseDtoModel
 type UserResponseDto struct {
+	// The ResponseData status
+	//
 	defaultresponse.ResponseData
 	Data domain.User `json:"data"`
 }
