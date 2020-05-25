@@ -83,7 +83,7 @@ func (o ormCustomerRepository) Save(customer domain.Customer) (*domain.Customer,
 
 	}
 
-	//return &user
+	//return &customer
 	return &customer, nil
 }
 
