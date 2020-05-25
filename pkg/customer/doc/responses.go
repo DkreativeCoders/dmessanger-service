@@ -9,25 +9,22 @@ import (
 //swagger:response customerCreatedResponse
 type CustomerResponseWrapper struct {
 	// in: body
-	Body struct {
-		dto.CustomerResponseDto
-	}
+	Body dto.CustomerResponseDto
+
 }
 
 // A Customer Error Response .
 //swagger:response customerErrorResponse
 type CustomerErrorResponseWrapper struct {
 	// in: body
-	Body struct {
-		defaultresponse.ResponseData
-	}
+	Body defaultresponse.ResponseData
+
 }
 
 // A Customer Bad Request Error Response .
 //swagger:response customerBadRequestResponse
 type CustomerBadRequestResponseWrapper struct {
 	// in: body
-	Body struct {
-		defaultresponse.ResponseData
-	}
+	Body defaultresponse.ResponseData
+
 }

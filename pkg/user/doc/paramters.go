@@ -7,13 +7,9 @@ import (
 // swagger:parameters updatePassword
 type UpdatePasswordRequestWrapper struct {
 	// in: body
-	Body struct {
-		dto.UpdatePasswordRequest
-	}
-}
+	Body dto.UpdatePasswordRequest
 
-// swagger:parameters updatePassword
-type UserID struct {
 	// in: path
 	UserID int
+
 }

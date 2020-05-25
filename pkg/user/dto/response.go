@@ -5,7 +5,7 @@ import (
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/defaultresponse"
 )
 
-//swagger:model UserResponseDtoModel
+//swagger:model user-response-model
 type UserResponseDto struct {
 	// The ResponseData status
 	//
