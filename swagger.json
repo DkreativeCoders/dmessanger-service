@@ -129,6 +129,28 @@
     }
   },
   "definitions": {
+    "CustomerResponseDto": {
+      "type": "object",
+      "required": [
+        "status",
+        "message"
+      ],
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/customerModel"
+        },
+        "message": {
+          "type": "string",
+          "x-go-name": "Message"
+        },
+        "status": {
+          "description": "The ResponseData status",
+          "type": "boolean",
+          "x-go-name": "Status"
+        }
+      },
+      "x-go-package": "github.com/DkreativeCoders/dmessanger-service/pkg/customer/dto"
+    },
     "customerModel": {
       "description": "Customer Entity containing basic fields and userDetails",
       "type": "object",
@@ -262,25 +284,7 @@
     "customerCreatedResponse": {
       "description": "A Customer Created Response .",
       "schema": {
-        "type": "object",
-        "required": [
-          "status",
-          "message"
-        ],
-        "properties": {
-          "data": {
-            "$ref": "#/definitions/customerModel"
-          },
-          "message": {
-            "type": "string",
-            "x-go-name": "Message"
-          },
-          "status": {
-            "description": "The ResponseData status",
-            "type": "boolean",
-            "x-go-name": "Status"
-          }
-        }
+        "$ref": "#/definitions/CustomerResponseDto"
       }
     },
     "customerErrorResponse": {
