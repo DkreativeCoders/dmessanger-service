@@ -58,7 +58,6 @@ func (o ormCustomerRepository) Save(customer domain.Customer) (*domain.Customer,
 	//	Address: customer.Address,
 	//}
 
-
 	if dbc := tx.Create(&customer.User); dbc.Error != nil {
 		tx.Rollback()
 		return nil, dbc.Error
