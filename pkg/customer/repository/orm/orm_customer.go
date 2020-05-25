@@ -48,16 +48,6 @@ func (o ormCustomerRepository) Save(customer domain.Customer) (*domain.Customer,
 		return nil, err
 	}
 
-	//user := domain.User{
-	//	FirstName: customer.FirstName,
-	//	LastName: customer.LastName,
-	//	Age: customer.Age,
-	//	Email: customer.Email,
-	//	PhoneNumber: customer.PhoneNumber,
-	//	Password: customer.Password,
-	//	Address: customer.Address,
-	//}
-
 	if dbc := tx.Create(&customer.User); dbc.Error != nil {
 		tx.Rollback()
 		return nil, dbc.Error
