@@ -27,29 +27,9 @@ func (s customerService) CreateUser(request dto.CustomerRequest) (*domain.Custom
 		return nil, err
 	}
 
-	//user := domain.User{
-	//	FirstName: request.FirstName,
-	//	LastName: request.LastName,
-	//	Age: request.Age,
-	//	Email: request.Email,
-	//	PhoneNumber: request.PhoneNumber,
-	//	Password: request.Password,
-	//	Address: request.Address,
-	//}
-	//
-	//if err := user.ValidateToError(); err!=nil {
-	//	return nil, err
-	//}
-
 	if found := s.userRepository.FindUserExist(request.Email); found{
 		return nil,errors.New("user Already Exist with email")
 	}
-
-	//newUser, err := s.userService.CreateUser(user)
-
-	//if err != nil {
-	//	return nil, err
-	//}
 
 	customer := domain.Customer{}
 	customer.FirstName=request.FirstName
@@ -59,11 +39,6 @@ func (s customerService) CreateUser(request dto.CustomerRequest) (*domain.Custom
 	customer.PhoneNumber=request.PhoneNumber
 	customer.Password=request.Password
 	customer.Age=request.Age
-
-	//customer := domain.Customer{
-	//	UserId: newUser.ID,
-	//	User: user,
-	//}
 
 	newCustomer, err :=s.customerRepository.Save(customer)
 	if err != nil {
