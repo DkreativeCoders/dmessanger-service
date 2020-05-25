@@ -1,7 +1,7 @@
 package doc
 
 import (
-	"github.com/DkreativeCoders/dmessanger-service/pkg/domain"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/customer/dto"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/defaultresponse"
 )
 
@@ -10,7 +10,7 @@ import (
 type CustomerResponseWrapper struct {
 	// in: body
 	Body struct {
-		domain.Customer
+		dto.CustomerResponseDto
 	}
 }
 

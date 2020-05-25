@@ -34,12 +34,47 @@ func (o ormCustomerRepository) FindAll() []domain.Customer {
 }
 
 func (o ormCustomerRepository) Save(customer domain.Customer) (*domain.Customer, error) {
-	if dbc := o.db.Create(&customer); dbc.Error != nil {
+
+	//Create Transaction Object
+	tx := o.db.Begin()
+	//this functions runs at the end if there is a failure
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		return nil, err
+	}
+
+
+
+	if dbc := tx.Create(&customer.User); dbc.Error != nil {
+		tx.Rollback()
 		return nil, dbc.Error
 	}
+
+	fmt.Println("user created =>", customer.User)
+	fmt.Println("userID created =>", customer.User.ID)
+
+	customer.UserId=customer.User.ID
+
+	if dbc := tx.Create(&customer); dbc.Error != nil {
+		tx.Rollback()
+		return nil, dbc.Error
+	}
+
+
 	fmt.Println("user created =>", customer)
 
-	//return &user
+	if dbc := tx.Commit(); dbc.Error!=nil {
+		tx.Rollback()
+		return nil, dbc.Error
+
+	}
+
+	//return &customer
 	return &customer, nil
 }
 

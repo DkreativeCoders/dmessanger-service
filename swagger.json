@@ -129,6 +129,65 @@
     }
   },
   "definitions": {
+    "customerModel": {
+      "description": "Customer Entity containing basic fields and userDetails",
+      "type": "object",
+      "properties": {
+        "CreatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "DefaultShippingAddress": {
+          "type": "string"
+        },
+        "DeletedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "ID": {
+          "type": "integer",
+          "format": "uint64"
+        },
+        "TotalNumberOfOrders": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "UpdatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "UserId": {
+          "type": "integer",
+          "format": "uint64"
+        },
+        "address": {
+          "type": "string",
+          "x-go-name": "Address"
+        },
+        "age": {
+          "type": "string",
+          "x-go-name": "Age"
+        },
+        "email": {
+          "type": "string",
+          "x-go-name": "Email"
+        },
+        "firstName": {
+          "type": "string",
+          "x-go-name": "FirstName"
+        },
+        "lastName": {
+          "type": "string",
+          "x-go-name": "LastName"
+        },
+        "phoneNumber": {
+          "type": "string",
+          "x-go-name": "PhoneNumber"
+        }
+      },
+      "x-go-name": "Customer",
+      "x-go-package": "github.com/DkreativeCoders/dmessanger-service/pkg/domain"
+    },
     "userModel": {
       "description": "User Entity  containing basic fields",
       "type": "object",
@@ -204,36 +263,22 @@
       "description": "A Customer Created Response .",
       "schema": {
         "type": "object",
+        "required": [
+          "status",
+          "message"
+        ],
         "properties": {
-          "CreatedAt": {
+          "data": {
+            "$ref": "#/definitions/customerModel"
+          },
+          "message": {
             "type": "string",
-            "format": "date-time"
+            "x-go-name": "Message"
           },
-          "DefaultShippingAddress": {
-            "type": "string"
-          },
-          "DeletedAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "ID": {
-            "type": "integer",
-            "format": "uint64"
-          },
-          "TotalNumberOfOrders": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "UpdatedAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "User": {
-            "$ref": "#/definitions/userModel"
-          },
-          "UserId": {
-            "type": "integer",
-            "format": "uint64"
+          "status": {
+            "description": "The ResponseData status",
+            "type": "boolean",
+            "x-go-name": "Status"
           }
         }
       }
