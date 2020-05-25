@@ -3,8 +3,8 @@ package pkg
 import (
 	"fmt"
 	chttp2 "github.com/DkreativeCoders/dmessanger-service/pkg/customer/controller/chttp"
-	orm2 "github.com/DkreativeCoders/dmessanger-service/pkg/customer/repository/orm"
-	service2 "github.com/DkreativeCoders/dmessanger-service/pkg/customer/service"
+	customerOrm "github.com/DkreativeCoders/dmessanger-service/pkg/customer/repository/orm"
+	customerService "github.com/DkreativeCoders/dmessanger-service/pkg/customer/service"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/migrations/gmorm"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/user/controller/chttp"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/user/repository/orm"
@@ -47,9 +47,9 @@ func NewServer() (*http.Server, *gorm.DB) {
 
 
 	//Initialize the repository for any the service
-	customerRepository := orm2.NewOrmCustomerRepository(dbConnection)
+	customerRepository := customerOrm.NewOrmCustomerRepository(dbConnection)
 	//Initialize the Service for any the handler
-	customerService := service2.INewCustomerService(customerRepository,userService)
+	customerService := customerService.INewCustomerService(customerRepository,userRepository)
 	//pass in the route and the user service
 	chttp2.NewCustomerHandler(router,customerService)
 

@@ -68,7 +68,7 @@ func (c customerControllerHandler) create(w http.ResponseWriter, r *http.Request
 	}
 
 	customer.UserId=6
-	response := defaultresponse.NewResponseDto(true, "Successful")
+	response := dto.NewCustomerResponseDto(true, "Successful", *customer)
 
 	json.NewEncoder(w).Encode(response)
 
