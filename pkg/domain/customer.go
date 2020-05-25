@@ -1,7 +1,7 @@
 package domain
 
 //Customer Entity containing basic fields and userDetails
-//swagger:model customerModel
+//swagger:model customer-model
 type Customer struct {
 	User                    `gorm:"foreignkey:UserId"`
 	UserId                 uint

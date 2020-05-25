@@ -1,10 +1,9 @@
 package defaultresponse
-// A Default is the default Response.
+// A Default Response Message
 //swagger:response responseDto
 type ResponseWrapper struct {
 	// The Response message
 	// in: body
-	Body struct {
-		ResponseData
-	}
+	Body ResponseData
+
 }

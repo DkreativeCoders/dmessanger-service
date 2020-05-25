@@ -4,7 +4,7 @@ import (
 	"errors"
 )
 
-//swagger:model
+//swagger:model customer-request-model
 type CustomerRequest struct {
 	// Required: true
 	FirstName   string `json:"firstName"`

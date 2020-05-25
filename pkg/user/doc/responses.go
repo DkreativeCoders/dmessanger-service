@@ -8,7 +8,6 @@ import (
 //swagger:response userResponse
 type UserResponseWrapper struct {
 	// in: body
-	Body struct {
-		dto.UserResponseDto
-	}
+	Body dto.UserResponseDto
+
 }

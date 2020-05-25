@@ -4,7 +4,7 @@ import (
 	"errors"
 )
 
-//swagger:model updatePasswordRequestModel
+//swagger:model update-password-request-model
 type UpdatePasswordRequest struct {
 	OldPassword        string `json:"OldPassword"`
 	NewPassword        string `json:"NewPassword"`

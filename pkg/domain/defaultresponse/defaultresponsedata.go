@@ -1,6 +1,6 @@
 package defaultresponse
 
-//swagger:model defaultResponseModel
+//swagger:model default-response-model
 type ResponseData struct {
 	// The ResponseData status
 	//
