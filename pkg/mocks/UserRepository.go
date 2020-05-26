@@ -91,9 +91,10 @@ func (ur *UserRepository) Update(user domain.User) (*domain.User, error){
 	return r0, r1
 }
 
-func (ur *UserRepository) FindByEmail(email string) (*domain.User, error){
-	return nil,nil
-}
 func (ur *UserRepository) FindUserExist(email string) bool{
 	return true
+}
+
+func (ur *UserRepository) FindByEmail(email string) (*domain.User, error){
+	return &domain.User{}, nil
 }
