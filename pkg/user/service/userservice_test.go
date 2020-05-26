@@ -64,7 +64,7 @@ func TestService_CreateUser(t *testing.T) {
 			userService := service.INewService(&userRepo)
 
 			// Actual method call
-			output := userService.CreateUser(testCase.repoInputData)
+			output,_ := userService.CreateUser(testCase.repoInputData)
 
 			// Expected output
 			expected := testCase.expectedVal

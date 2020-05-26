@@ -44,5 +44,21 @@ func (s customerService) CreateUser(request dto.CustomerRequest) (*domain.Custom
 	if err != nil {
 		return nil, err
 	}
+	//
+	s.sendCustomerEmail(*newCustomer)
+	//
 	return newCustomer,nil
 }
+
+func (s customerService) sendCustomerEmail(customer domain.Customer) (string, error){
+	_, _ = s.generateLinkToSendToUser()
+//implement your email sending here @AB
+	return "nil", nil
+}
+
+func (s customerService) generateLinkToSendToUser() (string, error){
+	//	define a
+	//implement your email
+	return "nil", nil
+}
+
