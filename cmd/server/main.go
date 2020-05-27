@@ -2,7 +2,7 @@
 //
 // De-messenger
 //
-//     Schemes: http
+//     Schemes: http,https,127.0.0.1
 //     Host: localhost:8900
 //     Version: 0.0.1
 //	   BasePath: /api
