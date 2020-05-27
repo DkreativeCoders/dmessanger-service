@@ -36,7 +36,7 @@ func (s service) EnableUser(id int)  error {
 		return nil
 	}
 
-	return errors.New("user is already enabled")
+	return nil
 }
 
 func (s service) DisableUser(id int) error {
@@ -56,7 +56,7 @@ func (s service) DisableUser(id int) error {
 		return nil
 	}
 
-	return errors.New("user is already disabled")
+	return nil
 }
 
 //perform validation on user and let UserRepository save user
