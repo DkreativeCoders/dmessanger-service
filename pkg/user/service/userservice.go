@@ -20,6 +20,45 @@ type service struct {
 
 }
 
+func (s service) EnableUser(id int)  error {
+	user, err := s.repository.FindByID(id)
+
+	if err != nil {
+		return err
+	}
+
+	if user.IsEnabled == false {
+		user.IsEnabled = true
+		_, err := s.repository.Update(*user)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+
+	return errors.New("user is already enabled")
+}
+
+func (s service) DisableUser(id int) error {
+
+	user, err := s.repository.FindByID(id)
+
+	if err != nil {
+		return err
+	}
+
+	if user.IsEnabled == true {
+		user.IsEnabled = false
+		_, err := s.repository.Update(*user)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+
+	return errors.New("user is already disabled")
+}
+
 //perform validation on user and let UserRepository save user
 func (s service) CreateUser(user domain.User) (*domain.User, error) {
 	//user.Validate()

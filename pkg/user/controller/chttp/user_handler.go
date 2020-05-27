@@ -20,6 +20,9 @@ func NewUserHandler(router *mux.Router, userService iservice.IUserService) {
 	router.HandleFunc("/api/v1/users", handler.create).Methods("POST")
 	router.HandleFunc("/api/v1/users", handler.getAll).Methods("GET")
 	router.HandleFunc("/api/v1/users/update-password/{userID}", handler.updatePassword).Methods("PATCH")
+	router.HandleFunc("/api/v1/users/enable-user/{userID}", handler.enableUser).Methods("PATCH")
+	router.HandleFunc("/api/v1/users/disable-user/{userID}", handler.disableUser).Methods("PATCH")
+
 
 	//return userControllerHandler{userService}
 }
@@ -48,6 +51,66 @@ func (u userControllerHandler) getAll(w http.ResponseWriter, r *http.Request) {
 
 func (u userControllerHandler) getUser(w http.ResponseWriter, r *http.Request) {
 
+}
+
+func (u userControllerHandler) enableUser(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	userIDVar := vars["userID"]
+	userID, err := strconv.Atoi(userIDVar)
+	w.Header().Add("Content-Type", "application/json")
+
+	var response *defaultresponse.ResponseData
+
+	if err != nil {
+		response = defaultresponse.NewResponseDto(false, "User Id must be an integer")
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	if err != nil {
+		response := defaultresponse.NewResponseDto(false, "Error while decoding request body")
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	serviceError := u.userService.EnableUser(userID)
+	if serviceError != nil {
+		response = defaultresponse.NewResponseDto(false, serviceError.Error())
+	} else {
+		response = defaultresponse.NewResponseDto(true, "Successful")
+	}
+
+	json.NewEncoder(w).Encode(response)
+}
+
+func (u userControllerHandler) disableUser(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	userIDVar := vars["userID"]
+	userID, err := strconv.Atoi(userIDVar)
+	w.Header().Add("Content-Type", "application/json")
+
+	var response *defaultresponse.ResponseData
+
+	if err != nil {
+		response = defaultresponse.NewResponseDto(false, "User Id must be an integer")
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	if err != nil {
+		response := defaultresponse.NewResponseDto(false, "Error while decoding request body")
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	serviceError := u.userService.DisableUser(userID)
+	if serviceError != nil {
+		response = defaultresponse.NewResponseDto(false, serviceError.Error())
+	} else {
+		response = defaultresponse.NewResponseDto(true, "Successful")
+	}
+
+	json.NewEncoder(w).Encode(response)
 }
 
 func (u userControllerHandler) updatePassword(w http.ResponseWriter, r *http.Request) {
