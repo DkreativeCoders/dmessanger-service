@@ -2,6 +2,7 @@ package mail
 
 import (
 	"context"
+	"github.com/mailgun/mailgun-go/v3"
 	"time"
 )
 
@@ -20,6 +21,7 @@ func SendSimpleMessage(domain, apiKey string) (string, error) {
 	_, id, err := mg.Send(ctx, m)
 	return id, err
 }
+
 
 type mailGunImplementation struct {
 	aoiKey string
