@@ -73,6 +73,9 @@ func (s service) UpdatePassword(id int, request dto.UpdatePasswordRequest) error
 	}
 
 	if user.Password == request.OldPassword {
+		if user.Password == request.NewPassword {
+			return errors.New("Please select a new password")
+		}
 		user.Password = request.NewPassword
 		_, err := s.repository.Update(*user)
 		if err != nil {
@@ -83,6 +86,6 @@ func (s service) UpdatePassword(id int, request dto.UpdatePasswordRequest) error
 
 
 
-	return errors.New("Incorrect password supplied.")
+	return errors.New("Incorrect password supplied")
 
 }
