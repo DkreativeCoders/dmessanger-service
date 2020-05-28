@@ -7,6 +7,8 @@ import (
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/irepository"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/iservice"
+	"github.com/satori/go.uuid"
+
 )
 
 //INewService return an interface that's why Constrictor/Method name is preceded with I
@@ -55,15 +57,16 @@ func (s customerService) CreateUser(request dto.CustomerRequest) (*domain.Custom
 }
 
 func (s customerService) sendCustomerEmail(customer domain.Customer) (string, error){
+
 	//s.mailService.SendMail()
 	_, _ = s.generateLinkToSendToUser()
 //implement your email sending here @AB
 	return "nil", nil
 }
 
-func (s customerService) generateLinkToSendToUser() (string, error){
-	//	define a
-	//implement your email
-	return "nil", nil
+func (s customerService) generateLinkToSendToUser() (string, string){
+	uniqueId := uuid.NewV4().String()
+	linkToSend :="/verify-user/"+uniqueId
+	return uniqueId,linkToSend
 }
 
