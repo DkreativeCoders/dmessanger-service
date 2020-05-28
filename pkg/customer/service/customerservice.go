@@ -79,7 +79,7 @@ func (s customerService) sendCustomerEmail(customer domain.Customer) (string, er
 	}
 
 	subject:="DkreativeCoders Verify User"
-	text :="Please visit this link to very your account. \n This links expires in an hour \n"+ linkToSend
+	text :="Please visit this link to verify your account. \n This links expires in an hour \n"+ linkToSend
 	recipient:=customer.Email
 	feedback, err := s.mailService.SendMail(subject, text, recipient)
 	if err !=nil{
