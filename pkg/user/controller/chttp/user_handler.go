@@ -54,6 +54,19 @@ func (u userControllerHandler) getUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (u userControllerHandler) enableUser(w http.ResponseWriter, r *http.Request) {
+
+	// swagger:operation PUT /api/v1/users/enable-user/{UserID} enableUser
+	//
+	// Sets the isEnabled field of a user's to true
+	// ---
+	// Consumes:
+	//	- application/json
+	// Produces:
+	//  - application/json
+	// Responses:
+	//   default:
+	//     "$ref": "#/responses/responseDto"
+
 	vars := mux.Vars(r)
 	userIDVar := vars["userID"]
 	userID, err := strconv.Atoi(userIDVar)
@@ -84,6 +97,18 @@ func (u userControllerHandler) enableUser(w http.ResponseWriter, r *http.Request
 }
 
 func (u userControllerHandler) disableUser(w http.ResponseWriter, r *http.Request) {
+	// swagger:operation PUT /api/v1/users/disable-user/{UserID} disableUser
+	//
+	// Sets the isEnabled field of a user's to false
+	// ---
+	// Consumes:
+	//	- application/json
+	// Produces:
+	//  - application/json
+	// Responses:
+	//   default:
+	//     "$ref": "#/responses/responseDto"
+
 	vars := mux.Vars(r)
 	userIDVar := vars["userID"]
 	userID, err := strconv.Atoi(userIDVar)

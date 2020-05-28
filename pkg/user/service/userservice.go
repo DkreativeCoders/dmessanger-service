@@ -1,13 +1,14 @@
 package service
 
 import (
+	"errors"
+	"fmt"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain"
-	"github.com/DkreativeCoders/dmessanger-service/pkg/user/dto"
-	_ "github.com/DkreativeCoders/dmessanger-service/pkg/user/doc"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/irepository"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/iservice"
+	_ "github.com/DkreativeCoders/dmessanger-service/pkg/user/doc"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/user/dto"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/utils"
-	"errors"
 )
 
 //INewService return an interface that's why Constrictor/Method name is preceded with I
@@ -48,12 +49,15 @@ func (s service) DisableUser(id int) error {
 	}
 
 	if user.IsEnabled == true {
+		fmt.Println(user)
 		user.IsEnabled = false
 		_, err := s.repository.Update(*user)
 		if err != nil {
 			return err
 		}
 		return nil
+	}else {
+		fmt.Println("user is enabled is false")
 	}
 
 	return nil
@@ -112,9 +116,6 @@ func (s service) UpdatePassword(id int, request dto.UpdatePasswordRequest) error
 	}
 
 	if user.Password == request.OldPassword {
-		if user.Password == request.NewPassword {
-			return errors.New("Please select a new password")
-		}
 		user.Password = request.NewPassword
 		_, err := s.repository.Update(*user)
 		if err != nil {
@@ -125,6 +126,6 @@ func (s service) UpdatePassword(id int, request dto.UpdatePasswordRequest) error
 
 
 
-	return errors.New("Incorrect password supplied")
+	return errors.New("Incorrect password supplied.")
 
 }
