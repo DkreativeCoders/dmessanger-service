@@ -8,33 +8,25 @@ import (
 )
 
 //NewOrmUserRepository This returns an interface of the struct
-func NewOrmUserRepository(db *gorm.DB) irepository.IUserRepository {
-	return ormUserRepository{db}
+func NewOrmUserRepository(db *gorm.DB) irepository.ITokenRepository {
+	return ormTokenRepository{db}
 }
 
 type ormTokenRepository struct {
 	db *gorm.DB
 }
 
-func (u ormUserRepository) FindByID(id int) (*domain.User, error) {
-
-	var user domain.User
-	dbc := u.db.Where(domain.User{Model: gorm.Model{
-		ID: uint(id),
-	}}).First(&user)
-
-	if dbc.Error != nil {
+func (o ormTokenRepository) Create(token domain.Token) (*domain.Token, error) {
+	// Create failed, do something e.g. return, panic etc.
+	if dbc := o.db.Create(&token); dbc.Error != nil {
 		return nil, dbc.Error
 	}
+	fmt.Println("token created =>", token)
 
-	return &user, nil
+	//return &token
+	return &token, nil
 }
 
-//FindAll Users
-func (u ormUserRepository) FindAll() []domain.User {
-	users := make([]domain.User, 0) // same as []int{0, 0}
-	u.db.Find(&users)
-	return users
+func (o ormTokenRepository) FindByUserId(userId int) (*domain.Customer, error) {
+	panic("implement me")
 }
-
-//Save User or Return error
