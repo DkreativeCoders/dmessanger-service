@@ -8,7 +8,7 @@ import (
 )
 
 //NewOrmUserRepository This returns an interface of the struct
-func NewOrmUserRepository(db *gorm.DB) irepository.ITokenRepository {
+func NewOrmTokenRepository(db *gorm.DB) irepository.ITokenRepository {
 	return ormTokenRepository{db}
 }
 
