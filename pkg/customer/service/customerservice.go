@@ -71,7 +71,7 @@ func (s customerService) sendCustomerEmail(customer domain.Customer) (string, er
 	token := domain.Token{}
 	token.UserId=customer.UserId
 	token.Token=uniqueId
-	token.ExpiresOn=time.Now()
+	token.ExpiresOn=time.Now().Add(1 * time.Hour)
 
 	_, err := s.tokenRepository.Create(token)
 	if err !=nil{
@@ -79,7 +79,7 @@ func (s customerService) sendCustomerEmail(customer domain.Customer) (string, er
 	}
 
 	subject:="Verify User"
-	text :="Please visit this link to very your account"+ linkToSend
+	text :="Please visit this link to very your account. \n This links expires in an hour \n"+ linkToSend
 	recipient:=customer.Email
 	feedback, err := s.mailService.SendMail(subject, text, recipient)
 	if err !=nil{
