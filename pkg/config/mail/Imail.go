@@ -1,6 +1,6 @@
 package mail
 
 type IMail interface {
-	SendMail() (string, error)
+	SendMail(subject, text string, to ...string) (string, error)
 	SendMailWithHtMlTemplate() (string, error)
 }

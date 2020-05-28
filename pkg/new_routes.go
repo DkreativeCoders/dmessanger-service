@@ -2,6 +2,7 @@ package pkg
 
 import (
 	"fmt"
+	mail "github.com/DkreativeCoders/dmessanger-service/pkg/config/mail"
 	chttp2 "github.com/DkreativeCoders/dmessanger-service/pkg/customer/controller/chttp"
 	customerOrm "github.com/DkreativeCoders/dmessanger-service/pkg/customer/repository/orm"
 	customerService "github.com/DkreativeCoders/dmessanger-service/pkg/customer/service"
@@ -38,6 +39,8 @@ func NewServer() (*http.Server, *gorm.DB) {
 	//router created
 	router := mux.NewRouter()
 
+	mailService:= mail.NewMailGunImplementationNoArgs()
+
 	//Initialize the repository for any the service
 	userRepository := orm.NewOrmUserRepository(dbConnection)
 	//Initialize the Service for any the handler
@@ -49,7 +52,7 @@ func NewServer() (*http.Server, *gorm.DB) {
 	//Initialize the repository for any the service
 	customerRepository := customerOrm.NewOrmCustomerRepository(dbConnection)
 	//Initialize the Service for any the handler
-	customerService := customerService.INewCustomerService(customerRepository,userRepository)
+	customerService := customerService.INewCustomerService(customerRepository,userRepository, mailService)
 	//pass in the route and the user service
 	chttp2.NewCustomerHandler(router,customerService)
 

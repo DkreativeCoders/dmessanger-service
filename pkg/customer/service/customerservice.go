@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/config/mail"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/customer/dto"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/irepository"
@@ -9,13 +10,16 @@ import (
 )
 
 //INewService return an interface that's why Constrictor/Method name is preceded with I
-func INewCustomerService(repository irepository.ICustomerRepository,userRepository irepository.IUserRepository ) iservice.ICustomerService{
-	return customerService{repository, userRepository}
+func INewCustomerService(repository irepository.ICustomerRepository,
+	userRepository irepository.IUserRepository,
+	mailService mail.IMail ) iservice.ICustomerService{
+	return customerService{repository, userRepository,mailService}
 }
 
 type customerService struct {
 	customerRepository irepository.ICustomerRepository
 	userRepository irepository.IUserRepository
+	mailService mail.IMail
 	//userService iservice.IUserService
 
 }
@@ -45,12 +49,13 @@ func (s customerService) CreateUser(request dto.CustomerRequest) (*domain.Custom
 		return nil, err
 	}
 	//
-	s.sendCustomerEmail(*newCustomer)
+	_, _ = s.sendCustomerEmail(*newCustomer)
 	//
 	return newCustomer,nil
 }
 
 func (s customerService) sendCustomerEmail(customer domain.Customer) (string, error){
+	//s.mailService.SendMail()
 	_, _ = s.generateLinkToSendToUser()
 //implement your email sending here @AB
 	return "nil", nil
