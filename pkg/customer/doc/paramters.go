@@ -7,8 +7,4 @@ import "github.com/DkreativeCoders/dmessanger-service/pkg/customer/dto"
 type CreateUserRequestWrapper struct {
 	// in: body
 	Body dto.CustomerRequest
-
 }
-
-
-

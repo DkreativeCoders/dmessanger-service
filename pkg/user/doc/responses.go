@@ -9,5 +9,4 @@ import (
 type UserResponseWrapper struct {
 	// in: body
 	Body dto.UserResponseDto
-
 }

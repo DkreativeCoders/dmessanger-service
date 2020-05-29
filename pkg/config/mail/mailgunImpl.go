@@ -37,7 +37,7 @@ func (m mailGunImplementation) SendMail(subject, text string, to ...string) (str
 		"dkreativecoders@gmail.com",
 		subject,
 		text,
-		to...
+		to...,
 	)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*30)

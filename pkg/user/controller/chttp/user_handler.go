@@ -62,7 +62,7 @@ func (u userControllerHandler) updatePassword(w http.ResponseWriter, r *http.Req
 	// Responses:
 	//   default:
 	//     "$ref": "#/responses/responseDto"
-	
+
 	var updatePasswordRequest dto.UpdatePasswordRequest
 	vars := mux.Vars(r)
 	userIDVar := vars["userID"]
@@ -91,7 +91,6 @@ func (u userControllerHandler) updatePassword(w http.ResponseWriter, r *http.Req
 	} else {
 		response = defaultresponse.NewResponseDto(true, "Successful")
 	}
-
 
 	json.NewEncoder(w).Encode(response)
 

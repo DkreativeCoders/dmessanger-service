@@ -9,7 +9,6 @@ import (
 	"net/http"
 )
 
-
 func NewCustomerHandler(router *mux.Router, customerService iservice.ICustomerService) {
 	handler := &customerControllerHandler{
 		customerService: customerService,
@@ -23,8 +22,6 @@ func NewCustomerHandler(router *mux.Router, customerService iservice.ICustomerSe
 type customerControllerHandler struct {
 	customerService iservice.ICustomerService
 }
-
-
 
 //swagger definition
 //Write test case for it
@@ -48,7 +45,6 @@ func (c customerControllerHandler) create(w http.ResponseWriter, r *http.Request
 	//   422:
 	//     "$ref": "#/responses/customerErrorResponse"
 
-
 	var request dto.CustomerRequest
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
@@ -60,14 +56,14 @@ func (c customerControllerHandler) create(w http.ResponseWriter, r *http.Request
 	}
 	customer, errorRes := c.customerService.CreateUser(request)
 
-	if errorRes != nil{
+	if errorRes != nil {
 		errResponse := defaultresponse.NewResponseDto(false, errorRes.Error())
 		w.WriteHeader(http.StatusUnprocessableEntity)
 		json.NewEncoder(w).Encode(errResponse)
 		return
 	}
 
-	customer.UserId=6
+	customer.UserId = 6
 	response := dto.NewCustomerResponseDto(true, "Successful", *customer)
 
 	json.NewEncoder(w).Encode(response)

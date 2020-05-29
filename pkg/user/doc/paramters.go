@@ -11,5 +11,4 @@ type UpdatePasswordRequestWrapper struct {
 
 	// in: path
 	UserID int
-
 }
