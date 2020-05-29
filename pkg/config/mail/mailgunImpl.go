@@ -12,9 +12,7 @@ import (
 type mailGunImplementation struct {
 	domain string
 	apiKey string
-
 }
-
 
 func NewMailGunImplementationNoArgs() IMail {
 	e := godotenv.Load()
