@@ -5,9 +5,9 @@ type ResponseData struct {
 	// The ResponseData status
 	//
 	// Required: true
-	Status  bool        `json:"status"`
+	Status bool `json:"status"`
 	// Required: true
-	Message string      `json:"message"`
+	Message string `json:"message"`
 }
 
 func NewResponseDto(status bool, message string) *ResponseData {

@@ -2,7 +2,6 @@ package service
 
 import (
 	"errors"
-	"fmt"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/irepository"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/iservice"
@@ -18,7 +17,6 @@ func INewService(repository irepository.IUserRepository) iservice.IUserService {
 
 type service struct {
 	repository irepository.IUserRepository
-
 }
 
 func (s service) EnableUser(id int)  error {
@@ -66,15 +64,14 @@ func (s service) DisableUser(id int) error {
 //perform validation on user and let UserRepository save user
 func (s service) CreateUser(user domain.User) (*domain.User, error) {
 	//user.Validate()
-	if err := user.ValidateToError(); err!=nil {
+	if err := user.ValidateToError(); err != nil {
 		return nil, err
 	}
 
 	//s.repository.FindUserExist(user.Email)
-	if found := s.repository.FindUserExist(user.Email); found{
-		return nil,errors.New("user Already Exist with email")
+	if found := s.repository.FindUserExist(user.Email); found {
+		return nil, errors.New("user Already Exist with email")
 	}
-
 
 	newUser, err := s.repository.Save(user)
 	if err != nil {
@@ -109,8 +106,6 @@ func (s service) UpdatePassword(id int, request dto.UpdatePasswordRequest) error
 
 	user, err := s.repository.FindByID(id)
 
-
-
 	if err != nil {
 		return err
 	}
@@ -124,8 +119,5 @@ func (s service) UpdatePassword(id int, request dto.UpdatePasswordRequest) error
 		return nil
 	}
 
-
-
-	return errors.New("Incorrect password supplied.")
-
+	return errors.New("Incorrect password supplied")
 }

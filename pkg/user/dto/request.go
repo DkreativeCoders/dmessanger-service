@@ -20,5 +20,3 @@ func (request *UpdatePasswordRequest) Validate() error {
 
 	return nil
 }
-
-

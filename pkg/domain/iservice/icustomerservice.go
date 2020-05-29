@@ -6,5 +6,5 @@ import (
 )
 
 type ICustomerService interface {
-	CreateUser(request dto.CustomerRequest) (*domain.Customer,error)
+	CreateUser(request dto.CustomerRequest) (*domain.Customer, error)
 }

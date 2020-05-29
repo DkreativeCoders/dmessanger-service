@@ -14,12 +14,10 @@ func Respond(w http.ResponseWriter, data map[string]interface{}) {
 	json.NewEncoder(w).Encode(data)
 }
 
-
-
 //swagger:model responseModel
 type ResponseDto struct {
-	Status  bool        `json:"status"`
-	Message string      `json:"message"`
+	Status  bool   `json:"status"`
+	Message string `json:"message"`
 }
 
 func NewResponseDto(status bool, message string) *ResponseDto {
@@ -28,4 +26,3 @@ func NewResponseDto(status bool, message string) *ResponseDto {
 	response.Status = status
 	return response
 }
-

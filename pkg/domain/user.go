@@ -50,25 +50,25 @@ func (user *User) Validate() (map[string]interface{}, bool) {
 func (user *User) ValidateToError() error {
 
 	if user.FirstName == "" {
-		return errors.New( "user first name should be on the payload")
+		return errors.New("user first name should be on the payload")
 	}
 
 	if user.LastName == "" {
-		return errors.New( "user last name should be on the payload")
+		return errors.New("user last name should be on the payload")
 
 	}
 
 	if user.PhoneNumber == "" {
-		return errors.New( "user phone number should be on the payload")
+		return errors.New("user phone number should be on the payload")
 	}
 
 	if user.Age == "" {
-		return errors.New( "user age  should be on the payload")
+		return errors.New("user age  should be on the payload")
 
 	}
 
 	if user.Email == "" {
-		return errors.New( "user email should be on the payload")
+		return errors.New("user email should be on the payload")
 
 	}
 
