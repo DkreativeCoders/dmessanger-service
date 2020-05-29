@@ -8,9 +8,7 @@ import (
 	"os"
 	"time"
 )
-//func INewService(repository irepository.IUserRepository) iservice.IUserService {
-//	return service{repository}
-//}
+
 func SendSimpleMessage(domain, apiKey string) (string, error) {
 	mg := mailgun.NewMailgun(domain, apiKey)
 	m := mg.NewMessage(
