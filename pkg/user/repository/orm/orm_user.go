@@ -53,14 +53,19 @@ func (u ormUserRepository) Save(user domain.User) (*domain.User, error) {
 //Update User or Return error
 func (u ormUserRepository) Update(user domain.User) (*domain.User, error) {
 	// Update failed, do something e.g. return, panic etc.
+	// userDomain act as table name
+	var userDomain domain.User
 
-	if dbc := u.db.Where(domain.User{Model: gorm.Model{
-		ID: user.ID,
-	}}).Assign(user).FirstOrCreate(&user); dbc.Error != nil {
+	dbc := u.db.Where(domain.User{Model: gorm.Model{
+		ID: uint(user.ID),
+	}}).First(&userDomain)
+
+	if dbc.Error != nil {
 		return nil, dbc.Error
 	}
-	//u.db.Where("email = ?", user.Email).First(&newUser)
 
+	u.db.Save(user)
+	fmt.Println("Updated user")
 	//return &user
 	return &user, nil
 }

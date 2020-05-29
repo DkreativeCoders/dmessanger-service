@@ -19,6 +19,48 @@ type service struct {
 	repository irepository.IUserRepository
 }
 
+func (s service) EnableUser(id int)  error {
+	user, err := s.repository.FindByID(id)
+
+	if err != nil {
+		return err
+	}
+
+	if user.IsEnabled == false {
+		user.IsEnabled = true
+		_, err := s.repository.Update(*user)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+
+	return nil
+}
+
+func (s service) DisableUser(id int) error {
+
+	user, err := s.repository.FindByID(id)
+
+	if err != nil {
+		return err
+	}
+
+	if user.IsEnabled == true {
+		fmt.Println(user)
+		user.IsEnabled = false
+		_, err := s.repository.Update(*user)
+		if err != nil {
+			return err
+		}
+		return nil
+	}else {
+		fmt.Println("user is enabled is false")
+	}
+
+	return nil
+}
+
 //perform validation on user and let UserRepository save user
 func (s service) CreateUser(user domain.User) (*domain.User, error) {
 	//user.Validate()
@@ -69,9 +111,6 @@ func (s service) UpdatePassword(id int, request dto.UpdatePasswordRequest) error
 	}
 
 	if user.Password == request.OldPassword {
-		if user.Password == request.NewPassword {
-			return errors.New("Please select a new password")
-		}
 		user.Password = request.NewPassword
 		_, err := s.repository.Update(*user)
 		if err != nil {
@@ -81,5 +120,4 @@ func (s service) UpdatePassword(id int, request dto.UpdatePasswordRequest) error
 	}
 
 	return errors.New("Incorrect password supplied")
-
 }
