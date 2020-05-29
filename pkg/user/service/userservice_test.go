@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/mocks"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/user/dto"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/user/service"
 	"github.com/jinzhu/gorm"
 	"github.com/stretchr/testify/assert"
@@ -153,7 +154,6 @@ func TestService_GetAllUser(t *testing.T) {
 			},
 		},
 	}
-
 	for _, testCase := range testCases {
 		userRepo := mocks.UserRepository{}
 		userRepo.On("FindAll").Return(testCase.repoReturnData)
@@ -167,8 +167,97 @@ func TestService_GetAllUser(t *testing.T) {
 		// Assertion
 		assert.Equal(t, testCase.expectedVal, output)
 	}
+
 }
 
 func TestService_UpdatePassword(t *testing.T) {
+	var tests = []struct {
+		name             string
+		userId           int
+		requestBody      dto.UpdatePasswordRequest
+		expectedResponse error
+		repoReturnData   *domain.User
+		repoReturnErr    error
+		repoUpdateData   domain.User
+		repoUpdateError  error
+	}{
+		{
+			"Test with valid input",
+			1,
+			dto.UpdatePasswordRequest{
+				OldPassword:        "password",
+				NewPassword:        "newpassword",
+				ConfirmNewPassword: "newpassword",
+			},
+			nil,
+			&domain.User{Model: gorm.Model{ID: 1}, FirstName: "Adam", LastName: "Mark", Age: "24", Email: "amark@gmail.com", PhoneNumber: "01-2345-6789", Password: "password", Address: "401, Hebert Mark Way"},
+			nil,
+			domain.User{Model: gorm.Model{ID: 1}, FirstName: "Adam", LastName: "Mark", Age: "24", Email: "amark@gmail.com", PhoneNumber: "01-2345-6789", Password: "newpassword", Address: "401, Hebert Mark Way"},
+			nil,
+		},
+		{
+			"Test with same password in db",
+			1,
+			dto.UpdatePasswordRequest{
+				OldPassword:        "password",
+				NewPassword:        "password",
+				ConfirmNewPassword: "password",
+			},
+			errors.New("Please select a new password"),
+			&domain.User{Model: gorm.Model{ID: 1}, FirstName: "Adam", LastName: "Mark", Age: "24", Email: "amark@gmail.com", PhoneNumber: "01-2345-6789", Password: "password", Address: "401, Hebert Mark Way"},
+			nil,
+			domain.User{Model: gorm.Model{ID: 1}, FirstName: "Adam", LastName: "Mark", Age: "24", Email: "amark@gmail.com", PhoneNumber: "01-2345-6789", Password: "password", Address: "401, Hebert Mark Way"},
+			nil,
+		},
+		{
+			"Test with same passwords that do not match",
+			1,
+			dto.UpdatePasswordRequest{
+				OldPassword:        "password",
+				NewPassword:        "newpassword1",
+				ConfirmNewPassword: "newpassword2",
+			},
+			errors.New("Passwords don't match"),
+			&domain.User{Model: gorm.Model{ID: 1}, FirstName: "Adam", LastName: "Mark", Age: "24", Email: "amark@gmail.com", PhoneNumber: "01-2345-6789", Password: "password", Address: "401, Hebert Mark Way"},
+			nil,
+			domain.User{Model: gorm.Model{ID: 1}, FirstName: "Adam", LastName: "Mark", Age: "24", Email: "amark@gmail.com", PhoneNumber: "01-2345-6789", Password: "newpassword1", Address: "401, Hebert Mark Way"},
+			nil,
+		},
+		{
+			"Incorrect old password",
+			1,
+			dto.UpdatePasswordRequest{
+				OldPassword:        "incorrect",
+				NewPassword:        "newpassword",
+				ConfirmNewPassword: "newpassword",
+			},
+			errors.New("Incorrect password supplied"),
+			&domain.User{Model: gorm.Model{ID: 1}, FirstName: "Adam", LastName: "Mark", Age: "24", Email: "amark@gmail.com", PhoneNumber: "01-2345-6789", Password: "password", Address: "401, Hebert Mark Way"},
+			nil,
+			domain.User{Model: gorm.Model{ID: 1}, FirstName: "Adam", LastName: "Mark", Age: "24", Email: "amark@gmail.com", PhoneNumber: "01-2345-6789", Password: "incorrect", Address: "401, Hebert Mark Way"},
+			nil,
+		},
+	}
+
+	for _, testCase := range tests {
+
+		t.Run(testCase.name, func(t *testing.T) {
+			// Create dependency userRepo with mock implementation
+			userRepo := mocks.UserRepository{}
+			userRepo.On("FindByID", testCase.userId).Return(testCase.repoReturnData, testCase.repoReturnErr)
+			userRepo.On("Update", testCase.repoUpdateData).Return(&testCase.repoUpdateData, testCase.repoUpdateError)
+
+			// Create userService and inject mock repo
+			userService := service.INewService(&userRepo)
+
+			// Actual method call
+			output := userService.UpdatePassword(testCase.userId, testCase.requestBody)
+
+			// Expected output
+			expected := testCase.expectedResponse
+
+			assert.Equal(t, expected, output)
+		})
+	}
 
 }
