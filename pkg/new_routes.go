@@ -32,7 +32,6 @@ func NewServer() (*http.Server, *gorm.DB) {
 
 	//Get database connection
 	dbConnection := gmorm.GetDataBaseConnection(dialect, username, password, dbName, dbHost, dbPort)
-	gmorm.InitiateModelMigration(dbConnection)
 	//Migrate all models
 	gmorm.InitiateModelMigration(dbConnection)
 	//router created
