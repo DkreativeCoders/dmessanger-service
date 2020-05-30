@@ -23,7 +23,6 @@ func NewUserHandler(router *mux.Router, userService iservice.IUserService) {
 	router.HandleFunc("/api/v1/users/enable-user/{userID}", handler.enableUser).Methods("PATCH")
 	router.HandleFunc("/api/v1/users/disable-user/{userID}", handler.disableUser).Methods("PATCH")
 
-
 	//return userControllerHandler{userService}
 }
 

@@ -67,6 +67,7 @@ func (s customerService) CreateUser(request dto.CustomerRequest) (*domain.Custom
 }
 
 func (s customerService) sendCustomerEmail(customer domain.Customer) (string, error) {
+
 	uniqueId, linkToSend := s.generateLinkToSendToUser()
 
 	token := domain.Token{}

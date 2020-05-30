@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/irepository"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/iservice"
@@ -19,7 +20,7 @@ type service struct {
 	repository irepository.IUserRepository
 }
 
-func (s service) EnableUser(id int)  error {
+func (s service) EnableUser(id int) error {
 	user, err := s.repository.FindByID(id)
 
 	if err != nil {
@@ -54,7 +55,7 @@ func (s service) DisableUser(id int) error {
 			return err
 		}
 		return nil
-	}else {
+	} else {
 		fmt.Println("user is enabled is false")
 	}
 
@@ -119,5 +120,5 @@ func (s service) UpdatePassword(id int, request dto.UpdatePasswordRequest) error
 		return nil
 	}
 
-	return errors.New("Incorrect password supplied")
+	return errors.New("incorrect password supplied")
 }
