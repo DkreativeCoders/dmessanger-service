@@ -16,6 +16,9 @@ func NewCustomerHandler(router *mux.Router, customerService iservice.ICustomerSe
 
 	router.HandleFunc("/api/v1/customers", handler.create).Methods("POST")
 
+	// verify user handler
+	router.HandleFunc("/verify-user/{token}", handler.activate)
+
 	//return userControllerHandler{userService}
 }
 
@@ -68,4 +71,20 @@ func (c customerControllerHandler) create(w http.ResponseWriter, r *http.Request
 
 	json.NewEncoder(w).Encode(response)
 
+}
+
+
+func (c customerControllerHandler) activate(w http.ResponseWriter, r *http.Request){
+	token := mux.Vars(r)["token"]
+	err := c.customerService.ActivateUser(token)
+	if err != nil{
+		errResponse := defaultresponse.NewResponseDto(false, err.Error())
+		w.WriteHeader(http.StatusExpectationFailed)
+		json.NewEncoder(w).Encode(errResponse)
+		return
+	}
+
+	response := defaultresponse.NewResponseDto(true, "user activated")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
 }
