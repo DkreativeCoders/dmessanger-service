@@ -1,13 +1,13 @@
 package service
 
 import (
+	"errors"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain"
-	"github.com/DkreativeCoders/dmessanger-service/pkg/user/dto"
-	_ "github.com/DkreativeCoders/dmessanger-service/pkg/user/doc"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/irepository"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/iservice"
+	_ "github.com/DkreativeCoders/dmessanger-service/pkg/user/doc"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/user/dto"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/utils"
-	"errors"
 )
 
 //INewService return an interface that's why Constrictor/Method name is preceded with I
@@ -66,8 +66,6 @@ func (s service) UpdatePassword(id int, request dto.UpdatePasswordRequest) error
 
 	user, err := s.repository.FindByID(id)
 
-
-
 	if err != nil {
 		return err
 	}
@@ -81,8 +79,5 @@ func (s service) UpdatePassword(id int, request dto.UpdatePasswordRequest) error
 		return nil
 	}
 
-
-
-	return errors.New("Incorrect password supplied.")
-
+	return errors.New("incorrect password supplied")
 }

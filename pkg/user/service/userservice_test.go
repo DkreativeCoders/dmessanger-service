@@ -69,11 +69,7 @@ func TestService_CreateUser(t *testing.T) {
 			userService := service.INewService(&userRepo)
 
 			// Actual method call
-<<<<<<< Updated upstream
-			output,_ := userService.CreateUser(testCase.repoInputData)
-=======
 			output, _ := userService.CreateUser(testCase.repoInputData)
->>>>>>> Stashed changes
 
 			// Expected output
 			expected := testCase.expectedVal
@@ -138,17 +134,17 @@ func TestService_GetAllUser(t *testing.T) {
 		{
 			"Test with numerous user in storage",
 			[]domain.User{
-				domain.User{Model: gorm.Model{ID:0}, FirstName:"Adam", LastName:"Mark", Age:"24", Email:"amark@gmail.com", PhoneNumber:"01-2345-6789", Password:"password", Address: "401, Hebert Mark Way"},
-				domain.User{Model: gorm.Model{ID:1}, FirstName:"Tony", LastName:"Young", Age:"37", Email:"tonyyoung@gmail.com", PhoneNumber:"01-5678-6789", Password:"youngTony", Address: "78, Broad Street"},
-				domain.User{Model: gorm.Model{ID:2}, FirstName:"Ross", LastName:"Barkley", Age:"50", Email:"barks@gmail.com", PhoneNumber:"01-3333-8907", Password:"BarksRSS", Address: "46B, Moore Street"},
+				{Model: gorm.Model{ID: 0}, FirstName: "Adam", LastName: "Mark", Age: "24", Email: "amark@gmail.com", PhoneNumber: "01-2345-6789", Password: "password", Address: "401, Hebert Mark Way"},
+				{Model: gorm.Model{ID: 1}, FirstName: "Tony", LastName: "Young", Age: "37", Email: "tonyyoung@gmail.com", PhoneNumber: "01-5678-6789", Password: "youngTony", Address: "78, Broad Street"},
+				{Model: gorm.Model{ID: 2}, FirstName: "Ross", LastName: "Barkley", Age: "50", Email: "barks@gmail.com", PhoneNumber: "01-3333-8907", Password: "BarksRSS", Address: "46B, Moore Street"},
 				},
 			map[string]interface{}{
 				"status": true,
 				"message": "success",
 				"data": []domain.User{
-					domain.User{Model: gorm.Model{ID:0}, FirstName:"Adam", LastName:"Mark", Age:"24", Email:"amark@gmail.com", PhoneNumber:"01-2345-6789", Password:"password", Address: "401, Hebert Mark Way"},
-					domain.User{Model: gorm.Model{ID:1}, FirstName:"Tony", LastName:"Young", Age:"37", Email:"tonyyoung@gmail.com", PhoneNumber:"01-5678-6789", Password:"youngTony", Address: "78, Broad Street"},
-					domain.User{Model: gorm.Model{ID:2}, FirstName:"Ross", LastName:"Barkley", Age:"50", Email:"barks@gmail.com", PhoneNumber:"01-3333-8907", Password:"BarksRSS", Address: "46B, Moore Street"},
+					{Model: gorm.Model{ID: 0}, FirstName: "Adam", LastName: "Mark", Age: "24", Email: "amark@gmail.com", PhoneNumber: "01-2345-6789", Password: "password", Address: "401, Hebert Mark Way"},
+					{Model: gorm.Model{ID: 1}, FirstName: "Tony", LastName: "Young", Age: "37", Email: "tonyyoung@gmail.com", PhoneNumber: "01-5678-6789", Password: "youngTony", Address: "78, Broad Street"},
+					{Model: gorm.Model{ID: 2}, FirstName: "Ross", LastName: "Barkley", Age: "50", Email: "barks@gmail.com", PhoneNumber: "01-3333-8907", Password: "BarksRSS", Address: "46B, Moore Street"},
 				},
 			},
 		},
