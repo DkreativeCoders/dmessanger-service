@@ -12,3 +12,11 @@ type UpdatePasswordRequestWrapper struct {
 	// in: path
 	UserID int
 }
+
+
+// swagger:parameters enableUser
+type EnableUserRequestWrapper struct {
+
+	// in: path
+	UserID int
+}

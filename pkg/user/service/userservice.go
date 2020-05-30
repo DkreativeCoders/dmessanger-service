@@ -19,7 +19,7 @@ type service struct {
 	repository irepository.IUserRepository
 }
 
-func (s service) EnableUser(id int)  error {
+func (s service) EnableUser(id int) error {
 	user, err := s.repository.FindByID(id)
 
 	if err != nil {
@@ -54,7 +54,7 @@ func (s service) DisableUser(id int) error {
 			return err
 		}
 		return nil
-	}else {
+	} else {
 		fmt.Println("user is enabled is false")
 	}
 
