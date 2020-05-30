@@ -17,21 +17,19 @@ func INewService(repository irepository.IUserRepository) iservice.IUserService {
 
 type service struct {
 	repository irepository.IUserRepository
-
 }
 
 //perform validation on user and let UserRepository save user
 func (s service) CreateUser(user domain.User) (*domain.User, error) {
 	//user.Validate()
-	if err := user.ValidateToError(); err!=nil {
+	if err := user.ValidateToError(); err != nil {
 		return nil, err
 	}
 
 	//s.repository.FindUserExist(user.Email)
-	if found := s.repository.FindUserExist(user.Email); found{
-		return nil,errors.New("user Already Exist with email")
+	if found := s.repository.FindUserExist(user.Email); found {
+		return nil, errors.New("user Already Exist with email")
 	}
-
 
 	newUser, err := s.repository.Save(user)
 	if err != nil {

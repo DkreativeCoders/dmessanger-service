@@ -65,19 +65,19 @@ func (u ormUserRepository) Update(user domain.User) (*domain.User, error) {
 	return &user, nil
 }
 
-func (u ormUserRepository)FindByEmail(email string) (*domain.User, error){
+func (u ormUserRepository) FindByEmail(email string) (*domain.User, error) {
 	var user domain.User
 	u.db.Where(&domain.User{Email: email}).First(&user)
 	return &user, nil
 }
 
-func (u ormUserRepository) 	FindUserExist(email string) bool{
+func (u ormUserRepository) FindUserExist(email string) bool {
 	var count int
 	u.db.Model(&domain.User{}).Where("email = ?", email).Count(&count)
 	fmt.Println("count user =>", count)
-	if count <= 0{
+	if count <= 0 {
 		return false
-	}else {
+	} else {
 		return true
 	}
 

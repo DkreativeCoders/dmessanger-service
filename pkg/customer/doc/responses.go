@@ -10,7 +10,6 @@ import (
 type CustomerResponseWrapper struct {
 	// in: body
 	Body dto.CustomerResponseDto
-
 }
 
 // A Customer Error Response .
@@ -18,7 +17,6 @@ type CustomerResponseWrapper struct {
 type CustomerErrorResponseWrapper struct {
 	// in: body
 	Body defaultresponse.ResponseData
-
 }
 
 // A Customer Bad Request Error Response .
@@ -26,5 +24,4 @@ type CustomerErrorResponseWrapper struct {
 type CustomerBadRequestResponseWrapper struct {
 	// in: body
 	Body defaultresponse.ResponseData
-
 }

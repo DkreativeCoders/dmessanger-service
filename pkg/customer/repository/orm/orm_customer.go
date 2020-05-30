@@ -48,8 +48,6 @@ func (o ormCustomerRepository) Save(customer domain.Customer) (*domain.Customer,
 		return nil, err
 	}
 
-
-
 	if dbc := tx.Create(&customer.User); dbc.Error != nil {
 		tx.Rollback()
 		return nil, dbc.Error
@@ -58,17 +56,16 @@ func (o ormCustomerRepository) Save(customer domain.Customer) (*domain.Customer,
 	fmt.Println("user created =>", customer.User)
 	fmt.Println("userID created =>", customer.User.ID)
 
-	customer.UserId=customer.User.ID
+	customer.UserId = customer.User.ID
 
 	if dbc := tx.Create(&customer); dbc.Error != nil {
 		tx.Rollback()
 		return nil, dbc.Error
 	}
 
-
 	fmt.Println("user created =>", customer)
 
-	if dbc := tx.Commit(); dbc.Error!=nil {
+	if dbc := tx.Commit(); dbc.Error != nil {
 		tx.Rollback()
 		return nil, dbc.Error
 
@@ -81,5 +78,3 @@ func (o ormCustomerRepository) Save(customer domain.Customer) (*domain.Customer,
 func (o ormCustomerRepository) Update(customer domain.Customer) (*domain.Customer, error) {
 	panic("implement me")
 }
-
-

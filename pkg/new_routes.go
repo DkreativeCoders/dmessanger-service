@@ -45,16 +45,12 @@ func NewServer() (*http.Server, *gorm.DB) {
 	//pass in the route and the user service
 	chttp.NewUserHandler(router, userService)
 
-
 	//Initialize the repository for any the service
 	customerRepository := customerOrm.NewOrmCustomerRepository(dbConnection)
 	//Initialize the Service for any the handler
-	customerService := customerService.INewCustomerService(customerRepository,userRepository)
+	customerService := customerService.INewCustomerService(customerRepository, userRepository)
 	//pass in the route and the user service
-	chttp2.NewCustomerHandler(router,customerService)
-
-
-
+	chttp2.NewCustomerHandler(router, customerService)
 
 	port := os.Getenv("PORT")
 	if port == "" {

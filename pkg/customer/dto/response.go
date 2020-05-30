@@ -17,6 +17,6 @@ func NewCustomerResponseDto(status bool, message string, customer domain.Custome
 	response := CustomerResponseDto{}
 	response.Status = status
 	response.Message = message
-	response.Data=customer
+	response.Data = customer
 	return &response
 }
