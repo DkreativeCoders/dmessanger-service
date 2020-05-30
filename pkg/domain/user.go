@@ -17,6 +17,7 @@ type User struct {
 	PhoneNumber string `json:"phoneNumber"`
 	Password    string `json:"-"`
 	Address     string `json:"address"`
+	IsEnabled   bool   `json:"isEnabled"`
 }
 
 //Validate All the fields for User
