@@ -49,6 +49,40 @@
         }
       }
     },
+    "/api/v1/users/disable-user/{UserID}": {
+      "put": {
+        "description": "Sets the isEnabled field of a user's to false",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "disableUser",
+        "responses": {
+          "default": {
+            "$ref": "#/responses/responseDto"
+          }
+        }
+      }
+    },
+    "/api/v1/users/enable-user/{UserID}": {
+      "put": {
+        "description": "Sets the isEnabled field of a user's to true",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "enableUser",
+        "responses": {
+          "default": {
+            "$ref": "#/responses/responseDto"
+          }
+        }
+      }
+    },
     "/api/v1/users/update-password/{UserID}": {
       "put": {
         "description": "Updates a user's password",
@@ -71,6 +105,32 @@
             "type": "integer",
             "format": "int64",
             "name": "UserID",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "default": {
+            "$ref": "#/responses/responseDto"
+          }
+        }
+      }
+    },
+    "/verify-user/{Token}": {
+      "put": {
+        "description": "Activate customer",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "activateCustomer",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "name": "Token",
             "in": "path",
             "required": true
           }
@@ -130,6 +190,14 @@
         "firstName": {
           "type": "string",
           "x-go-name": "FirstName"
+        },
+        "isActive": {
+          "type": "boolean",
+          "x-go-name": "IsActive"
+        },
+        "isEnabled": {
+          "type": "boolean",
+          "x-go-name": "IsEnabled"
         },
         "lastName": {
           "type": "string",
@@ -276,6 +344,14 @@
         "firstName": {
           "type": "string",
           "x-go-name": "FirstName"
+        },
+        "isActive": {
+          "type": "boolean",
+          "x-go-name": "IsActive"
+        },
+        "isEnabled": {
+          "type": "boolean",
+          "x-go-name": "IsEnabled"
         },
         "lastName": {
           "type": "string",
