@@ -59,6 +59,15 @@
           "application/json"
         ],
         "operationId": "disableUser",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "name": "UserID",
+            "in": "path",
+            "required": true
+          }
+        ],
         "responses": {
           "default": {
             "$ref": "#/responses/responseDto"
@@ -76,6 +85,15 @@
           "application/json"
         ],
         "operationId": "enableUser",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "name": "UserID",
+            "in": "path",
+            "required": true
+          }
+        ],
         "responses": {
           "default": {
             "$ref": "#/responses/responseDto"
