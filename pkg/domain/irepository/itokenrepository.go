@@ -10,4 +10,5 @@ import (
 type ITokenRepository interface {
 	Create(token domain.Token) (*domain.Token, error)
 	FindByUserId(userId int) (*domain.Customer, error)
+	FindByToken(tk string) (*domain.Token, error)
 }

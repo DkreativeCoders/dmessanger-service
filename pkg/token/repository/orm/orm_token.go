@@ -30,3 +30,11 @@ func (o ormTokenRepository) Create(token domain.Token) (*domain.Token, error) {
 func (o ormTokenRepository) FindByUserId(userId int) (*domain.Customer, error) {
 	panic("implement me")
 }
+
+func (o ormTokenRepository) FindByToken(tk string)(*domain.Token, error){
+	var token domain.Token
+	if dbc := o.db.Where("token = ?", tk).Find(&token); dbc.Error != nil{
+		return nil, dbc.Error
+	}
+	return &token, nil
+}

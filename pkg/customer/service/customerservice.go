@@ -66,6 +66,32 @@ func (s customerService) CreateUser(request dto.CustomerRequest) (*domain.Custom
 	return newCustomer, nil
 }
 
+func (s customerService) ActivateUser(tk string) error{
+	// Check for token in the repository
+	token, err := s.tokenRepository.FindByToken(tk)
+	if err != nil{
+		return err
+	}
+
+	// Check if token has expired
+	tokenExpiryTime := token.ExpiresOn
+	if time.Now().After(tokenExpiryTime){
+		return errors.New("token expired")
+	}
+
+	// Find user with token
+	user, er := s.userRepository.FindByID(int(token.UserId))
+	if er != nil{
+		return er
+	}
+
+	// Activate user
+	user.IsActive = true
+	s.userRepository.Update(*user)
+
+	return nil
+}
+
 func (s customerService) sendCustomerEmail(customer domain.Customer) (string, error) {
 
 	uniqueId, linkToSend := s.generateLinkToSendToUser()
@@ -93,6 +119,6 @@ func (s customerService) sendCustomerEmail(customer domain.Customer) (string, er
 
 func (s customerService) generateLinkToSendToUser() (string, string) {
 	uniqueId := uuid.NewV4().String()
-	linkToSend := "http/Dmessanger:8900/verify-user/" + uniqueId
+	linkToSend := "http://localhost:8900/verify-user/" + uniqueId
 	return uniqueId, linkToSend
 }
