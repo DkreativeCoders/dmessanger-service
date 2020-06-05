@@ -72,6 +72,22 @@ func (s customerService) CreateUser(request dto.CustomerRequest) (*domain.Custom
 func (s customerService) sendCustomerEmail(customer domain.Customer) (string, error) {
 	uniqueId, linkToSend := s.generateLinkToSendToUser()
 
+	 err := s.saveToken(customer, uniqueId)
+	if err != nil {
+		return "", err
+	}
+
+	email := s.createMail(customer, linkToSend)
+
+	feedback, err := s.mailService.SendEMail(*email)
+	if err != nil {
+		return "", errors.New("error occurred try to send mail, try again later")
+	}
+
+	return "Mail sent successfully" + feedback, nil
+}
+
+func (s customerService) saveToken(customer domain.Customer, uniqueId string)  error {
 	token := domain.Token{}
 	token.UserId = customer.UserId
 	token.Token = uniqueId
@@ -79,18 +95,18 @@ func (s customerService) sendCustomerEmail(customer domain.Customer) (string, er
 
 	_, err := s.tokenRepository.Create(token)
 	if err != nil {
-		return "", errors.New("error occurred, try again")
+		return  errors.New("error occurred, try again")
 	}
+	return  nil
+}
 
+func (s customerService) createMail(customer domain.Customer, linkToSend string) *mail.EMailMessage {
 	subject := "DkreativeCoders Verify User"
 	text := "Please visit this link to verify your account. \n This links expires in an hour \n" + linkToSend
 	recipient := customer.Email
-	feedback, err := s.mailService.SendMail(subject, text, recipient)
-	if err != nil {
-		return "", errors.New("error occurred try to send mail, try again later")
-	}
 
-	return "Mail sent successfully" + feedback, nil
+	email := mail.NewEMailMessage(subject, text, recipient, nil)
+	return email
 }
 
 func (s customerService) generateLinkToSendToUser() (string, string) {

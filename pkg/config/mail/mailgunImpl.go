@@ -47,6 +47,24 @@ func (m mailGunImplementation) SendMail(subject, text string, to ...string) (str
 	return id, err
 }
 
+func (m mailGunImplementation) SendEMail(email EMailMessage) (string, error){
+	mg := mailgun.NewMailgun(m.domain, m.apiKey)
+
+	message := mg.NewMessage(
+		"dkreativecoders@gmail.com",
+		email.subject,
+		email.text,
+		email.recipient,
+	)
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*30)
+	defer cancel()
+
+	_, id, err := mg.Send(ctx, message)
+	return id, err
+}
+
+
 func (m mailGunImplementation) SendMailWithHtMlTemplate() (string, error) {
 	panic("implement me")
 }

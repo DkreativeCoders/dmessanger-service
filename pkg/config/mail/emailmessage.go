@@ -1,8 +1,15 @@
 package mail
 
 type EMailMessage struct {
-	Subject string
-	Text string
-	Recipient string
-	Recipients [] string
+	subject string
+	text string
+	recipient string
+	recipients [] string
 }
+
+func NewEMailMessage(subject string, text string, recipient string, recipients []string) *EMailMessage {
+	return &EMailMessage{subject: subject, text: text, recipient: recipient, recipients: recipients}
+}
+
+
+
