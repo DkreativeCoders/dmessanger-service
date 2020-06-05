@@ -104,7 +104,6 @@ func (s customerService) createMail(customer domain.Customer, linkToSend string)
 	subject := "DkreativeCoders Verify User"
 	text := "Please visit this link to verify your account. \n This links expires in an hour \n" + linkToSend
 	recipient := customer.Email
-
 	email := mail.NewEMailMessage(subject, text, recipient, nil)
 	return email
 }
