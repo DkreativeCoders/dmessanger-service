@@ -3,11 +3,11 @@ package service
 import (
 	"errors"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/config/mail"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/config/uuid"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/customer/dto"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/irepository"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/iservice"
-	"github.com/satori/go.uuid"
 	"log"
 	"time"
 )
@@ -16,12 +16,14 @@ import (
 func INewCustomerService(repository irepository.ICustomerRepository,
 	userRepository irepository.IUserRepository,
 	tokenRepository irepository.ITokenRepository,
-	mailService mail.IMail) iservice.ICustomerService {
+	mailService mail.IMail, uuid uuid.IUuid) iservice.ICustomerService {
 	return customerService{
 		repository,
 		userRepository,
 		tokenRepository,
-		mailService}
+		mailService,
+		uuid,
+	}
 }
 
 type customerService struct {
@@ -29,6 +31,7 @@ type customerService struct {
 	userRepository     irepository.IUserRepository
 	tokenRepository    irepository.ITokenRepository
 	mailService        mail.IMail
+	uuid uuid.IUuid
 }
 
 //refactor and test case needed
@@ -91,7 +94,7 @@ func (s customerService) sendCustomerEmail(customer domain.Customer) (string, er
 }
 
 func (s customerService) generateLinkToSendToUser() (string, string) {
-	uniqueId := uuid.NewV4().String()
+	uniqueId := s.uuid.GenerateUniqueId()
 	linkToSend := "http/Dmessanger:8900/verify-user/" + uniqueId
 	return uniqueId, linkToSend
 }
