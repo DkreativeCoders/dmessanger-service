@@ -84,6 +84,7 @@ func (s customerService) sendCustomerEmail(customer domain.Customer) (string, er
 	}
 
 	return "Mail sent successfully" + feedback, nil
+
 }
 
 func (s customerService) saveToken(customer domain.Customer, uniqueId string)  error {
