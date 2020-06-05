@@ -72,6 +72,7 @@ nil,
 			userRepo := mocks.UserRepository{}
 			userRepo.On("Save", testCase.repoInputData).Return(testCase.repoReturnData, testCase.repoReturnErr)
 
+
 			// Create userService and inject mock repo
 			userService := service.INewService(&userRepo)
 
