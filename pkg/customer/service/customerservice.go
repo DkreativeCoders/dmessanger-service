@@ -72,11 +72,10 @@ func (s customerService) CreateUser(request dto.CustomerRequest) (*domain.Custom
 func (s customerService) sendCustomerEmail(customer domain.Customer) (string, error) {
 	uniqueId, linkToSend := s.generateLinkToSendToUser()
 
-	 err := s.saveToken(customer, uniqueId)
+	err := s.saveToken(customer, uniqueId)
 	if err != nil {
 		return "", err
 	}
-
 	email := s.createMail(customer, linkToSend)
 
 	feedback, err := s.mailService.SendEMail(*email)
