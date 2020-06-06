@@ -80,7 +80,7 @@ nil,
 		},
 
 		{
-			"Test customer already exist request",
+			"Test customer already exist with already registered email",
 			dto.CustomerRequest{FirstName: "Daniel", LastName: "Dada", Age: "20", Email: "daniel@gmail.com", PhoneNumber: "08282888", Password: "password", Address: "address daniel"},
 
 			"daniel@gmail.com",
