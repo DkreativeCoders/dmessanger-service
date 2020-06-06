@@ -3,32 +3,39 @@ package service
 import (
 	"errors"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/config/mail"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/config/uuid"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/customer/dto"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/irepository"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/iservice"
-	"github.com/satori/go.uuid"
 	"log"
 	"time"
 )
 
 //INewService return an interface that's why Constrictor/Method name is preceded with I
-func INewCustomerService(repository irepository.ICustomerRepository,
+func INewCustomerService(
+	repository irepository.ICustomerRepository,
 	userRepository irepository.IUserRepository,
 	tokenRepository irepository.ITokenRepository,
-	mailService mail.IMail) iservice.ICustomerService {
+	tokenService iservice.ITokenService,
+	mailService mail.IMail, uuid uuid.IUuid) iservice.ICustomerService {
 	return customerService{
 		repository,
 		userRepository,
 		tokenRepository,
-		mailService}
+		tokenService,
+		mailService,
+		uuid,
+	}
 }
 
 type customerService struct {
 	customerRepository irepository.ICustomerRepository
 	userRepository     irepository.IUserRepository
-	tokenRepository    irepository.ITokenRepository
+	tokenRepository irepository.ITokenRepository
+	tokenService  	iservice.ITokenService
 	mailService        mail.IMail
+	uuid uuid.IUuid
 }
 
 //refactor and test case needed
@@ -96,29 +103,34 @@ func (s customerService) sendCustomerEmail(customer domain.Customer) (string, er
 
 	uniqueId, linkToSend := s.generateLinkToSendToUser()
 
-	token := domain.Token{}
-	token.UserId = customer.UserId
-	token.Token = uniqueId
-	token.ExpiresOn = time.Now().Add(1 * time.Hour)
-
-	_, err := s.tokenRepository.Create(token)
+	_, err := s.tokenService.CreateTokenWithExpirationInHours(customer.UserId, uniqueId,1)
 	if err != nil {
-		return "", errors.New("error occurred, try again")
+		return "", err
 	}
+	email := s.createMail(customer, linkToSend)
 
-	subject := "DkreativeCoders Verify User"
-	text := "Please visit this link to verify your account. \n This links expires in an hour \n" + linkToSend
-	recipient := customer.Email
-	feedback, err := s.mailService.SendMail(subject, text, recipient)
+	feedback, err := s.mailService.SendEMail(*email)
+
 	if err != nil {
 		return "", errors.New("error occurred try to send mail, try again later")
 	}
 
 	return "Mail sent successfully" + feedback, nil
+
+}
+
+
+func (s customerService) createMail(customer domain.Customer, linkToSend string) *mail.EMailMessage {
+	subject := "DkreativeCoders Verify User"
+	text := "Please visit this link to verify your account. \n This links expires in an hour \n" + linkToSend
+	recipient := customer.Email
+	email := mail.NewEMailMessage(subject, text, recipient, nil)
+	return email
 }
 
 func (s customerService) generateLinkToSendToUser() (string, string) {
-	uniqueId := uuid.NewV4().String()
-	linkToSend := "http://localhost:8900/verify-user/" + uniqueId
+	uniqueId := s.uuid.GenerateUniqueId()
+	linkToSend := "http/Dmessanger:8900/verify-user/" + uniqueId
+
 	return uniqueId, linkToSend
 }
