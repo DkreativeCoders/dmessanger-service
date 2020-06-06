@@ -36,7 +36,6 @@ func NewServer() (*http.Server, *gorm.DB) {
 
 	//Get database connection
 	dbConnection := gmorm.GetDataBaseConnection(dialect, username, password, dbName, dbHost, dbPort)
-	gmorm.InitiateModelMigration(dbConnection)
 	//Migrate all models
 	gmorm.InitiateModelMigration(dbConnection)
 	//router created
@@ -62,7 +61,7 @@ func NewServer() (*http.Server, *gorm.DB) {
 	//Initialize the repository for any the service
 	customerRepository := customerOrm.NewOrmCustomerRepository(dbConnection)
 	//Initialize the Service for any the handler
-	newCustomerService := customerService.INewCustomerService(customerRepository, userRepository, tokenService, mailService, uuid)
+	newCustomerService := customerService.INewCustomerService(customerRepository, userRepository,tokenRepository, tokenService, mailService, uuid)
 	//pass in the route and the user service
 	chttp2.NewCustomerHandler(router, newCustomerService)
 

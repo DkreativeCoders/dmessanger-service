@@ -7,4 +7,5 @@ import (
 
 type ICustomerService interface {
 	CreateUser(request dto.CustomerRequest) (*domain.Customer, error)
+	ActivateUser(tk string) error
 }

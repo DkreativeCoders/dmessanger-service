@@ -120,5 +120,5 @@ func (s service) UpdatePassword(id int, request dto.UpdatePasswordRequest) error
 		return nil
 	}
 
-	return errors.New("Incorrect password supplied")
+	return errors.New("incorrect password supplied")
 }

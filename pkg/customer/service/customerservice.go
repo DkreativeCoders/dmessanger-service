@@ -9,17 +9,20 @@ import (
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/irepository"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/iservice"
 	"log"
+	"time"
 )
 
 //INewService return an interface that's why Constrictor/Method name is preceded with I
 func INewCustomerService(
 	repository irepository.ICustomerRepository,
 	userRepository irepository.IUserRepository,
+	tokenRepository irepository.ITokenRepository,
 	tokenService iservice.ITokenService,
 	mailService mail.IMail, uuid uuid.IUuid) iservice.ICustomerService {
 	return customerService{
 		repository,
 		userRepository,
+		tokenRepository,
 		tokenService,
 		mailService,
 		uuid,
@@ -29,6 +32,7 @@ func INewCustomerService(
 type customerService struct {
 	customerRepository irepository.ICustomerRepository
 	userRepository     irepository.IUserRepository
+	tokenRepository irepository.ITokenRepository
 	tokenService  	iservice.ITokenService
 	mailService        mail.IMail
 	uuid uuid.IUuid
@@ -69,7 +73,34 @@ func (s customerService) CreateUser(request dto.CustomerRequest) (*domain.Custom
 	return newCustomer, nil
 }
 
+func (s customerService) ActivateUser(tk string) error{
+	// Check for token in the repository
+	token, err := s.tokenRepository.FindByToken(tk)
+	if err != nil{
+		return err
+	}
+
+	// Check if token has expired
+	tokenExpiryTime := token.ExpiresOn
+	if time.Now().After(tokenExpiryTime){
+		return errors.New("token expired")
+	}
+
+	// Find user with token
+	user, er := s.userRepository.FindByID(int(token.UserId))
+	if er != nil{
+		return er
+	}
+
+	// Activate user
+	user.IsActive = true
+	s.userRepository.Update(*user)
+
+	return nil
+}
+
 func (s customerService) sendCustomerEmail(customer domain.Customer) (string, error) {
+
 	uniqueId, linkToSend := s.generateLinkToSendToUser()
 
 	_, err := s.tokenService.CreateTokenWithExpirationInHours(customer.UserId, uniqueId,1)
@@ -100,5 +131,6 @@ func (s customerService) createMail(customer domain.Customer, linkToSend string)
 func (s customerService) generateLinkToSendToUser() (string, string) {
 	uniqueId := s.uuid.GenerateUniqueId()
 	linkToSend := "http/Dmessanger:8900/verify-user/" + uniqueId
+
 	return uniqueId, linkToSend
 }
