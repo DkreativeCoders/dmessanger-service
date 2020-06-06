@@ -123,6 +123,8 @@ nil,
 			tokenService := mocks.ITokenService{}
 			tokenService.On("CreateTokenWithExpirationInHours", testCase.tokenServiceInputUserID,testCase.tokenServiceInputUniqueID,testCase.tokenServiceInputExpirationTimeInHour).Return(testCase.tokenServiceCreateReturnOutPut,testCase.tokenServiceCreateReturnError)
 
+			tokenRepo := mocks.ITokenRepository{}
+
 			// Create dependency tokenRepo with mock implementation
 			uuidService := mocks.IUuid{}
 			uuidService.On("GenerateUniqueId").Return(testCase.uniqueIdGenerated)
@@ -134,7 +136,7 @@ nil,
 
 
 			// Create userService and inject mock repo
-			customerService := INewCustomerService(&customerRepo,&userRepo,&tokenService,&mailService,&uuidService)
+			customerService := INewCustomerService(&customerRepo,&userRepo,&tokenRepo,&tokenService,&mailService,&uuidService)
 
 			// Actual method call
 			output, err := customerService.CreateUser(testCase.request)
