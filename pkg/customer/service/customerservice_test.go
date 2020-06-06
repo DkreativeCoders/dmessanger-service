@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/config/mail"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/customer/dto"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain"
@@ -19,6 +20,9 @@ func TestCustomerService_CreateUser(t *testing.T) {
 //	mock mailService
 
 	timeAdded := time.Now().Add(1 * time.Hour)
+	mailtobesent := mail.NewEMailMessage("DkreativeCoders Verify User",
+		"Please visit this link to verify your account. \n This links expires in an hour \n" + "http/Dmessanger:8900/verify-user/unique-111","daniel@gmail.com",
+		nil)
 
 	testCases := []struct {
 		name           string
@@ -33,13 +37,14 @@ func TestCustomerService_CreateUser(t *testing.T) {
 
 		uniqueIdGenerated string
 
+		tokenServiceInputUserID uint
+		tokenServiceInputUniqueID string
+		tokenServiceInputExpirationTimeInHour time.Duration
+		tokenServiceCreateReturnOutPut *domain.Token
+		tokenServiceCreateReturnError error
 
-		tokenRepositoryCreateInput domain.Token
-		tokenRepositoryCreateReturnOutPut *domain.Token
-		tokenRepositoryCreateReturnError error
 
-
-		mailServiceSendMailInput *mail.EMailMessage
+		mailServiceSendMailInput mail.EMailMessage
 		mailServiceSendMailOutput string
 		mailServiceSendMailError error
 
@@ -60,18 +65,45 @@ func TestCustomerService_CreateUser(t *testing.T) {
 
 			"unique-111",
 
-			domain.Token{UserId: 0,Token: "unique-111",ExpiresOn: timeAdded},
-			&domain.Token{Model: gorm.Model{ID: 0},UserId: 0,Token: "random string",ExpiresOn: timeAdded},
+			 0,
+			"unique-111",
+			1,
+			&domain.Token{Model: gorm.Model{ID: 0},UserId: 0,Token: "unique-111",ExpiresOn: timeAdded},
 			nil,
 
-			mail.NewEMailMessage("DkreativeCoders Verify User",
-				"Please visit this link to verify your account. \n This links expires in an hour \n" + "unique-111","daniel@gmail.com",
-				nil),
+			*mailtobesent,
 			"success",
 			nil,
 
 			&domain.Customer{User:domain.User{Model: gorm.Model{ID: 0},FirstName:"Daniel",LastName:"Dada",Age:"20",Email:"daniel@gmail.com", PhoneNumber:"08282888",Password:"password",Address:"address daniel"}},
 nil,
+		},
+
+		{
+			"Test customer already exist request",
+			dto.CustomerRequest{FirstName: "Daniel", LastName: "Dada", Age: "20", Email: "daniel@gmail.com", PhoneNumber: "08282888", Password: "password", Address: "address daniel"},
+
+			"daniel@gmail.com",
+			true,
+
+			domain.Customer{User:domain.User{FirstName: "Daniel", LastName: "Dada", Age: "20", Email: "daniel@gmail.com", PhoneNumber: "08282888", Password: "password", Address: "address daniel"},},
+			&domain.Customer{User:domain.User{Model: gorm.Model{ID: 0},FirstName:"Daniel",LastName:"Dada",Age:"20",Email:"daniel@gmail.com", PhoneNumber:"08282888",Password:"password",Address:"address daniel"}},
+			nil,
+
+			"unique-111",
+
+			0,
+			"unique-111",
+			1,
+			&domain.Token{Model: gorm.Model{ID: 0},UserId: 0,Token: "unique-111",ExpiresOn: timeAdded},
+			nil,
+
+			*mailtobesent,
+			"success",
+			nil,
+
+			nil,
+			errors.New("user Already Exist with email"),
 		},
 	}
 
@@ -88,8 +120,8 @@ nil,
 			customerRepo.On("Save", testCase.customerRepositorySaveInput).Return(testCase.customerRepositorySaveReturnOutput,testCase.customerRepositorySaveReturnError)
 
 			// Create dependency tokenRepo with mock implementation
-			tokenRepo := mocks.ITokenRepository{}
-			tokenRepo.On("Create", testCase.tokenRepositoryCreateInput).Return(testCase.tokenRepositoryCreateReturnOutPut,testCase.tokenRepositoryCreateReturnError)
+			tokenService := mocks.ITokenService{}
+			tokenService.On("CreateTokenWithExpirationInHours", testCase.tokenServiceInputUserID,testCase.tokenServiceInputUniqueID,testCase.tokenServiceInputExpirationTimeInHour).Return(testCase.tokenServiceCreateReturnOutPut,testCase.tokenServiceCreateReturnError)
 
 			// Create dependency tokenRepo with mock implementation
 			uuidService := mocks.IUuid{}
@@ -102,7 +134,7 @@ nil,
 
 
 			// Create userService and inject mock repo
-			customerService := INewCustomerService(&customerRepo,&userRepo,&tokenRepo,&mailService,&uuidService)
+			customerService := INewCustomerService(&customerRepo,&userRepo,&tokenService,&mailService,&uuidService)
 
 			// Actual method call
 			output, err := customerService.CreateUser(testCase.request)

@@ -9,18 +9,18 @@ import (
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/irepository"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/iservice"
 	"log"
-	"time"
 )
 
 //INewService return an interface that's why Constrictor/Method name is preceded with I
-func INewCustomerService(repository irepository.ICustomerRepository,
+func INewCustomerService(
+	repository irepository.ICustomerRepository,
 	userRepository irepository.IUserRepository,
-	tokenRepository irepository.ITokenRepository,
+	tokenService iservice.ITokenService,
 	mailService mail.IMail, uuid uuid.IUuid) iservice.ICustomerService {
 	return customerService{
 		repository,
 		userRepository,
-		tokenRepository,
+		tokenService,
 		mailService,
 		uuid,
 	}
@@ -29,7 +29,7 @@ func INewCustomerService(repository irepository.ICustomerRepository,
 type customerService struct {
 	customerRepository irepository.ICustomerRepository
 	userRepository     irepository.IUserRepository
-	tokenRepository    irepository.ITokenRepository
+	tokenService  	iservice.ITokenService
 	mailService        mail.IMail
 	uuid uuid.IUuid
 }
@@ -72,13 +72,14 @@ func (s customerService) CreateUser(request dto.CustomerRequest) (*domain.Custom
 func (s customerService) sendCustomerEmail(customer domain.Customer) (string, error) {
 	uniqueId, linkToSend := s.generateLinkToSendToUser()
 
-	err := s.saveToken(customer, uniqueId)
+	_, err := s.tokenService.CreateTokenWithExpirationInHours(customer.UserId, uniqueId,1)
 	if err != nil {
 		return "", err
 	}
 	email := s.createMail(customer, linkToSend)
 
 	feedback, err := s.mailService.SendEMail(*email)
+
 	if err != nil {
 		return "", errors.New("error occurred try to send mail, try again later")
 	}
@@ -87,18 +88,6 @@ func (s customerService) sendCustomerEmail(customer domain.Customer) (string, er
 
 }
 
-func (s customerService) saveToken(customer domain.Customer, uniqueId string)  error {
-	token := domain.Token{}
-	token.UserId = customer.UserId
-	token.Token = uniqueId
-	token.ExpiresOn = time.Now().Add(1 * time.Hour)
-
-	_, err := s.tokenRepository.Create(token)
-	if err != nil {
-		return  errors.New("error occurred, try again")
-	}
-	return  nil
-}
 
 func (s customerService) createMail(customer domain.Customer, linkToSend string) *mail.EMailMessage {
 	subject := "DkreativeCoders Verify User"
