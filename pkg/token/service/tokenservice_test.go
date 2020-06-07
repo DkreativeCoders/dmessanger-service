@@ -20,8 +20,6 @@ func TestTokenService_CreateTokenWithExpirationInHours(t *testing.T) {
 		return timeTestInputForRepo
 	})
 
-
-
 	testCases := []struct {
 		name           string
 		UserID uint
