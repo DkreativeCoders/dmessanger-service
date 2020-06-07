@@ -86,6 +86,10 @@ func (request *CustomerRequest) Validate() error {
 		return errors.New("email cannot be empty")
 	}
 
+	if request.Password == "" {
+		return errors.New("password cannot be empty")
+	}
+
 	//All the required parameters are present
 	return nil
 
