@@ -9,6 +9,9 @@ import (
 	_ "github.com/DkreativeCoders/dmessanger-service/pkg/user/doc"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/user/dto"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/utils"
+	"github.com/dgrijalva/jwt-go"
+	"os"
+	"time"
 )
 
 //INewService return an interface that's why Constrictor/Method name is preceded with I
@@ -123,6 +126,90 @@ func (s service) UpdatePassword(id int, request dto.UpdatePasswordRequest) error
 	return errors.New("incorrect password supplied")
 }
 
-func (s service) Login(request dto.LoginRequest) (domain.TokenResponse, error){
+func (s service) Login(request dto.LoginRequest) (*domain.TokenResponse, error) {
 
+	user, err := s.repository.FindByEmail(request.Email)
+
+	if err != nil {
+		return nil, errors.New("invalid login credentials. Please try again")
+	}
+
+	if !user.IsActive {
+		return nil, errors.New("user deactivated. Please contact administrator")
+	}
+
+	if !user.IsEnabled {
+		return nil, errors.New("user disabled. Please contact administrator")
+	}
+
+	if request.Password != user.Password {
+		return nil, errors.New("invalid login credentials. Please try again")
+	}
+
+	//successfully login
+
+	//userInfoTobeEncrypted := struct {
+	//	FirstName   string `json:"firstName"`
+	//	LastName    string `json:"lastName"`
+	//	Email       string `json:"email"`
+	//	PhoneNumber string `json:"phoneNumber"`
+	//	Address     string `json:"address"`
+	//}{
+	//	user.FirstName,
+	//	user.LastName,
+	//	user.Email,
+	//	user.PhoneNumber,
+	//	user.Address,
+	//}
+
+	expirationTime := time.Now().Add(30 * time.Minute).Format("2006-01-02 15:04:05")
+
+	//generate token
+
+	//tokenToBeEncrypted := struct {
+	//	user           interface{}
+	//	expirationTime string
+	//	tokenType      string
+	//	customer       []string
+	//}{
+	//	userInfoTobeEncrypted,
+	//	expirationTime,
+	//	"Bearer",
+	//	[]string{"customer"},
+	//}
+
+	//token := jwt.New(jwt.SigningMethodHS256)
+	//
+	//claims := token.Claims.(jwt.MapClaims)
+	//
+	//claims["authorized"] = true
+	//claims["client"] = "Elliot Forbes"
+	//claims["exp"] = time.Now().Add(time.Minute * 30).Unix()
+	//
+	//tokenString, err := token.SignedString("mySigningKey")
+
+
+	tokenToBeEncrypted := &domain.LoginToken{
+		Id: user.ID,
+		FirstName: user.FirstName,
+		LastName: user.LastName,
+		Email: user.Email,
+		PhoneNumber: user.PhoneNumber,
+		Address: user.Address,
+	}
+	tokenToBeEncrypted.IssuedAt = time.Now().Unix()
+	tokenToBeEncrypted.ExpiresAt = time.Now().Add(30 * time.Minute).Unix()
+	tokenToBeEncrypted.Issuer="DMessanger Service"
+
+	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tokenToBeEncrypted)
+	tokenString, _ := token.SignedString([]byte(os.Getenv("TOKEN_PASSWORD")))
+
+	tokenResp := &domain.TokenResponse{
+		tokenString,
+		expirationTime,
+		"Read",
+		"Bearer",
+	}
+
+	return tokenResp, nil
 }

@@ -7,7 +7,7 @@ import (
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/iservice"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/user/dto"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/utils"
-	jwt "github.com/dgrijalva/jwt-go"
+	//jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
@@ -23,6 +23,8 @@ func NewUserHandler(router *mux.Router, userService iservice.IUserService) {
 	router.HandleFunc("/api/v1/users/update-password/{userID}", handler.updatePassword).Methods("PATCH")
 	router.HandleFunc("/api/v1/users/enable-user/{userID}", handler.enableUser).Methods("PATCH")
 	router.HandleFunc("/api/v1/users/disable-user/{userID}", handler.disableUser).Methods("PATCH")
+	router.HandleFunc("/api/v1/login", handler.authenticateUser).Methods("POST")
+
 
 	//return userControllerHandler{userService}
 }
@@ -41,6 +43,13 @@ func (u userControllerHandler) authenticateUser(w http.ResponseWriter, r *http.R
 		json.NewEncoder(w).Encode(errResponse)
 		return
 	}
+
+	tokenResponse, err := u.userService.Login(request)
+
+
+	json.NewEncoder(w).Encode(tokenResponse)
+
+
 	//customer, errorRes := c.customerService.CreateUser(request)
 
 }
@@ -53,6 +62,8 @@ func (u userControllerHandler) create(w http.ResponseWriter, r *http.Request) {
 		utils.Respond(w, utils.Message(false, "Error while decoding request body"))
 		//return
 	}
+
+
 	//response := u.userService.CreateUser(user)
 	//utils.Respond(w, response)
 }
