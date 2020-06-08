@@ -40,10 +40,8 @@ func (u userControllerHandler) authenticateUser(w http.ResponseWriter, r *http.R
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(errResponse)
 		return
-		//return
 	}
 	//customer, errorRes := c.customerService.CreateUser(request)
-
 
 }
 
