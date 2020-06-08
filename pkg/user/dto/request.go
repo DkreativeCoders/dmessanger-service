@@ -20,3 +20,18 @@ func (request *UpdatePasswordRequest) Validate() error {
 
 	return nil
 }
+
+//{"access_token":"Z_1QUVC5M_EOCESISKW8AQ","expires_in":7200,"scope":"read","token_type":"Bearer"}
+type LoginRequest struct {
+	Email       string `json:"email"`
+	Password    string `json:"-"`
+}
+
+func (request *LoginRequest) Validate() error {
+
+	//if request.NewPassword != request.ConfirmNewPassword {
+	//	return errors.New("Passwords don't match")
+	//}
+	//
+	return nil
+}

@@ -7,6 +7,7 @@ import (
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/iservice"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/user/dto"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/utils"
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
@@ -28,6 +29,22 @@ func NewUserHandler(router *mux.Router, userService iservice.IUserService) {
 
 type userControllerHandler struct {
 	userService iservice.IUserService
+}
+
+
+func (u userControllerHandler) authenticateUser(w http.ResponseWriter, r *http.Request) {
+	var request dto.LoginRequest
+	err := json.NewDecoder(r.Body).Decode(&request)
+	if err != nil {
+		errResponse := defaultresponse.NewResponseDto(false, "Error while decoding request body")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(errResponse)
+		return
+		//return
+	}
+	//customer, errorRes := c.customerService.CreateUser(request)
+
+
 }
 
 //CreateUser calls the IUserService which is implemented by UserService
