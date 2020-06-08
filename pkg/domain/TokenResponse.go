@@ -1,4 +1,4 @@
-package defaultresponse
+package domain
 
 //{"access_token":"Z_1QUVC5M_EOCESISKW8AQ","expires_in":7200,"scope":"read","token_type":"Bearer"}
 type TokenResponse struct {

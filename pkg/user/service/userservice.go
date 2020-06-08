@@ -122,3 +122,7 @@ func (s service) UpdatePassword(id int, request dto.UpdatePasswordRequest) error
 
 	return errors.New("incorrect password supplied")
 }
+
+func (s service) Login(request dto.LoginRequest) (domain.TokenResponse, error){
+
+}

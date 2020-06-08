@@ -12,4 +12,5 @@ type IUserService interface {
 	UpdatePassword(id int, request dto.UpdatePasswordRequest) error
 	EnableUser(id int) error
 	DisableUser(id int) error
+	Login(request dto.LoginRequest) (domain.TokenResponse, error)
 }
