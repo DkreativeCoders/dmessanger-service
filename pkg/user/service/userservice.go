@@ -10,7 +10,6 @@ import (
 	"github.com/DkreativeCoders/dmessanger-service/pkg/user/dto"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/utils"
 	"github.com/dgrijalva/jwt-go"
-	"os"
 	"time"
 )
 
@@ -202,7 +201,10 @@ func (s service) Login(request dto.LoginRequest) (*domain.TokenResponse, error) 
 	tokenToBeEncrypted.Issuer="DMessanger Service"
 
 	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tokenToBeEncrypted)
-	tokenString, _ := token.SignedString([]byte(os.Getenv("TOKEN_PASSWORD")))
+	//tokenString, _ := token.SignedString([]byte(os.Getenv("TOKEN_PASSWORD")))
+	tokenString, _ := token.SignedString([]byte("thisIsTheJwtPassword"))
+
+	//thisIsTheJwtPassword
 
 	tokenResp := &domain.TokenResponse{
 		tokenString,

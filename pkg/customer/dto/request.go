@@ -17,7 +17,7 @@ type CustomerRequest struct {
 	// Required: true
 	PhoneNumber string `json:"phoneNumber"`
 	// Required: true
-	Password string `json:"-"`
+	Password string `json:"password"`
 	// Required: true
 	Address string `json:"address"`
 	//defaultShippingAddress 		string

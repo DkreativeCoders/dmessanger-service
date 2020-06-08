@@ -3,7 +3,7 @@
 // De-messenger
 //
 //     Schemes: http,https,127.0.0.1
-//     Host: localhost:8900
+//     Host: localhost:8900,dmessanger-service.herokuapp.com
 //     Version: 0.0.1
 //	   BasePath: /api
 //

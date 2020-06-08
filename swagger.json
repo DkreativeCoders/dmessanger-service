@@ -11,7 +11,7 @@
     "title": "De-messenger",
     "version": "0.0.1"
   },
-  "host": "localhost:8900",
+  "host": "localhost:8900,dmessanger-service.herokuapp.com",
   "basePath": "/api",
   "paths": {
     "/api/v1/customers": {
@@ -237,6 +237,7 @@
         "age",
         "email",
         "phoneNumber",
+        "password",
         "address"
       ],
       "properties": {
@@ -259,6 +260,10 @@
         "lastName": {
           "type": "string",
           "x-go-name": "LastName"
+        },
+        "password": {
+          "type": "string",
+          "x-go-name": "Password"
         },
         "phoneNumber": {
           "type": "string",
