@@ -178,10 +178,6 @@ func TestService_GetAllUser(t *testing.T) {
 
 func TestService_UpdatePassword(t *testing.T) {
 
-	if testing.Short() {
-		t.Skip("TestService_UpdatePassword skipped temporarily cos it fails")
-	}
-
 	var tests = []struct {
 		name             string
 		userId           int
