@@ -147,46 +147,11 @@ func (s service) Login(request dto.LoginRequest) (*domain.TokenResponse, error) 
 
 	//successfully login
 
-	//userInfoTobeEncrypted := struct {
-	//	FirstName   string `json:"firstName"`
-	//	LastName    string `json:"lastName"`
-	//	Email       string `json:"email"`
-	//	PhoneNumber string `json:"phoneNumber"`
-	//	Address     string `json:"address"`
-	//}{
-	//	user.FirstName,
-	//	user.LastName,
-	//	user.Email,
-	//	user.PhoneNumber,
-	//	user.Address,
-	//}
+
 
 	expirationTime := time.Now().Add(30 * time.Minute).Format("2006-01-02 15:04:05")
 
 	//generate token
-
-	//tokenToBeEncrypted := struct {
-	//	user           interface{}
-	//	expirationTime string
-	//	tokenType      string
-	//	customer       []string
-	//}{
-	//	userInfoTobeEncrypted,
-	//	expirationTime,
-	//	"Bearer",
-	//	[]string{"customer"},
-	//}
-
-	//token := jwt.New(jwt.SigningMethodHS256)
-	//
-	//claims := token.Claims.(jwt.MapClaims)
-	//
-	//claims["authorized"] = true
-	//claims["client"] = "Elliot Forbes"
-	//claims["exp"] = time.Now().Add(time.Minute * 30).Unix()
-	//
-	//tokenString, err := token.SignedString("mySigningKey")
-
 
 	tokenToBeEncrypted := &domain.LoginToken{
 		Id: user.ID,

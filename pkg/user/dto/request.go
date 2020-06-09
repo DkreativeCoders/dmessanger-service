@@ -22,6 +22,8 @@ func (request *UpdatePasswordRequest) Validate() error {
 }
 
 //{"access_token":"Z_1QUVC5M_EOCESISKW8AQ","expires_in":7200,"scope":"read","token_type":"Bearer"}
+
+//swagger:model login-request-model
 type LoginRequest struct {
 	Email       string `json:"email"`
 	Password    string `json:"-"`
