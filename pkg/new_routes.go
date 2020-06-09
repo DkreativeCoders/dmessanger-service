@@ -13,10 +13,15 @@ import (
 	"github.com/DkreativeCoders/dmessanger-service/pkg/user/controller/chttp"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/user/repository/orm"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/user/service"
+	"github.com/gorilla/handlers"
+
+	//"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	"github.com/joho/godotenv"
+	"log"
 	"net/http"
+
 	"os"
 )
 
@@ -70,12 +75,86 @@ func NewServer() (*http.Server, *gorm.DB) {
 	}
 
 	fmt.Println(port)
-	srv := &http.Server{Handler: router, Addr: ":" + port}
+	//corx := handlers.CORS(
+	//	handlers.AllowedHeaders([]string{"Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization"}),
+	//	handlers.AllowedOrigins([]string{"*"}),
+	//	handlers.AllowedMethods([]string{"POST, GET, OPTIONS, PUT, DELETE,OPTIONS"}),
+	//	handlers.AllowCredentials(),
+	//
+	//)
 
-	err := http.ListenAndServe(":"+port, router) //Launch the app, visit localhost:8000/api
-	if err != nil {
-		fmt.Print(err)
-	}
 
-	return srv, dbConnection
+	//(router)
+	//c := cors.New(cors.Options{
+	//	AllowedOrigins: []string{"*","http://foo.com", "http://foo.com:8080"},
+	//	AllowCredentials: true,
+	//	AllowedMethods: []string{"POST, GET, OPTIONS, PUT, DELETE,OPTIONS"},
+	//	// Enable Debugging for testing, consider disabling in production
+	//	Debug: true,
+	//})
+
+	//c.Handler(router)
+
+	//router.Use(c)
+
+	//router.Use(setUPR)
+	//router.Use(loggingMiddleware)
+
+	//router.Use(cors)
+
+	//router.Use(mux.CORSMethodMiddleware(router))
+
+	//srv := &http.Server{Handler:router, Addr: ":" + port}
+
+	x:=handlers.CORS(
+		handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}),
+		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}),
+		handlers.AllowedOrigins([]string{"*"}))(router)
+
+	log.Fatal(http.ListenAndServe(":"+port, x))
+
+
+	//log.Fatal(http.ListenAndServe(":"+port, (corx)(router)))
+
+
+	//err := http.ListenAndServe(":"+port, (corx)(router)) //Launch the app, visit localhost:8000/api
+	//if err != nil {
+	//	fmt.Print(err)
+	//}
+
+	//return srv, dbConnection
+	return nil, dbConnection
+
+}
+
+func loggingMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Do stuff here
+		log.Println(r.RequestURI)
+		// Call the next handler, which can be another middleware in the chain, or the final handler.
+		if r.Method == "OPTIONS" {
+			w.WriteHeader(http.StatusOK)
+			log.Println("okay options")
+
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
+func setUPR(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Do stuff here
+		// Call the next handler, which can be another middleware in the chain, or the final handler.
+		setupResponse(&w, r)
+
+		next.ServeHTTP(w, r)
+	})
+}
+
+func setupResponse(w *http.ResponseWriter, req *http.Request) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+	(*w).Header().Set("Access-Control-Allow-Origin", "http://foo.com")
+	(*w).Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	(*w).Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 }
