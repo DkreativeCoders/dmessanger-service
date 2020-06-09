@@ -35,7 +35,7 @@ type userControllerHandler struct {
 
 
 func (u userControllerHandler) authenticateUser(w http.ResponseWriter, r *http.Request) {
-	// swagger:operation POST /api/v1/customers userAuthentication
+	// swagger:operation POST /api/v1/authenticate userAuthentication
 	//
 	// All User Authentication
 	// ---
@@ -47,11 +47,11 @@ func (u userControllerHandler) authenticateUser(w http.ResponseWriter, r *http.R
 	//   default:
 	//     "$ref": "#/responses/responseDto"
 	//   200:
-	//     "$ref": "#/responses/customerCreatedResponse"
+	//     "$ref": "#/responses/tokenResponse"
 	//   400:
-	//     "$ref": "#/responses/customerBadRequestResponse"
+	//     "$ref": "#/responses/badRequestResponse"
 	//   401:
-	//     "$ref": "#/responses/customerErrorResponse"
+	//     "$ref": "#/responses/unAuthenticatedResponse"
 	var request dto.LoginRequest
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {

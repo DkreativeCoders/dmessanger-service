@@ -25,7 +25,7 @@ type EnableUserRequestWrapper struct {
 	UserID int
 }
 
-// swagger:parameters updatePassword
+// swagger:parameters userAuthentication
 type LoginRequestWrapper struct {
 	// in: body
 	Body dto.LoginRequest
