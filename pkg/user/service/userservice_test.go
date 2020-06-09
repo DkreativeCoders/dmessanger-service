@@ -272,7 +272,7 @@ func TestService_UpdatePassword(t *testing.T) {
 	}
 }
 
-func TestService_UpdatePassword(t *testing.T) {
+func TestService_Login(t *testing.T) {
 
 	if testing.Short() {
 		t.Skip("TestService_UpdatePassword skipped temporarily cos it fails")
@@ -281,89 +281,165 @@ func TestService_UpdatePassword(t *testing.T) {
 	var tests = []struct {
 		name             string
 		userId           int
-		requestBody      dto.UpdatePasswordRequest
-		expectedResponse error
+		requestBody      dto.LoginRequest
+
+		repoFindByEmail string
 		repoReturnData   *domain.User
 		repoReturnErr    error
-		repoUpdateData   domain.User
-		repoUpdateError  error
+
+		expectedResponse domain.TokenResponse
+		expectedErrorResonse error
+
+
 	}{
 		{
 			"Test with valid input",
 			1,
-			dto.UpdatePasswordRequest{
-				OldPassword:        "password",
-				NewPassword:        "newpassword",
-				ConfirmNewPassword: "newpassword",
+			dto.LoginRequest{
+				Email:        "daniel@gmail.com",
+				Password:        "password",
+			},
+
+			"daniel@gmail.com",
+			&domain.User{
+				Model: gorm.Model{ID: 1},
+				FirstName: "Adam",
+				LastName: "Mark", Age: "24",
+				Email: "daniel@gmail.com",
+				PhoneNumber: "01-2345-6789",
+				Password: "password",
+				Address: "401, Hebert Mark Way",
+				IsEnabled: true,
+				IsActive: true,
 			},
 			nil,
-			&domain.User{Model: gorm.Model{ID: 1}, FirstName: "Adam", LastName: "Mark", Age: "24", Email: "amark@gmail.com", PhoneNumber: "01-2345-6789", Password: "password", Address: "401, Hebert Mark Way"},
+
+			domain.TokenResponse{AccessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
+				ExpiresIn: "2020-06-09 02:50:18",
+				Scope:     "read",
+				TokenType: "Bearer",
+			},
 			nil,
-			domain.User{Model: gorm.Model{ID: 1}, FirstName: "Adam", LastName: "Mark", Age: "24", Email: "amark@gmail.com", PhoneNumber: "01-2345-6789", Password: "newpassword", Address: "401, Hebert Mark Way"},
-			nil,
+
 		},
 		{
-			"Test with same password in db",
+			"Test with deactivated user input",
 			1,
-			dto.UpdatePasswordRequest{
-				OldPassword:        "password",
-				NewPassword:        "password",
-				ConfirmNewPassword: "password",
+			dto.LoginRequest{
+				Email:        "daniel@gmail.com",
+				Password:        "password",
 			},
-			errors.New("Please select a new password"),
-			&domain.User{Model: gorm.Model{ID: 1}, FirstName: "Adam", LastName: "Mark", Age: "24", Email: "amark@gmail.com", PhoneNumber: "01-2345-6789", Password: "password", Address: "401, Hebert Mark Way"},
+
+			"daniel@gmail.com",
+			&domain.User{
+				Model: gorm.Model{ID: 1},
+				FirstName: "Adam",
+				LastName: "Mark", Age: "24",
+				Email: "daniel@gmail.com",
+				PhoneNumber: "01-2345-6789",
+				Password: "password",
+				Address: "401, Hebert Mark Way",
+				IsEnabled: true,
+				IsActive: false,
+			},
 			nil,
-			domain.User{Model: gorm.Model{ID: 1}, FirstName: "Adam", LastName: "Mark", Age: "24", Email: "amark@gmail.com", PhoneNumber: "01-2345-6789", Password: "password", Address: "401, Hebert Mark Way"},
-			nil,
+
+			domain.TokenResponse{AccessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
+				ExpiresIn: "2020-06-09 02:50:18",
+				Scope:     "read",
+				TokenType: "Bearer",
+			},
+			errors.New("user deactivated. Please contact administrator"),
+
 		},
 		{
-			"Test with same passwords that do not match",
+			"Test with disabled user input",
 			1,
-			dto.UpdatePasswordRequest{
-				OldPassword:        "password",
-				NewPassword:        "newpassword1",
-				ConfirmNewPassword: "newpassword2",
+			dto.LoginRequest{
+				Email:        "daniel@gmail.com",
+				Password:        "password",
 			},
-			errors.New("Passwords don't match"),
-			&domain.User{Model: gorm.Model{ID: 1}, FirstName: "Adam", LastName: "Mark", Age: "24", Email: "amark@gmail.com", PhoneNumber: "01-2345-6789", Password: "password", Address: "401, Hebert Mark Way"},
+
+			"daniel@gmail.com",
+			&domain.User{
+				Model: gorm.Model{ID: 1},
+				FirstName: "Adam",
+				LastName: "Mark", Age: "24",
+				Email: "daniel@gmail.com",
+				PhoneNumber: "01-2345-6789",
+				Password: "password",
+				Address: "401, Hebert Mark Way",
+				IsEnabled: false,
+				IsActive: true,
+			},
 			nil,
-			domain.User{Model: gorm.Model{ID: 1}, FirstName: "Adam", LastName: "Mark", Age: "24", Email: "amark@gmail.com", PhoneNumber: "01-2345-6789", Password: "newpassword1", Address: "401, Hebert Mark Way"},
-			nil,
+
+			domain.TokenResponse{AccessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
+				ExpiresIn: "2020-06-09 02:50:18",
+				Scope:     "read",
+				TokenType: "Bearer",
+			},
+			errors.New("user disabled. Please contact administrator"),
+
 		},
 		{
-			"Incorrect old password",
+			"Test with Incorrect password input",
 			1,
-			dto.UpdatePasswordRequest{
-				OldPassword:        "incorrect",
-				NewPassword:        "newpassword",
-				ConfirmNewPassword: "newpassword",
+			dto.LoginRequest{
+				Email:        "daniel@gmail.com",
+				Password:        "password",
 			},
-			errors.New("Incorrect password supplied"),
-			&domain.User{Model: gorm.Model{ID: 1}, FirstName: "Adam", LastName: "Mark", Age: "24", Email: "amark@gmail.com", PhoneNumber: "01-2345-6789", Password: "password", Address: "401, Hebert Mark Way"},
+
+			"daniel@gmail.com",
+			&domain.User{
+				Model: gorm.Model{ID: 1},
+				FirstName: "Adam",
+				LastName: "Mark", Age: "24",
+				Email: "daniel@gmail.com",
+				PhoneNumber: "01-2345-6789",
+				Password: "password-incorrect",
+				Address: "401, Hebert Mark Way",
+				IsEnabled: true,
+				IsActive: true,
+			},
 			nil,
-			domain.User{Model: gorm.Model{ID: 1}, FirstName: "Adam", LastName: "Mark", Age: "24", Email: "amark@gmail.com", PhoneNumber: "01-2345-6789", Password: "incorrect", Address: "401, Hebert Mark Way"},
-			nil,
+
+			domain.TokenResponse{AccessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
+				ExpiresIn: "2020-06-09 02:50:18",
+				Scope:     "read",
+				TokenType: "Bearer",
+			},
+			errors.New("invalid login credentials. Please try again"),
+
 		},
+
+
 	}
 
 	for _, testCase := range tests {
 
 		t.Run(testCase.name, func(t *testing.T) {
 			// Create dependency userRepo with mock implementation
-			userRepo := mocks.UserRepository{}
-			userRepo.On("FindByID", testCase.userId).Return(testCase.repoReturnData, testCase.repoReturnErr)
-			userRepo.On("Update", testCase.repoUpdateData).Return(&testCase.repoUpdateData, testCase.repoUpdateError)
+			userRepo := mocks.IUserRepository{}
+			userRepo.On("FindByEmail", testCase.repoFindByEmail).Return(testCase.repoReturnData, testCase.repoReturnErr)
 
 			// Create userService and inject mock repo
 			userService := service.INewService(&userRepo)
 
 			// Actual method call
-			output := userService.UpdatePassword(testCase.userId, testCase.requestBody)
+			output, err := userService.Login(testCase.requestBody)
 
-			// Expected output
-			expected := testCase.expectedResponse
+			if err != nil {
+				assert.Equal(t, testCase.expectedErrorResonse, err)
+			}else {
+				// Expected output
 
-			assert.Equal(t, expected, output)
+				expected := testCase.expectedResponse
+
+				assert.Equal(t, expected.TokenType, output.TokenType)
+			}
+
+
 		})
 	}
 }
