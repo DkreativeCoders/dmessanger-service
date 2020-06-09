@@ -25,8 +25,8 @@ func (request *UpdatePasswordRequest) Validate() error {
 
 //swagger:model login-request-model
 type LoginRequest struct {
-	Email       string `json:"email"`
-	Password    string `json:"password"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
 func (request *LoginRequest) Validate() error {

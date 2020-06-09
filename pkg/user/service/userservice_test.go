@@ -279,38 +279,36 @@ func TestService_Login(t *testing.T) {
 	}
 
 	var tests = []struct {
-		name             string
-		userId           int
-		requestBody      dto.LoginRequest
+		name        string
+		userId      int
+		requestBody dto.LoginRequest
 
 		repoFindByEmail string
-		repoReturnData   *domain.User
-		repoReturnErr    error
+		repoReturnData  *domain.User
+		repoReturnErr   error
 
-		expectedResponse domain.TokenResponse
+		expectedResponse     domain.TokenResponse
 		expectedErrorResonse error
-
-
 	}{
 		{
 			"Test with valid input",
 			1,
 			dto.LoginRequest{
-				Email:        "daniel@gmail.com",
-				Password:        "password",
+				Email:    "daniel@gmail.com",
+				Password: "password",
 			},
 
 			"daniel@gmail.com",
 			&domain.User{
-				Model: gorm.Model{ID: 1},
+				Model:     gorm.Model{ID: 1},
 				FirstName: "Adam",
-				LastName: "Mark", Age: "24",
-				Email: "daniel@gmail.com",
+				LastName:  "Mark", Age: "24",
+				Email:       "daniel@gmail.com",
 				PhoneNumber: "01-2345-6789",
-				Password: "password",
-				Address: "401, Hebert Mark Way",
-				IsEnabled: true,
-				IsActive: true,
+				Password:    "password",
+				Address:     "401, Hebert Mark Way",
+				IsEnabled:   true,
+				IsActive:    true,
 			},
 			nil,
 
@@ -320,27 +318,26 @@ func TestService_Login(t *testing.T) {
 				TokenType: "Bearer",
 			},
 			nil,
-
 		},
 		{
 			"Test with deactivated user input",
 			1,
 			dto.LoginRequest{
-				Email:        "daniel@gmail.com",
-				Password:        "password",
+				Email:    "daniel@gmail.com",
+				Password: "password",
 			},
 
 			"daniel@gmail.com",
 			&domain.User{
-				Model: gorm.Model{ID: 1},
+				Model:     gorm.Model{ID: 1},
 				FirstName: "Adam",
-				LastName: "Mark", Age: "24",
-				Email: "daniel@gmail.com",
+				LastName:  "Mark", Age: "24",
+				Email:       "daniel@gmail.com",
 				PhoneNumber: "01-2345-6789",
-				Password: "password",
-				Address: "401, Hebert Mark Way",
-				IsEnabled: true,
-				IsActive: false,
+				Password:    "password",
+				Address:     "401, Hebert Mark Way",
+				IsEnabled:   true,
+				IsActive:    false,
 			},
 			nil,
 
@@ -350,27 +347,26 @@ func TestService_Login(t *testing.T) {
 				TokenType: "Bearer",
 			},
 			errors.New("user deactivated. Please contact administrator"),
-
 		},
 		{
 			"Test with disabled user input",
 			1,
 			dto.LoginRequest{
-				Email:        "daniel@gmail.com",
-				Password:        "password",
+				Email:    "daniel@gmail.com",
+				Password: "password",
 			},
 
 			"daniel@gmail.com",
 			&domain.User{
-				Model: gorm.Model{ID: 1},
+				Model:     gorm.Model{ID: 1},
 				FirstName: "Adam",
-				LastName: "Mark", Age: "24",
-				Email: "daniel@gmail.com",
+				LastName:  "Mark", Age: "24",
+				Email:       "daniel@gmail.com",
 				PhoneNumber: "01-2345-6789",
-				Password: "password",
-				Address: "401, Hebert Mark Way",
-				IsEnabled: false,
-				IsActive: true,
+				Password:    "password",
+				Address:     "401, Hebert Mark Way",
+				IsEnabled:   false,
+				IsActive:    true,
 			},
 			nil,
 
@@ -380,27 +376,26 @@ func TestService_Login(t *testing.T) {
 				TokenType: "Bearer",
 			},
 			errors.New("user disabled. Please contact administrator"),
-
 		},
 		{
 			"Test with Incorrect password input",
 			1,
 			dto.LoginRequest{
-				Email:        "daniel@gmail.com",
-				Password:        "password",
+				Email:    "daniel@gmail.com",
+				Password: "password",
 			},
 
 			"daniel@gmail.com",
 			&domain.User{
-				Model: gorm.Model{ID: 1},
+				Model:     gorm.Model{ID: 1},
 				FirstName: "Adam",
-				LastName: "Mark", Age: "24",
-				Email: "daniel@gmail.com",
+				LastName:  "Mark", Age: "24",
+				Email:       "daniel@gmail.com",
 				PhoneNumber: "01-2345-6789",
-				Password: "password-incorrect",
-				Address: "401, Hebert Mark Way",
-				IsEnabled: true,
-				IsActive: true,
+				Password:    "password-incorrect",
+				Address:     "401, Hebert Mark Way",
+				IsEnabled:   true,
+				IsActive:    true,
 			},
 			nil,
 
@@ -410,10 +405,7 @@ func TestService_Login(t *testing.T) {
 				TokenType: "Bearer",
 			},
 			errors.New("invalid login credentials. Please try again"),
-
 		},
-
-
 	}
 
 	for _, testCase := range tests {
@@ -431,14 +423,13 @@ func TestService_Login(t *testing.T) {
 
 			if err != nil {
 				assert.Equal(t, testCase.expectedErrorResonse, err)
-			}else {
+			} else {
 				// Expected output
 
 				expected := testCase.expectedResponse
 
 				assert.Equal(t, expected.TokenType, output.TokenType)
 			}
-
 
 		})
 	}

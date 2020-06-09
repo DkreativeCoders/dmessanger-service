@@ -10,14 +10,13 @@ import (
 func TestUser_Validate(t *testing.T) {
 
 	testCases := []struct {
-		name           string
-		customerRequest           dto.CustomerRequest
-		expected      error
+		name            string
+		customerRequest dto.CustomerRequest
+		expected        error
 	}{
 		{"Test with empty first name",
 			dto.CustomerRequest{FirstName: "", LastName: "Mark", Age: "34", Email: "adam@gmail.com", PhoneNumber: "01-7463-546", Password: "password", Address: "12 Akobi Crescent"},
-			 errors.New("firstName cannot be empty"),
-
+			errors.New("firstName cannot be empty"),
 		},
 		{"Test with empty last name",
 			dto.CustomerRequest{FirstName: "Adam", LastName: "", Age: "34", Email: "adam@gmail.com", PhoneNumber: "01-7463-546", Password: "password", Address: "12 Akobi Crescent"},
@@ -36,12 +35,12 @@ func TestUser_Validate(t *testing.T) {
 			errors.New("email cannot be empty"),
 		},
 		{"Test with empty password",
-			dto.CustomerRequest{FirstName: "Adam", LastName: "Mark", Age: "34", Email: "email@email.com", PhoneNumber: "01-7463-546", Password:"", Address: "12 Akobi Crescent"},
+			dto.CustomerRequest{FirstName: "Adam", LastName: "Mark", Age: "34", Email: "email@email.com", PhoneNumber: "01-7463-546", Password: "", Address: "12 Akobi Crescent"},
 			errors.New("password cannot be empty"),
 		},
 		{"Test with valid arguments",
 			dto.CustomerRequest{FirstName: "Adam", LastName: "Mark", Age: "34", Email: "adam@gmail.com", PhoneNumber: "01-7463-546", Password: "password", Address: "12 Akobi Crescent"},
-		nil,
+			nil,
 		},
 	}
 
@@ -49,8 +48,6 @@ func TestUser_Validate(t *testing.T) {
 		t.Run(testCase.name, func(t *testing.T) {
 			// run user validate function
 			err := testCase.customerRequest.Validate()
-
-
 
 			// check output
 			if !reflect.DeepEqual(err, testCase.expected) {

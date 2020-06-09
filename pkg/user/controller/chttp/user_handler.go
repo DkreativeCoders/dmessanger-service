@@ -25,14 +25,12 @@ func NewUserHandler(router *mux.Router, userService iservice.IUserService) {
 	router.HandleFunc("/api/v1/users/disable-user/{userID}", handler.disableUser).Methods("PATCH")
 	router.HandleFunc("/api/v1/login", handler.authenticateUser).Methods("POST")
 
-
 	//return userControllerHandler{userService}
 }
 
 type userControllerHandler struct {
 	userService iservice.IUserService
 }
-
 
 func (u userControllerHandler) authenticateUser(w http.ResponseWriter, r *http.Request) {
 	// swagger:operation POST /api/v1/authenticate userAuthentication
@@ -70,9 +68,7 @@ func (u userControllerHandler) authenticateUser(w http.ResponseWriter, r *http.R
 		return
 	}
 
-
 	json.NewEncoder(w).Encode(tokenResponse)
-
 
 	//customer, errorRes := c.customerService.CreateUser(request)
 
@@ -86,7 +82,6 @@ func (u userControllerHandler) create(w http.ResponseWriter, r *http.Request) {
 		utils.Respond(w, utils.Message(false, "Error while decoding request body"))
 		//return
 	}
-
 
 	//response := u.userService.CreateUser(user)
 	//utils.Respond(w, response)

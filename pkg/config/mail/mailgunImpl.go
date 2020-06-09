@@ -47,7 +47,7 @@ func (m mailGunImplementation) SendMail(subject, text string, to ...string) (str
 	return id, err
 }
 
-func (m mailGunImplementation) SendEMail(email EMailMessage) (string, error){
+func (m mailGunImplementation) SendEMail(email EMailMessage) (string, error) {
 	mg := mailgun.NewMailgun(m.domain, m.apiKey)
 
 	message := mg.NewMessage(
@@ -63,7 +63,6 @@ func (m mailGunImplementation) SendEMail(email EMailMessage) (string, error){
 	_, id, err := mg.Send(ctx, message)
 	return id, err
 }
-
 
 func (m mailGunImplementation) SendMailWithHtMlTemplate() (string, error) {
 	panic("implement me")

@@ -21,28 +21,27 @@ func TestTokenService_CreateTokenWithExpirationInHours(t *testing.T) {
 	})
 
 	testCases := []struct {
-		name           string
-		UserID uint
-		uniqueID string
+		name                 string
+		UserID               uint
+		uniqueID             string
 		expirationTimeInHour time.Duration
-		repoTokenInputData  domain.Token
-		repoTokenReturnData *domain.Token
-		repoReturnErr  error
-		expectedVal    *domain.Token
-		expectedErr error
+		repoTokenInputData   domain.Token
+		repoTokenReturnData  *domain.Token
+		repoReturnErr        error
+		expectedVal          *domain.Token
+		expectedErr          error
 	}{
 		{
 			"Test with valid  input",
 			1,
 			"unique-id",
 			1,
-			domain.Token{UserId: 1,Token: "unique-id",ExpiresOn:timeTest2 },
-			&domain.Token{Model: gorm.Model{ID: 0},UserId: 1,Token: "unique-id",ExpiresOn:timeTest2},
+			domain.Token{UserId: 1, Token: "unique-id", ExpiresOn: timeTest2},
+			&domain.Token{Model: gorm.Model{ID: 0}, UserId: 1, Token: "unique-id", ExpiresOn: timeTest2},
 			nil,
-			&domain.Token{Model: gorm.Model{ID: 0},UserId: 1,Token: "unique-id",ExpiresOn:timeTestInputForRepo.Add(1 * time.Hour)},
+			&domain.Token{Model: gorm.Model{ID: 0}, UserId: 1, Token: "unique-id", ExpiresOn: timeTestInputForRepo.Add(1 * time.Hour)},
 			nil,
 		},
-
 	}
 
 	for _, testCase := range testCases {
@@ -56,7 +55,7 @@ func TestTokenService_CreateTokenWithExpirationInHours(t *testing.T) {
 			tokenService := INewTokenService(&tokenRepo)
 
 			// Actual method call
-			output, _ := tokenService.CreateTokenWithExpirationInHours(testCase.UserID,testCase.uniqueID,testCase.expirationTimeInHour)
+			output, _ := tokenService.CreateTokenWithExpirationInHours(testCase.UserID, testCase.uniqueID, testCase.expirationTimeInHour)
 
 			monkey.Unpatch(time.Now)
 			// Expected output

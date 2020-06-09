@@ -147,23 +147,21 @@ func (s service) Login(request dto.LoginRequest) (*domain.TokenResponse, error) 
 
 	//successfully login
 
-
-
 	expirationTime := time.Now().Add(30 * time.Minute).Format("2006-01-02 15:04:05")
 
 	//generate token
 
 	tokenToBeEncrypted := &domain.LoginToken{
-		Id: user.ID,
-		FirstName: user.FirstName,
-		LastName: user.LastName,
-		Email: user.Email,
+		Id:          user.ID,
+		FirstName:   user.FirstName,
+		LastName:    user.LastName,
+		Email:       user.Email,
 		PhoneNumber: user.PhoneNumber,
-		Address: user.Address,
+		Address:     user.Address,
 	}
 	tokenToBeEncrypted.IssuedAt = time.Now().Unix()
 	tokenToBeEncrypted.ExpiresAt = time.Now().Add(30 * time.Minute).Unix()
-	tokenToBeEncrypted.Issuer="DMessanger Service"
+	tokenToBeEncrypted.Issuer = "DMessanger Service"
 
 	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tokenToBeEncrypted)
 	//tokenString, _ := token.SignedString([]byte(os.Getenv("TOKEN_PASSWORD")))
