@@ -1,12 +1,12 @@
 package doc
 
 import (
-	"github.com/DkreativeCoders/dmessanger-service/pkg/user/dto"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/domain"
 )
 
-// A UserResponse .
-//swagger:response userResponse
+// A TokenResponse .
+//swagger:response tokenResponse
 type UserResponseWrapper struct {
 	// in: body
-	Body dto.UserResponseDto
+	Body domain.TokenResponse
 }

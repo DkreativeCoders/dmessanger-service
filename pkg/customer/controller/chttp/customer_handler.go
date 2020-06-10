@@ -73,8 +73,7 @@ func (c customerControllerHandler) create(w http.ResponseWriter, r *http.Request
 
 }
 
-
-func (c customerControllerHandler) activate(w http.ResponseWriter, r *http.Request){
+func (c customerControllerHandler) activate(w http.ResponseWriter, r *http.Request) {
 	// swagger:operation PUT /verify-user/{Token} activateCustomer
 	//
 	// Activate customer
@@ -89,7 +88,7 @@ func (c customerControllerHandler) activate(w http.ResponseWriter, r *http.Reque
 
 	token := mux.Vars(r)["token"]
 	err := c.customerService.ActivateUser(token)
-	if err != nil{
+	if err != nil {
 		errResponse := defaultresponse.NewResponseDto(false, err.Error())
 		w.WriteHeader(http.StatusExpectationFailed)
 		json.NewEncoder(w).Encode(errResponse)

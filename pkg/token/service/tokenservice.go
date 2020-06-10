@@ -25,12 +25,11 @@ func (s service) CreateTokenWithExpirationInHours(UserID uint, uniqueID string, 
 	newToken, err := s.tokenRepository.Create(token)
 
 	if err != nil {
-		return  nil,errors.New("error occurred, try again")
+		return nil, errors.New("error occurred, try again")
 	}
-	return  newToken,nil
+	return newToken, nil
 }
 
 func (s service) CreateTokenWithExpirationInMinutes(UserID uint, uniqueID string, expirationTimeInMinutes time.Duration) (*domain.Token, error) {
 	panic("implement me")
 }
-

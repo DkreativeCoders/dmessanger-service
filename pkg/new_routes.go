@@ -49,7 +49,6 @@ func NewServer() (*http.Server, *gorm.DB) {
 
 	tokenRepository := tokenOrm.NewOrmTokenRepository(dbConnection)
 	tokenService := token_Service.INewTokenService(tokenRepository)
-	
 
 	//Initialize the repository for any the service
 	userRepository := orm.NewOrmUserRepository(dbConnection)
@@ -61,7 +60,7 @@ func NewServer() (*http.Server, *gorm.DB) {
 	//Initialize the repository for any the service
 	customerRepository := customerOrm.NewOrmCustomerRepository(dbConnection)
 	//Initialize the Service for any the handler
-	newCustomerService := customerService.INewCustomerService(customerRepository, userRepository,tokenRepository, tokenService, mailService, uuid)
+	newCustomerService := customerService.INewCustomerService(customerRepository, userRepository, tokenRepository, tokenService, mailService, uuid)
 	//pass in the route and the user service
 	chttp2.NewCustomerHandler(router, newCustomerService)
 

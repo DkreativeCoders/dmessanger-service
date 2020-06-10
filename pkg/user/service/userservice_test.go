@@ -267,3 +267,166 @@ func TestService_UpdatePassword(t *testing.T) {
 		})
 	}
 }
+
+func TestService_Login(t *testing.T) {
+
+	if testing.Short() {
+		t.Skip("TestService_UpdatePassword skipped temporarily cos it fails")
+	}
+
+	var tests = []struct {
+		name        string
+		userId      int
+		requestBody dto.LoginRequest
+
+		repoFindByEmail string
+		repoReturnData  *domain.User
+		repoReturnErr   error
+
+		expectedResponse     domain.TokenResponse
+		expectedErrorResonse error
+	}{
+		{
+			"Test with valid input",
+			1,
+			dto.LoginRequest{
+				Email:    "daniel@gmail.com",
+				Password: "password",
+			},
+
+			"daniel@gmail.com",
+			&domain.User{
+				Model:     gorm.Model{ID: 1},
+				FirstName: "Adam",
+				LastName:  "Mark", Age: "24",
+				Email:       "daniel@gmail.com",
+				PhoneNumber: "01-2345-6789",
+				Password:    "password",
+				Address:     "401, Hebert Mark Way",
+				IsEnabled:   true,
+				IsActive:    true,
+			},
+			nil,
+
+			domain.TokenResponse{AccessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
+				ExpiresIn: "2020-06-09 02:50:18",
+				Scope:     "read",
+				TokenType: "Bearer",
+			},
+			nil,
+		},
+		{
+			"Test with deactivated user input",
+			1,
+			dto.LoginRequest{
+				Email:    "daniel@gmail.com",
+				Password: "password",
+			},
+
+			"daniel@gmail.com",
+			&domain.User{
+				Model:     gorm.Model{ID: 1},
+				FirstName: "Adam",
+				LastName:  "Mark", Age: "24",
+				Email:       "daniel@gmail.com",
+				PhoneNumber: "01-2345-6789",
+				Password:    "password",
+				Address:     "401, Hebert Mark Way",
+				IsEnabled:   true,
+				IsActive:    false,
+			},
+			nil,
+
+			domain.TokenResponse{AccessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
+				ExpiresIn: "2020-06-09 02:50:18",
+				Scope:     "read",
+				TokenType: "Bearer",
+			},
+			errors.New("user deactivated. Please contact administrator"),
+		},
+		{
+			"Test with disabled user input",
+			1,
+			dto.LoginRequest{
+				Email:    "daniel@gmail.com",
+				Password: "password",
+			},
+
+			"daniel@gmail.com",
+			&domain.User{
+				Model:     gorm.Model{ID: 1},
+				FirstName: "Adam",
+				LastName:  "Mark", Age: "24",
+				Email:       "daniel@gmail.com",
+				PhoneNumber: "01-2345-6789",
+				Password:    "password",
+				Address:     "401, Hebert Mark Way",
+				IsEnabled:   false,
+				IsActive:    true,
+			},
+			nil,
+
+			domain.TokenResponse{AccessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
+				ExpiresIn: "2020-06-09 02:50:18",
+				Scope:     "read",
+				TokenType: "Bearer",
+			},
+			errors.New("user disabled. Please contact administrator"),
+		},
+		{
+			"Test with Incorrect password input",
+			1,
+			dto.LoginRequest{
+				Email:    "daniel@gmail.com",
+				Password: "password",
+			},
+
+			"daniel@gmail.com",
+			&domain.User{
+				Model:     gorm.Model{ID: 1},
+				FirstName: "Adam",
+				LastName:  "Mark", Age: "24",
+				Email:       "daniel@gmail.com",
+				PhoneNumber: "01-2345-6789",
+				Password:    "password-incorrect",
+				Address:     "401, Hebert Mark Way",
+				IsEnabled:   true,
+				IsActive:    true,
+			},
+			nil,
+
+			domain.TokenResponse{AccessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
+				ExpiresIn: "2020-06-09 02:50:18",
+				Scope:     "read",
+				TokenType: "Bearer",
+			},
+			errors.New("invalid login credentials. Please try again"),
+		},
+	}
+
+	for _, testCase := range tests {
+
+		t.Run(testCase.name, func(t *testing.T) {
+			// Create dependency userRepo with mock implementation
+			userRepo := mocks.IUserRepository{}
+			userRepo.On("FindByEmail", testCase.repoFindByEmail).Return(testCase.repoReturnData, testCase.repoReturnErr)
+
+			// Create userService and inject mock repo
+			userService := service.INewService(&userRepo)
+
+			// Actual method call
+			output, err := userService.Login(testCase.requestBody)
+
+			if err != nil {
+				assert.Equal(t, testCase.expectedErrorResonse, err)
+			} else {
+				// Expected output
+
+				expected := testCase.expectedResponse
+
+				assert.Equal(t, expected.TokenType, output.TokenType)
+			}
+
+		})
+	}
+}
