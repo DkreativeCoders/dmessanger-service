@@ -18,3 +18,4 @@ func NewResponseDto(status bool, message string) *ResponseDto {
 	response.Message = message
 	return &response
 }
+
