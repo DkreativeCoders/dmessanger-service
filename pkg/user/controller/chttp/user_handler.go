@@ -23,10 +23,11 @@ func NewUserHandler(router *mux.Router, userService iservice.IUserService) {
 	router.HandleFunc("/api/v1/users/update-password/{userID}", handler.updatePassword).Methods("PATCH")
 	router.HandleFunc("/api/v1/users/enable-user/{userID}", handler.enableUser).Methods("PATCH")
 	router.HandleFunc("/api/v1/users/disable-user/{userID}", handler.disableUser).Methods("PATCH")
-	router.HandleFunc("/api/v1/login", handler.authenticateUser).Methods("POST")
+	router.HandleFunc("/api/v1/login", handler.authenticateUser).Methods(http.MethodPost,http.MethodOptions)
 
 	//return userControllerHandler{userService}
 }
+
 
 type userControllerHandler struct {
 	userService iservice.IUserService
@@ -50,6 +51,13 @@ func (u userControllerHandler) authenticateUser(w http.ResponseWriter, r *http.R
 	//     "$ref": "#/responses/badRequestResponse"
 	//   401:
 	//     "$ref": "#/responses/unAuthenticatedResponse"
+
+
+	//setupResponse(&w, r)
+	//if r.Method == "OPTIONS" {
+	//	w.WriteHeader(http.StatusOK)
+	//	return
+	//}
 	var request dto.LoginRequest
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
