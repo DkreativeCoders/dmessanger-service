@@ -13,4 +13,6 @@ type IUserService interface {
 	EnableUser(id int) error
 	DisableUser(id int) error
 	Login(request dto.LoginRequest) (*domain.TokenResponse, error)
+	ForgotPassword(email string) error
+	ResetPassword(token string, request dto.ResetPasswordRequest) error
 }
