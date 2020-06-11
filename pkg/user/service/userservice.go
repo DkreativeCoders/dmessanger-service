@@ -9,15 +9,19 @@ import (
 	_ "github.com/DkreativeCoders/dmessanger-service/pkg/user/doc"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/user/dto"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/utils"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/config/mail"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/config/uuid"
 )
 
 //INewService return an interface that's why Constrictor/Method name is preceded with I
-func INewService(repository irepository.IUserRepository) iservice.IUserService {
-	return service{repository}
+func INewService(repository irepository.IUserRepository, uuid uuid.IUuid, mailService mail.IMail) iservice.IUserService {
+	return service{repository, uuid, mailService}
 }
 
 type service struct {
 	repository irepository.IUserRepository
+	uuid uuid.IUuid
+	mailService mail.IMail
 }
 
 func (s service) EnableUser(id int) error {
@@ -126,3 +130,33 @@ func (s service) UpdatePassword(id int, request dto.UpdatePasswordRequest) error
 
 	return errors.New("Incorrect password supplied")
 }
+
+func (s service) ForgotPassword(email string) error {
+
+	var userExists = s.repository.FindUserExist(email)
+
+	if !userExists {
+		return errors.New("User not found")
+	}
+
+	var token = "fd"
+	confirmationEmail := mail.NewEMailMessage(mail.ForgotPasswordSubject, ForgotPasswordMailBody(token), email, nil)
+
+
+	_, err := s.mailService.SendEMail(*confirmationEmail)
+
+	if err != nil {
+		return errors.New("error occurred try to send mail, try again later")
+	}
+
+
+	return nil
+}
+
+
+func ForgotPasswordMailBody(link string) string {
+	return "Please visit this link to reset your password. \n This links expires in an hour \n " + link + " \n Please ignore this mail if you didn't initiate this request."
+}
+
+
+
