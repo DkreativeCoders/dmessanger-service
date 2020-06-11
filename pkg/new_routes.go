@@ -2,7 +2,14 @@ package pkg
 
 import (
 	"fmt"
+	mail "github.com/DkreativeCoders/dmessanger-service/pkg/config/mail"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/config/uuid"
+	chttp2 "github.com/DkreativeCoders/dmessanger-service/pkg/customer/controller/chttp"
+	customerOrm "github.com/DkreativeCoders/dmessanger-service/pkg/customer/repository/orm"
+	customerService "github.com/DkreativeCoders/dmessanger-service/pkg/customer/service"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/migrations/gmorm"
+	tokenOrm "github.com/DkreativeCoders/dmessanger-service/pkg/token/repository/orm"
+	token_Service "github.com/DkreativeCoders/dmessanger-service/pkg/token/service"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/user/controller/chttp"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/user/repository/orm"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/user/service"
@@ -29,11 +36,19 @@ func NewServer() (*http.Server, *gorm.DB) {
 
 	//Get database connection
 	dbConnection := gmorm.GetDataBaseConnection(dialect, username, password, dbName, dbHost, dbPort)
-	gmorm.InitiateModelMigration(dbConnection)
 	//Migrate all models
 	gmorm.InitiateModelMigration(dbConnection)
 	//router created
 	router := mux.NewRouter()
+
+	//initialize configs
+	mailService := mail.NewMailGunImplementationNoArgs()
+	uuid := uuid.INewUuid()
+
+	//Initialize Token Repository
+
+	tokenRepository := tokenOrm.NewOrmTokenRepository(dbConnection)
+	tokenService := token_Service.INewTokenService(tokenRepository)
 
 	//Initialize the repository for any the service
 	userRepository := orm.NewOrmUserRepository(dbConnection)
@@ -41,6 +56,13 @@ func NewServer() (*http.Server, *gorm.DB) {
 	userService := service.INewService(userRepository)
 	//pass in the route and the user service
 	chttp.NewUserHandler(router, userService)
+
+	//Initialize the repository for any the service
+	customerRepository := customerOrm.NewOrmCustomerRepository(dbConnection)
+	//Initialize the Service for any the handler
+	newCustomerService := customerService.INewCustomerService(customerRepository, userRepository, tokenRepository, tokenService, mailService, uuid)
+	//pass in the route and the user service
+	chttp2.NewCustomerHandler(router, newCustomerService)
 
 	port := os.Getenv("PORT")
 	if port == "" {

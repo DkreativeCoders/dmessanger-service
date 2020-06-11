@@ -5,39 +5,153 @@
   "produces": [
     "application/json"
   ],
-  "schemes": [
-    "http"
-  ],
   "swagger": "2.0",
   "info": {
-    "description": "De-messenger",
+    "description": "De-messenger\n\nSchemes: http,https,127.0.0.1",
     "title": "De-messenger",
     "version": "0.0.1"
   },
-  "host": "localhost:8900",
+  "host": "localhost:8900,dmessanger-service.herokuapp.com",
   "basePath": "/api",
   "paths": {
-    "/api/vi/users/update-password/{UserID}": {
+    "/api/v1/authenticate": {
+      "post": {
+        "description": "All User Authentication",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "userAuthentication",
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/login-request-model"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/tokenResponse"
+          },
+          "400": {
+            "$ref": "#/responses/badRequestResponse"
+          },
+          "401": {
+            "$ref": "#/responses/unAuthenticatedResponse"
+          },
+          "default": {
+            "$ref": "#/responses/responseDto"
+          }
+        }
+      }
+    },
+    "/api/v1/customers": {
+      "post": {
+        "description": "Creates a new customer",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "createCustomer",
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/customer-request-model"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/customerCreatedResponse"
+          },
+          "400": {
+            "$ref": "#/responses/customerBadRequestResponse"
+          },
+          "422": {
+            "$ref": "#/responses/customerErrorResponse"
+          },
+          "default": {
+            "$ref": "#/responses/responseDto"
+          }
+        }
+      }
+    },
+    "/api/v1/users/disable-user/{UserID}": {
+      "put": {
+        "description": "Sets the isEnabled field of a user's to false",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "disableUser",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "name": "UserID",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "default": {
+            "$ref": "#/responses/responseDto"
+          }
+        }
+      }
+    },
+    "/api/v1/users/enable-user/{UserID}": {
+      "put": {
+        "description": "Sets the isEnabled field of a user's to true",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "enableUser",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "name": "UserID",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "default": {
+            "$ref": "#/responses/responseDto"
+          }
+        }
+      }
+    },
+    "/api/v1/users/update-password/{UserID}": {
       "put": {
         "description": "Updates a user's password",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
         "operationId": "updatePassword",
         "parameters": [
           {
             "name": "Body",
             "in": "body",
             "schema": {
-              "type": "object",
-              "properties": {
-                "ConfirmNewPassword": {
-                  "type": "string"
-                },
-                "NewPassword": {
-                  "type": "string"
-                },
-                "OldPassword": {
-                  "type": "string"
-                }
-              }
+              "$ref": "#/definitions/update-password-request-model"
             }
           },
           {
@@ -54,16 +168,45 @@
           }
         }
       }
+    },
+    "/verify-user/{Token}": {
+      "put": {
+        "description": "Activate customer",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "activateCustomer",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "name": "Token",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "default": {
+            "$ref": "#/responses/responseDto"
+          }
+        }
+      }
     }
   },
   "definitions": {
-    "userModel": {
-      "description": "User Entity  containing basic fields",
+    "customer-model": {
+      "description": "Customer Entity containing basic fields and userDetails",
       "type": "object",
       "properties": {
         "CreatedAt": {
           "type": "string",
           "format": "date-time"
+        },
+        "DefaultShippingAddress": {
+          "type": "string"
         },
         "DeletedAt": {
           "type": "string",
@@ -73,10 +216,66 @@
           "type": "integer",
           "format": "uint64"
         },
+        "TotalNumberOfOrders": {
+          "type": "integer",
+          "format": "int64"
+        },
         "UpdatedAt": {
           "type": "string",
           "format": "date-time"
         },
+        "UserId": {
+          "type": "integer",
+          "format": "uint64"
+        },
+        "address": {
+          "type": "string",
+          "x-go-name": "Address"
+        },
+        "age": {
+          "type": "string",
+          "x-go-name": "Age"
+        },
+        "email": {
+          "type": "string",
+          "x-go-name": "Email"
+        },
+        "firstName": {
+          "type": "string",
+          "x-go-name": "FirstName"
+        },
+        "isActive": {
+          "type": "boolean",
+          "x-go-name": "IsActive"
+        },
+        "isEnabled": {
+          "type": "boolean",
+          "x-go-name": "IsEnabled"
+        },
+        "lastName": {
+          "type": "string",
+          "x-go-name": "LastName"
+        },
+        "phoneNumber": {
+          "type": "string",
+          "x-go-name": "PhoneNumber"
+        }
+      },
+      "x-go-name": "Customer",
+      "x-go-package": "github.com/DkreativeCoders/dmessanger-service/pkg/domain"
+    },
+    "customer-request-model": {
+      "type": "object",
+      "required": [
+        "firstName",
+        "lastName",
+        "age",
+        "email",
+        "phoneNumber",
+        "password",
+        "address"
+      ],
+      "properties": {
         "address": {
           "type": "string",
           "x-go-name": "Address"
@@ -97,51 +296,158 @@
           "type": "string",
           "x-go-name": "LastName"
         },
+        "password": {
+          "type": "string",
+          "x-go-name": "Password"
+        },
         "phoneNumber": {
           "type": "string",
           "x-go-name": "PhoneNumber"
         }
       },
-      "x-go-name": "User",
+      "x-go-name": "CustomerRequest",
+      "x-go-package": "github.com/DkreativeCoders/dmessanger-service/pkg/customer/dto"
+    },
+    "customer-response-dto-model": {
+      "type": "object",
+      "required": [
+        "status",
+        "message"
+      ],
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/customer-model"
+        },
+        "message": {
+          "type": "string",
+          "x-go-name": "Message"
+        },
+        "status": {
+          "description": "The ResponseData status",
+          "type": "boolean",
+          "x-go-name": "Status"
+        }
+      },
+      "x-go-name": "CustomerResponseDto",
+      "x-go-package": "github.com/DkreativeCoders/dmessanger-service/pkg/customer/dto"
+    },
+    "default-response-model": {
+      "type": "object",
+      "required": [
+        "status",
+        "message"
+      ],
+      "properties": {
+        "message": {
+          "type": "string",
+          "x-go-name": "Message"
+        },
+        "status": {
+          "description": "The ResponseData status",
+          "type": "boolean",
+          "x-go-name": "Status"
+        }
+      },
+      "x-go-name": "ResponseData",
+      "x-go-package": "github.com/DkreativeCoders/dmessanger-service/pkg/domain/defaultresponse"
+    },
+    "login-request-model": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "x-go-name": "Email"
+        },
+        "password": {
+          "type": "string",
+          "x-go-name": "Password"
+        }
+      },
+      "x-go-name": "LoginRequest",
+      "x-go-package": "github.com/DkreativeCoders/dmessanger-service/pkg/user/dto"
+    },
+    "token-response-model": {
+      "description": "User Entity  containing basic fields",
+      "type": "object",
+      "properties": {
+        "access_token": {
+          "type": "string",
+          "x-go-name": "AccessToken"
+        },
+        "expires_in": {
+          "type": "string",
+          "x-go-name": "ExpiresIn"
+        },
+        "scope": {
+          "type": "string",
+          "x-go-name": "Scope"
+        },
+        "token_type": {
+          "type": "string",
+          "x-go-name": "TokenType"
+        }
+      },
+      "x-go-name": "TokenResponse",
       "x-go-package": "github.com/DkreativeCoders/dmessanger-service/pkg/domain"
+    },
+    "update-password-request-model": {
+      "type": "object",
+      "properties": {
+        "ConfirmNewPassword": {
+          "type": "string"
+        },
+        "NewPassword": {
+          "type": "string"
+        },
+        "OldPassword": {
+          "type": "string"
+        }
+      },
+      "x-go-name": "UpdatePasswordRequest",
+      "x-go-package": "github.com/DkreativeCoders/dmessanger-service/pkg/user/dto"
     }
   },
   "responses": {
-    "responseDto": {
+    "badRequestResponse": {
+      "description": "A  Bad Request Error Response .",
       "schema": {
-        "type": "object"
-      },
-      "headers": {
-        "data": {},
-        "message": {
-          "type": "string"
-        },
-        "status": {
-          "type": "boolean"
-        }
+        "$ref": "#/definitions/default-response-model"
       }
     },
-    "userResponse": {
+    "customerBadRequestResponse": {
+      "description": "A Customer Bad Request Error Response .",
       "schema": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "type": "object",
-            "x-go-name": "Data",
-            "$ref": "#/definitions/userModel"
-          },
-          "message": {
-            "type": "string",
-            "x-go-name": "Message"
-          },
-          "status": {
-            "type": "boolean",
-            "x-go-name": "Status"
-          }
-        }
-      },
-      "headers": {
-        "Body": {}
+        "$ref": "#/definitions/default-response-model"
+      }
+    },
+    "customerCreatedResponse": {
+      "description": "A Customer Created Response .",
+      "schema": {
+        "$ref": "#/definitions/customer-response-dto-model"
+      }
+    },
+    "customerErrorResponse": {
+      "description": "A Customer Error Response .",
+      "schema": {
+        "$ref": "#/definitions/default-response-model"
+      }
+    },
+    "responseDto": {
+      "description": "A Default Response Message",
+      "schema": {
+        "$ref": "#/definitions/default-response-model"
+      }
+    },
+    "tokenResponse": {
+      "description": "A TokenResponse .",
+      "schema": {
+        "$ref": "#/definitions/token-response-model"
+      }
+    },
+    "unAuthenticatedResponse": {
+      "description": "A UnAuthenticated Error Response .",
+      "schema": {
+        "$ref": "#/definitions/default-response-model"
       }
     }
   }

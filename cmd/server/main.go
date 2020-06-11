@@ -1,8 +1,23 @@
+// De-messenger
+//
+// De-messenger
+//
+//     Schemes: http,https,127.0.0.1
+//     Host: dmessanger-service.herokuapp.com
+//     Version: 0.0.1
+//	   BasePath: /api
+//
+//     Consumes:
+//     - application/json
+//
+//     Produces:
+//     - application/json
+//
+// swagger:meta
 package main
 
 import (
 	"fmt"
-	_ "github.com/DkreativeCoders/dmessanger-service/doc"
 	"github.com/DkreativeCoders/dmessanger-service/pkg"
 	"log"
 )
