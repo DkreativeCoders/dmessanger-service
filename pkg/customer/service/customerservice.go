@@ -32,10 +32,10 @@ func INewCustomerService(
 type customerService struct {
 	customerRepository irepository.ICustomerRepository
 	userRepository     irepository.IUserRepository
-	tokenRepository irepository.ITokenRepository
-	tokenService  	iservice.ITokenService
+	tokenRepository    irepository.ITokenRepository
+	tokenService       iservice.ITokenService
 	mailService        mail.IMail
-	uuid uuid.IUuid
+	uuid               uuid.IUuid
 }
 
 //refactor and test case needed
@@ -73,22 +73,22 @@ func (s customerService) CreateUser(request dto.CustomerRequest) (*domain.Custom
 	return newCustomer, nil
 }
 
-func (s customerService) ActivateUser(tk string) error{
+func (s customerService) ActivateUser(tk string) error {
 	// Check for token in the repository
 	token, err := s.tokenRepository.FindByToken(tk)
-	if err != nil{
+	if err != nil {
 		return err
 	}
 
 	// Check if token has expired
 	tokenExpiryTime := token.ExpiresOn
-	if time.Now().After(tokenExpiryTime){
+	if time.Now().After(tokenExpiryTime) {
 		return errors.New("token expired")
 	}
 
 	// Find user with token
 	user, er := s.userRepository.FindByID(int(token.UserId))
-	if er != nil{
+	if er != nil {
 		return er
 	}
 
@@ -103,7 +103,7 @@ func (s customerService) sendCustomerEmail(customer domain.Customer) (string, er
 
 	uniqueId, linkToSend := s.generateLinkToSendToUser()
 
-	_, err := s.tokenService.CreateTokenWithExpirationInHours(customer.UserId, uniqueId,1)
+	_, err := s.tokenService.CreateTokenWithExpirationInHours(customer.UserId, uniqueId, 1)
 	if err != nil {
 		return "", err
 	}
@@ -118,7 +118,6 @@ func (s customerService) sendCustomerEmail(customer domain.Customer) (string, er
 	return "Mail sent successfully" + feedback, nil
 
 }
-
 
 func (s customerService) createMail(customer domain.Customer, linkToSend string) *mail.EMailMessage {
 	subject := "DkreativeCoders Verify User"

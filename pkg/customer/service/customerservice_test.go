@@ -14,43 +14,41 @@ import (
 
 func TestCustomerService_CreateUser(t *testing.T) {
 
-//	mock userRepository
-//	mock customerRepository
-//	mock tokenRepository
-//	mock mailService
+	//	mock userRepository
+	//	mock customerRepository
+	//	mock tokenRepository
+	//	mock mailService
 
 	timeAdded := time.Now().Add(1 * time.Hour)
 	mailtobesent := mail.NewEMailMessage("DkreativeCoders Verify User",
-		"Please visit this link to verify your account. \n This links expires in an hour \n" + "http/Dmessanger:8900/verify-user/unique-111","daniel@gmail.com",
+		"Please visit this link to verify your account. \n This links expires in an hour \n"+"http/Dmessanger:8900/verify-user/unique-111", "daniel@gmail.com",
 		nil)
 
 	testCases := []struct {
-		name           string
-		request  dto.CustomerRequest
+		name    string
+		request dto.CustomerRequest
 
-		userRepoFindUserExistInput string
+		userRepoFindUserExistInput      string
 		userRepoFindUserExistReturnData bool
 
-		customerRepositorySaveInput domain.Customer
+		customerRepositorySaveInput        domain.Customer
 		customerRepositorySaveReturnOutput *domain.Customer
-		customerRepositorySaveReturnError error
+		customerRepositorySaveReturnError  error
 
 		uniqueIdGenerated string
 
-		tokenServiceInputUserID uint
-		tokenServiceInputUniqueID string
+		tokenServiceInputUserID               uint
+		tokenServiceInputUniqueID             string
 		tokenServiceInputExpirationTimeInHour time.Duration
-		tokenServiceCreateReturnOutPut *domain.Token
-		tokenServiceCreateReturnError error
+		tokenServiceCreateReturnOutPut        *domain.Token
+		tokenServiceCreateReturnError         error
 
-
-		mailServiceSendMailInput mail.EMailMessage
+		mailServiceSendMailInput  mail.EMailMessage
 		mailServiceSendMailOutput string
-		mailServiceSendMailError error
+		mailServiceSendMailError  error
 
-		expectedValueDataResponse *domain.Customer
+		expectedValueDataResponse  *domain.Customer
 		expectedValueErrorResponse error
-
 	}{
 		{
 			"Test with valid customer request",
@@ -59,24 +57,24 @@ func TestCustomerService_CreateUser(t *testing.T) {
 			"daniel@gmail.com",
 			false,
 
-			domain.Customer{User:domain.User{FirstName: "Daniel", LastName: "Dada", Age: "20", Email: "daniel@gmail.com", PhoneNumber: "08282888", Password: "password", Address: "address daniel"},},
-			&domain.Customer{User:domain.User{Model: gorm.Model{ID: 0},FirstName:"Daniel",LastName:"Dada",Age:"20",Email:"daniel@gmail.com", PhoneNumber:"08282888",Password:"password",Address:"address daniel"}},
+			domain.Customer{User: domain.User{FirstName: "Daniel", LastName: "Dada", Age: "20", Email: "daniel@gmail.com", PhoneNumber: "08282888", Password: "password", Address: "address daniel"}},
+			&domain.Customer{User: domain.User{Model: gorm.Model{ID: 0}, FirstName: "Daniel", LastName: "Dada", Age: "20", Email: "daniel@gmail.com", PhoneNumber: "08282888", Password: "password", Address: "address daniel"}},
 			nil,
 
 			"unique-111",
 
-			 0,
+			0,
 			"unique-111",
 			1,
-			&domain.Token{Model: gorm.Model{ID: 0},UserId: 0,Token: "unique-111",ExpiresOn: timeAdded},
+			&domain.Token{Model: gorm.Model{ID: 0}, UserId: 0, Token: "unique-111", ExpiresOn: timeAdded},
 			nil,
 
 			*mailtobesent,
 			"success",
 			nil,
 
-			&domain.Customer{User:domain.User{Model: gorm.Model{ID: 0},FirstName:"Daniel",LastName:"Dada",Age:"20",Email:"daniel@gmail.com", PhoneNumber:"08282888",Password:"password",Address:"address daniel"}},
-nil,
+			&domain.Customer{User: domain.User{Model: gorm.Model{ID: 0}, FirstName: "Daniel", LastName: "Dada", Age: "20", Email: "daniel@gmail.com", PhoneNumber: "08282888", Password: "password", Address: "address daniel"}},
+			nil,
 		},
 
 		{
@@ -86,8 +84,8 @@ nil,
 			"daniel@gmail.com",
 			true,
 
-			domain.Customer{User:domain.User{FirstName: "Daniel", LastName: "Dada", Age: "20", Email: "daniel@gmail.com", PhoneNumber: "08282888", Password: "password", Address: "address daniel"},},
-			&domain.Customer{User:domain.User{Model: gorm.Model{ID: 0},FirstName:"Daniel",LastName:"Dada",Age:"20",Email:"daniel@gmail.com", PhoneNumber:"08282888",Password:"password",Address:"address daniel"}},
+			domain.Customer{User: domain.User{FirstName: "Daniel", LastName: "Dada", Age: "20", Email: "daniel@gmail.com", PhoneNumber: "08282888", Password: "password", Address: "address daniel"}},
+			&domain.Customer{User: domain.User{Model: gorm.Model{ID: 0}, FirstName: "Daniel", LastName: "Dada", Age: "20", Email: "daniel@gmail.com", PhoneNumber: "08282888", Password: "password", Address: "address daniel"}},
 			nil,
 
 			"unique-111",
@@ -95,7 +93,7 @@ nil,
 			0,
 			"unique-111",
 			1,
-			&domain.Token{Model: gorm.Model{ID: 0},UserId: 0,Token: "unique-111",ExpiresOn: timeAdded},
+			&domain.Token{Model: gorm.Model{ID: 0}, UserId: 0, Token: "unique-111", ExpiresOn: timeAdded},
 			nil,
 
 			*mailtobesent,
@@ -107,7 +105,6 @@ nil,
 		},
 	}
 
-
 	for _, testCase := range testCases {
 
 		t.Run(testCase.name, func(t *testing.T) {
@@ -117,11 +114,11 @@ nil,
 
 			// Create dependency customerRepo with mock implementation
 			customerRepo := mocks.ICustomerRepository{}
-			customerRepo.On("Save", testCase.customerRepositorySaveInput).Return(testCase.customerRepositorySaveReturnOutput,testCase.customerRepositorySaveReturnError)
+			customerRepo.On("Save", testCase.customerRepositorySaveInput).Return(testCase.customerRepositorySaveReturnOutput, testCase.customerRepositorySaveReturnError)
 
 			// Create dependency tokenRepo with mock implementation
 			tokenService := mocks.ITokenService{}
-			tokenService.On("CreateTokenWithExpirationInHours", testCase.tokenServiceInputUserID,testCase.tokenServiceInputUniqueID,testCase.tokenServiceInputExpirationTimeInHour).Return(testCase.tokenServiceCreateReturnOutPut,testCase.tokenServiceCreateReturnError)
+			tokenService.On("CreateTokenWithExpirationInHours", testCase.tokenServiceInputUserID, testCase.tokenServiceInputUniqueID, testCase.tokenServiceInputExpirationTimeInHour).Return(testCase.tokenServiceCreateReturnOutPut, testCase.tokenServiceCreateReturnError)
 
 			tokenRepo := mocks.ITokenRepository{}
 
@@ -131,12 +128,10 @@ nil,
 
 			// Create dependency tokenRepo with mock implementation
 			mailService := mocks.IMail{}
-			mailService.On("SendEMail", testCase.mailServiceSendMailInput).Return(testCase.mailServiceSendMailOutput,testCase.mailServiceSendMailError)
-
-
+			mailService.On("SendEMail", testCase.mailServiceSendMailInput).Return(testCase.mailServiceSendMailOutput, testCase.mailServiceSendMailError)
 
 			// Create userService and inject mock repo
-			customerService := INewCustomerService(&customerRepo,&userRepo,&tokenRepo,&tokenService,&mailService,&uuidService)
+			customerService := INewCustomerService(&customerRepo, &userRepo, &tokenRepo, &tokenService, &mailService, &uuidService)
 
 			// Actual method call
 			output, err := customerService.CreateUser(testCase.request)
@@ -149,6 +144,5 @@ nil,
 			assert.Equal(t, expected, output)
 		})
 	}
-
 
 }

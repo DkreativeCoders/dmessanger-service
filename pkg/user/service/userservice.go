@@ -11,6 +11,8 @@ import (
 	"github.com/DkreativeCoders/dmessanger-service/pkg/utils"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/config/mail"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/config/uuid"
+	"github.com/dgrijalva/jwt-go"
+	"time"
 )
 
 //INewService return an interface that's why Constrictor/Method name is preceded with I
@@ -160,3 +162,56 @@ func ForgotPasswordMailBody(link string) string {
 
 
 
+func (s service) Login(request dto.LoginRequest) (*domain.TokenResponse, error) {
+
+	user, err := s.repository.FindByEmail(request.Email)
+
+	if err != nil {
+		return nil, errors.New("invalid login credentials. Please try again")
+	}
+
+	if !user.IsActive {
+		return nil, errors.New("user deactivated. Please contact administrator")
+	}
+
+	if !user.IsEnabled {
+		return nil, errors.New("user disabled. Please contact administrator")
+	}
+
+	if request.Password != user.Password {
+		return nil, errors.New("invalid login credentials. Please try again")
+	}
+
+	//successfully login
+
+	expirationTime := time.Now().Add(30 * time.Minute).Format("2006-01-02 15:04:05")
+
+	//generate token
+
+	tokenToBeEncrypted := &domain.LoginToken{
+		Id:          user.ID,
+		FirstName:   user.FirstName,
+		LastName:    user.LastName,
+		Email:       user.Email,
+		PhoneNumber: user.PhoneNumber,
+		Address:     user.Address,
+	}
+	tokenToBeEncrypted.IssuedAt = time.Now().Unix()
+	tokenToBeEncrypted.ExpiresAt = time.Now().Add(30 * time.Minute).Unix()
+	tokenToBeEncrypted.Issuer = "DMessanger Service"
+
+	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tokenToBeEncrypted)
+	//tokenString, _ := token.SignedString([]byte(os.Getenv("TOKEN_PASSWORD")))
+	tokenString, _ := token.SignedString([]byte("thisIsTheJwtPassword"))
+
+	//thisIsTheJwtPassword
+
+	tokenResp := &domain.TokenResponse{
+		tokenString,
+		expirationTime,
+		"Read",
+		"Bearer",
+	}
+
+	return tokenResp, nil
+}

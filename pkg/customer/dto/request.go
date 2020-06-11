@@ -17,7 +17,7 @@ type CustomerRequest struct {
 	// Required: true
 	PhoneNumber string `json:"phoneNumber"`
 	// Required: true
-	Password string `json:"-"`
+	Password string `json:"password"`
 	// Required: true
 	Address string `json:"address"`
 	//defaultShippingAddress 		string
@@ -84,6 +84,10 @@ func (request *CustomerRequest) Validate() error {
 
 	if request.Email == "" {
 		return errors.New("email cannot be empty")
+	}
+
+	if request.Password == "" {
+		return errors.New("password cannot be empty")
 	}
 
 	//All the required parameters are present

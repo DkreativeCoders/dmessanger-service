@@ -11,9 +11,44 @@
     "title": "De-messenger",
     "version": "0.0.1"
   },
-  "host": "localhost:8900",
+  "host": "localhost:8900,dmessanger-service.herokuapp.com",
   "basePath": "/api",
   "paths": {
+    "/api/v1/authenticate": {
+      "post": {
+        "description": "All User Authentication",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "userAuthentication",
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/login-request-model"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/tokenResponse"
+          },
+          "400": {
+            "$ref": "#/responses/badRequestResponse"
+          },
+          "401": {
+            "$ref": "#/responses/unAuthenticatedResponse"
+          },
+          "default": {
+            "$ref": "#/responses/responseDto"
+          }
+        }
+      }
+    },
     "/api/v1/customers": {
       "post": {
         "description": "Creates a new customer",
@@ -237,6 +272,7 @@
         "age",
         "email",
         "phoneNumber",
+        "password",
         "address"
       ],
       "properties": {
@@ -259,6 +295,10 @@
         "lastName": {
           "type": "string",
           "x-go-name": "LastName"
+        },
+        "password": {
+          "type": "string",
+          "x-go-name": "Password"
         },
         "phoneNumber": {
           "type": "string",
@@ -311,6 +351,45 @@
       "x-go-name": "ResponseData",
       "x-go-package": "github.com/DkreativeCoders/dmessanger-service/pkg/domain/defaultresponse"
     },
+    "login-request-model": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "x-go-name": "Email"
+        },
+        "password": {
+          "type": "string",
+          "x-go-name": "Password"
+        }
+      },
+      "x-go-name": "LoginRequest",
+      "x-go-package": "github.com/DkreativeCoders/dmessanger-service/pkg/user/dto"
+    },
+    "token-response-model": {
+      "description": "User Entity  containing basic fields",
+      "type": "object",
+      "properties": {
+        "access_token": {
+          "type": "string",
+          "x-go-name": "AccessToken"
+        },
+        "expires_in": {
+          "type": "string",
+          "x-go-name": "ExpiresIn"
+        },
+        "scope": {
+          "type": "string",
+          "x-go-name": "Scope"
+        },
+        "token_type": {
+          "type": "string",
+          "x-go-name": "TokenType"
+        }
+      },
+      "x-go-name": "TokenResponse",
+      "x-go-package": "github.com/DkreativeCoders/dmessanger-service/pkg/domain"
+    },
     "update-password-request-model": {
       "type": "object",
       "properties": {
@@ -326,88 +405,15 @@
       },
       "x-go-name": "UpdatePasswordRequest",
       "x-go-package": "github.com/DkreativeCoders/dmessanger-service/pkg/user/dto"
-    },
-    "user-model": {
-      "description": "User Entity  containing basic fields",
-      "type": "object",
-      "properties": {
-        "CreatedAt": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "DeletedAt": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "ID": {
-          "type": "integer",
-          "format": "uint64"
-        },
-        "UpdatedAt": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "address": {
-          "type": "string",
-          "x-go-name": "Address"
-        },
-        "age": {
-          "type": "string",
-          "x-go-name": "Age"
-        },
-        "email": {
-          "type": "string",
-          "x-go-name": "Email"
-        },
-        "firstName": {
-          "type": "string",
-          "x-go-name": "FirstName"
-        },
-        "isActive": {
-          "type": "boolean",
-          "x-go-name": "IsActive"
-        },
-        "isEnabled": {
-          "type": "boolean",
-          "x-go-name": "IsEnabled"
-        },
-        "lastName": {
-          "type": "string",
-          "x-go-name": "LastName"
-        },
-        "phoneNumber": {
-          "type": "string",
-          "x-go-name": "PhoneNumber"
-        }
-      },
-      "x-go-name": "User",
-      "x-go-package": "github.com/DkreativeCoders/dmessanger-service/pkg/domain"
-    },
-    "user-response-model": {
-      "type": "object",
-      "required": [
-        "status",
-        "message"
-      ],
-      "properties": {
-        "data": {
-          "$ref": "#/definitions/user-model"
-        },
-        "message": {
-          "type": "string",
-          "x-go-name": "Message"
-        },
-        "status": {
-          "description": "The ResponseData status",
-          "type": "boolean",
-          "x-go-name": "Status"
-        }
-      },
-      "x-go-name": "UserResponseDto",
-      "x-go-package": "github.com/DkreativeCoders/dmessanger-service/pkg/user/dto"
     }
   },
   "responses": {
+    "badRequestResponse": {
+      "description": "A  Bad Request Error Response .",
+      "schema": {
+        "$ref": "#/definitions/default-response-model"
+      }
+    },
     "customerBadRequestResponse": {
       "description": "A Customer Bad Request Error Response .",
       "schema": {
@@ -432,10 +438,16 @@
         "$ref": "#/definitions/default-response-model"
       }
     },
-    "userResponse": {
-      "description": "A UserResponse .",
+    "tokenResponse": {
+      "description": "A TokenResponse .",
       "schema": {
-        "$ref": "#/definitions/user-response-model"
+        "$ref": "#/definitions/token-response-model"
+      }
+    },
+    "unAuthenticatedResponse": {
+      "description": "A UnAuthenticated Error Response .",
+      "schema": {
+        "$ref": "#/definitions/default-response-model"
       }
     }
   }

@@ -3,7 +3,7 @@
 // De-messenger
 //
 //     Schemes: http,https,127.0.0.1
-//     Host: localhost:8900
+//     Host: dmessanger-service.herokuapp.com
 //     Version: 0.0.1
 //	   BasePath: /api
 //
@@ -24,7 +24,7 @@ import (
 
 func main() {
 
-	srv, db := pkg.NewServer()
+	_, db := pkg.NewServer()
 	defer func() {
 		fmt.Print("Closing Db")
 		err := db.Close()
@@ -33,6 +33,6 @@ func main() {
 		}
 	}()
 
-	log.Println("Server listening on", srv.Addr)
-	log.Fatal(srv.ListenAndServe())
+	//log.Println("Server listening on", srv.Addr)
+	//log.Fatal(srv.ListenAndServe())
 }
