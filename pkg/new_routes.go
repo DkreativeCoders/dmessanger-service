@@ -47,7 +47,8 @@ func NewServer() (*http.Server, *gorm.DB) {
 	router := mux.NewRouter()
 
 	//initialize configs
-	mailService := mail.NewMailGunImplementationNoArgs()
+	apiKey := os.Getenv("SENDGRID_API_KEY")
+	mailService := mail.NewSendGrid(apiKey)
 	uuid := uuid.INewUuid()
 
 	//Initialize Token Repository

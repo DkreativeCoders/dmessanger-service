@@ -22,6 +22,10 @@ func NewSendGridNoArgs() *sendGrid{
 	return &sendGrid{apiKey: apiKey}
 }
 
+func NewSendGrid(apiKey string) *sendGrid{
+	return &sendGrid{apiKey: apiKey}
+}
+
 func (s sendGrid) SendMail(subject, text string, to ...string) (string, error){
 	// Email sender
 	from := mail.NewEmail("Dkreative Coders", "dkreativecoders@gmail.com")
