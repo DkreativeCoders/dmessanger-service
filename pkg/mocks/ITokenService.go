@@ -16,7 +16,7 @@ type ITokenService struct {
 }
 
 // CreateTokenWithExpirationInHours provides a mock function with given fields: userID, uniqueID, expirationTimeInHour
-func (_m *ITokenService) CreateTokenWithExpirationInHours(userID uint, uniqueID string, expirationTimeInHour time.Duration) (*domain.Token, error) {
+func (_m *ITokenService) CreateTokenWithExpirationInHours(userID uint, uniqueID, otp string, expirationTimeInHour time.Duration) (*domain.Token, error) {
 	ret := _m.Called(userID, uniqueID, expirationTimeInHour)
 
 	var r0 *domain.Token
@@ -39,7 +39,7 @@ func (_m *ITokenService) CreateTokenWithExpirationInHours(userID uint, uniqueID 
 }
 
 // CreateTokenWithExpirationInMinutes provides a mock function with given fields: userID, uniqueID, expirationTimeInMinutes
-func (_m *ITokenService) CreateTokenWithExpirationInMinutes(userID uint, uniqueID string, expirationTimeInMinutes time.Duration) (*domain.Token, error) {
+func (_m *ITokenService) CreateTokenWithExpirationInMinutes(userID uint, uniqueID, otp string, expirationTimeInMinutes time.Duration) (*domain.Token, error) {
 	ret := _m.Called(userID, uniqueID, expirationTimeInMinutes)
 
 	var r0 *domain.Token
