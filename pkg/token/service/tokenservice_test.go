@@ -2,7 +2,6 @@ package service
 
 import (
 	"bou.ke/monkey"
-	otp2 "github.com/DkreativeCoders/dmessanger-service/pkg/config/otp"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/mocks"
 	"github.com/jinzhu/gorm"
@@ -12,10 +11,6 @@ import (
 )
 
 func TestTokenService_CreateTokenWithExpirationInHours(t *testing.T) {
-
-	if testing.Short(){
-		t.Skip()
-	}
 
 	timeTestInputForRepo := time.Date(2020, 06, 17, 20, 34, 58, 651387237, time.UTC)
 	timeTest2 := timeTestInputForRepo.Add(1 * time.Hour)
@@ -59,11 +54,8 @@ func TestTokenService_CreateTokenWithExpirationInHours(t *testing.T) {
 			// Create userService and inject mock repo
 			tokenService := INewTokenService(&tokenRepo)
 
-			//Todo: OTP service to be replaced with mock
-			otp := otp2.NewOTPService()
-
 			// Actual method call
-			output, _ := tokenService.CreateTokenWithExpirationInHours(testCase.UserID, testCase.uniqueID, otp.GenerateOTP(), testCase.expirationTimeInHour)
+			output, _ := tokenService.CreateTokenWithExpirationInHours(testCase.UserID, testCase.uniqueID, testCase.expirationTimeInHour)
 
 			monkey.Unpatch(time.Now)
 			// Expected output

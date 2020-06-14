@@ -16,11 +16,10 @@ type service struct {
 	tokenRepository irepository.ITokenRepository
 }
 
-func (s service) CreateTokenWithExpirationInHours(UserID uint, uniqueID, otp string, expirationTimeInHour time.Duration) (*domain.Token, error) {
+func (s service) CreateTokenWithExpirationInHours(UserID uint, uniqueID string, expirationTimeInHour time.Duration) (*domain.Token, error) {
 	token := domain.Token{}
 	token.UserId = UserID
 	token.Token = uniqueID
-	token.OTP = otp
 	token.ExpiresOn = time.Now().Add(expirationTimeInHour * time.Hour)
 
 	newToken, err := s.tokenRepository.Create(token)
@@ -31,6 +30,6 @@ func (s service) CreateTokenWithExpirationInHours(UserID uint, uniqueID, otp str
 	return newToken, nil
 }
 
-func (s service) CreateTokenWithExpirationInMinutes(UserID uint, uniqueID, otp string, expirationTimeInMinutes time.Duration) (*domain.Token, error) {
+func (s service) CreateTokenWithExpirationInMinutes(UserID uint, uniqueID string, expirationTimeInMinutes time.Duration) (*domain.Token, error) {
 	panic("implement me")
 }
