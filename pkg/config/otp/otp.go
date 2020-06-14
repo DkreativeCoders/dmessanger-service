@@ -5,7 +5,7 @@ import "github.com/xlzd/gotp"
 type otpService struct {
 }
 
-func NewOTPService() otpService{
+func NewOTPService() IOtp{
 	return otpService{}
 }
 

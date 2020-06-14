@@ -12,7 +12,7 @@ type sendGrid struct {
 	apiKey string
 }
 
-func NewSendGridNoArgs() *sendGrid{
+func NewSendGridNoArgs() IMail{
 	err := godotenv.Load()
 	if err != nil{
 		panic(err)
