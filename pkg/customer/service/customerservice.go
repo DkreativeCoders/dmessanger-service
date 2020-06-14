@@ -108,12 +108,13 @@ func (s customerService) ActivateUser(tk string) error {
 func (s customerService) sendCustomerEmail(customer domain.Customer) (string, error) {
 
 	uniqueId, linkToSend := s.generateLinkToSendToUser()
+	otp := s.otp.GenerateOTP()
 
-	_, err := s.tokenService.CreateTokenWithExpirationInHours(customer.UserId, uniqueId, 1)
+	_, err := s.tokenService.CreateTokenWithExpirationInHours(customer.UserId, uniqueId, otp, 1)
 	if err != nil {
 		return "", err
 	}
-	email := s.createMail(customer, linkToSend)
+	email := s.createMail(customer, linkToSend, otp)
 
 	feedback, err := s.mailService.SendEMail(*email)
 
@@ -125,9 +126,10 @@ func (s customerService) sendCustomerEmail(customer domain.Customer) (string, er
 
 }
 
-func (s customerService) createMail(customer domain.Customer, linkToSend string) *mail.EMailMessage {
+func (s customerService) createMail(customer domain.Customer, linkToSend, otp string) *mail.EMailMessage {
 	subject := "DkreativeCoders Verify User"
-	text := "Please visit this link to verify your account. \n This links expires in an hour \n" + linkToSend
+	text := "Please visit this link to verify your account. \n This links expires in an hour \n" + linkToSend +
+		"\n You can also use this OTP to verify your account " + otp
 	recipient := customer.Email
 	email := mail.NewEMailMessage(subject, text, recipient, nil)
 	return email
