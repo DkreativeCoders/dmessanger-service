@@ -17,7 +17,7 @@ func NewCustomerHandler(router *mux.Router, customerService iservice.ICustomerSe
 	router.HandleFunc("/api/v1/customers", handler.create).Methods("POST")
 
 	// verify user handler
-	router.HandleFunc("/verify-user/{token}", handler.activate).Methods("PUT")
+	router.HandleFunc("/verify-user/token", handler.activate).Queries("token", "{token}", "otp", "{otp}").Methods("PUT")
 
 	//return userControllerHandler{userService}
 }
@@ -86,7 +86,13 @@ func (c customerControllerHandler) activate(w http.ResponseWriter, r *http.Reque
 	//   default:
 	//     "$ref": "#/responses/responseDto"
 
-	token := mux.Vars(r)["token"]
+	token := r.FormValue("token")
+	otp := r.FormValue("otp")
+
+	if token == ""{
+		token = otp
+	}
+
 	err := c.customerService.ActivateUser(token)
 	if err != nil {
 		errResponse := defaultresponse.NewResponseDto(false, err.Error())
