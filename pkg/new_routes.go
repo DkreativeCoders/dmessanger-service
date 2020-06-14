@@ -3,6 +3,7 @@ package pkg
 import (
 	"fmt"
 	mail "github.com/DkreativeCoders/dmessanger-service/pkg/config/mail"
+	otp2 "github.com/DkreativeCoders/dmessanger-service/pkg/config/otp"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/config/uuid"
 	chttp2 "github.com/DkreativeCoders/dmessanger-service/pkg/customer/controller/chttp"
 	customerOrm "github.com/DkreativeCoders/dmessanger-service/pkg/customer/repository/orm"
@@ -50,6 +51,7 @@ func NewServer() (*http.Server, *gorm.DB) {
 	apiKey := os.Getenv("SENDGRID_API_KEY")
 	mailService := mail.NewSendGrid(apiKey)
 	uuid := uuid.INewUuid()
+	otp := otp2.NewOTPService()
 
 	//Initialize Token Repository
 
@@ -66,7 +68,7 @@ func NewServer() (*http.Server, *gorm.DB) {
 	//Initialize the repository for any the service
 	customerRepository := customerOrm.NewOrmCustomerRepository(dbConnection)
 	//Initialize the Service for any the handler
-	newCustomerService := customerService.INewCustomerService(customerRepository, userRepository, tokenRepository, tokenService, mailService, uuid)
+	newCustomerService := customerService.INewCustomerService(customerRepository, userRepository, tokenRepository, tokenService, mailService, uuid, otp)
 	//pass in the route and the user service
 	chttp2.NewCustomerHandler(router, newCustomerService)
 
