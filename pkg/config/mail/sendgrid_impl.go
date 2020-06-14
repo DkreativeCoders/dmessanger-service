@@ -34,6 +34,7 @@ func (s sendGrid) SendMail(subject, text string, to ...string) (string, error){
 	recipient := mail.NewEmail("Customer", to[0])
 
 	// Html text content
+	// The html content is the email's body
 	htmlContent := text
 
 	// New single mail
@@ -58,6 +59,7 @@ func (s sendGrid) SendEMail(email EMailMessage) (string, error){
 	recipient := mail.NewEmail("Customer", email.recipient)
 
 	// Html text content
+	// The html content is the email's body
 	htmlContent :=  email.text
 
 	// New single mail

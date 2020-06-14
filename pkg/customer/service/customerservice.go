@@ -3,6 +3,7 @@ package service
 import (
 	"errors"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/config/mail"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/config/otp"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/config/uuid"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/customer/dto"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain"
@@ -18,7 +19,10 @@ func INewCustomerService(
 	userRepository irepository.IUserRepository,
 	tokenRepository irepository.ITokenRepository,
 	tokenService iservice.ITokenService,
-	mailService mail.IMail, uuid uuid.IUuid) iservice.ICustomerService {
+	mailService mail.IMail,
+	uuid uuid.IUuid,
+	otp otp.IOtp,
+	) iservice.ICustomerService {
 	return customerService{
 		repository,
 		userRepository,
@@ -26,6 +30,7 @@ func INewCustomerService(
 		tokenService,
 		mailService,
 		uuid,
+		otp,
 	}
 }
 
@@ -36,6 +41,7 @@ type customerService struct {
 	tokenService       iservice.ITokenService
 	mailService        mail.IMail
 	uuid               uuid.IUuid
+	otp				   otp.IOtp
 }
 
 //refactor and test case needed
@@ -129,7 +135,7 @@ func (s customerService) createMail(customer domain.Customer, linkToSend string)
 
 func (s customerService) generateLinkToSendToUser() (string, string) {
 	uniqueId := s.uuid.GenerateUniqueId()
-	linkToSend := "http/Dmessanger:8900/verify-user/" + uniqueId
+	linkToSend := "https://dmessanger-service.herokuapp.com/verify-user/" + uniqueId
 
 	return uniqueId, linkToSend
 }
