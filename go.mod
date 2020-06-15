@@ -11,5 +11,8 @@ require (
 	github.com/joho/godotenv v1.3.0
 	github.com/mailgun/mailgun-go/v3 v3.6.4
 	github.com/satori/go.uuid v1.2.0
+	github.com/sendgrid/rest v2.6.0+incompatible // indirect
+	github.com/sendgrid/sendgrid-go v3.6.0+incompatible
 	github.com/stretchr/testify v1.5.1
+	github.com/xlzd/gotp v0.0.0-20181030022105-c8557ba2c119
 )

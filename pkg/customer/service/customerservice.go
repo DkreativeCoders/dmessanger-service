@@ -3,6 +3,7 @@ package service
 import (
 	"errors"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/config/mail"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/config/otp"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/config/uuid"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/customer/dto"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain"
@@ -18,7 +19,10 @@ func INewCustomerService(
 	userRepository irepository.IUserRepository,
 	tokenRepository irepository.ITokenRepository,
 	tokenService iservice.ITokenService,
-	mailService mail.IMail, uuid uuid.IUuid) iservice.ICustomerService {
+	mailService mail.IMail,
+	uuid uuid.IUuid,
+	otp otp.IOtp,
+	) iservice.ICustomerService {
 	return customerService{
 		repository,
 		userRepository,
@@ -26,6 +30,7 @@ func INewCustomerService(
 		tokenService,
 		mailService,
 		uuid,
+		otp,
 	}
 }
 
@@ -36,6 +41,7 @@ type customerService struct {
 	tokenService       iservice.ITokenService
 	mailService        mail.IMail
 	uuid               uuid.IUuid
+	otp				   otp.IOtp
 }
 
 //refactor and test case needed
@@ -102,12 +108,13 @@ func (s customerService) ActivateUser(tk string) error {
 func (s customerService) sendCustomerEmail(customer domain.Customer) (string, error) {
 
 	uniqueId, linkToSend := s.generateLinkToSendToUser()
+	otp := s.otp.GenerateOTP()
 
-	_, err := s.tokenService.CreateTokenWithExpirationInHours(customer.UserId, uniqueId, 1)
+	_, err := s.tokenService.CreateTokenWithExpirationInHours(customer.UserId, uniqueId, otp, 1)
 	if err != nil {
 		return "", err
 	}
-	email := s.createMail(customer, linkToSend)
+	email := s.createMail(customer, linkToSend, otp)
 
 	feedback, err := s.mailService.SendEMail(*email)
 
@@ -119,9 +126,10 @@ func (s customerService) sendCustomerEmail(customer domain.Customer) (string, er
 
 }
 
-func (s customerService) createMail(customer domain.Customer, linkToSend string) *mail.EMailMessage {
+func (s customerService) createMail(customer domain.Customer, linkToSend, otp string) *mail.EMailMessage {
 	subject := "DkreativeCoders Verify User"
-	text := "Please visit this link to verify your account. \n This links expires in an hour \n" + linkToSend
+	text := "Please visit this link to verify your account. \n This links expires in an hour \n" + linkToSend +
+		"\n You can also use this OTP to verify your account " + otp
 	recipient := customer.Email
 	email := mail.NewEMailMessage(subject, text, recipient, nil)
 	return email
@@ -129,7 +137,7 @@ func (s customerService) createMail(customer domain.Customer, linkToSend string)
 
 func (s customerService) generateLinkToSendToUser() (string, string) {
 	uniqueId := s.uuid.GenerateUniqueId()
-	linkToSend := "http/Dmessanger:8900/verify-user/" + uniqueId
+	linkToSend := "https://dmessanger-service.herokuapp.com/verify-user/" + uniqueId
 
 	return uniqueId, linkToSend
 }
