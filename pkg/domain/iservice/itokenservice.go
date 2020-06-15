@@ -6,6 +6,6 @@ import (
 )
 
 type ITokenService interface {
-	CreateTokenWithExpirationInHours(userID uint, uniqueID string, expirationTimeInHour time.Duration) (*domain.Token, error)
-	CreateTokenWithExpirationInMinutes(userID uint, uniqueID string, expirationTimeInMinutes time.Duration) (*domain.Token, error)
+	CreateTokenWithExpirationInHours(userID uint, uniqueID, otp string, expirationTimeInHour time.Duration) (*domain.Token, error)
+	CreateTokenWithExpirationInMinutes(userID uint, uniqueID, otp string, expirationTimeInMinutes time.Duration) (*domain.Token, error)
 }

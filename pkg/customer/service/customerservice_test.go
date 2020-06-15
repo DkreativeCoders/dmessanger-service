@@ -3,6 +3,7 @@ package service
 import (
 	"errors"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/config/mail"
+	otp2 "github.com/DkreativeCoders/dmessanger-service/pkg/config/otp"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/customer/dto"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/mocks"
@@ -18,6 +19,10 @@ func TestCustomerService_CreateUser(t *testing.T) {
 	//	mock customerRepository
 	//	mock tokenRepository
 	//	mock mailService
+
+	if testing.Short(){
+		t.Skip()
+	}
 
 	timeAdded := time.Now().Add(1 * time.Hour)
 	mailtobesent := mail.NewEMailMessage("DkreativeCoders Verify User",
@@ -130,8 +135,11 @@ func TestCustomerService_CreateUser(t *testing.T) {
 			mailService := mocks.IMail{}
 			mailService.On("SendEMail", testCase.mailServiceSendMailInput).Return(testCase.mailServiceSendMailOutput, testCase.mailServiceSendMailError)
 
+			//Todo: OTP service to be replaced with mock
+			otp := otp2.NewOTPService()
+
 			// Create userService and inject mock repo
-			customerService := INewCustomerService(&customerRepo, &userRepo, &tokenRepo, &tokenService, &mailService, &uuidService)
+			customerService := INewCustomerService(&customerRepo, &userRepo, &tokenRepo, &tokenService, &mailService, &uuidService, otp)
 
 			// Actual method call
 			output, err := customerService.CreateUser(testCase.request)
