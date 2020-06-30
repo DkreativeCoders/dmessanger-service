@@ -18,5 +18,6 @@ type LoginToken struct {
 	Email       string
 	PhoneNumber string
 	Address     string
+	//authorities
 	jwt.StandardClaims
 }
