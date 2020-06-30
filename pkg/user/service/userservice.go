@@ -13,11 +13,12 @@ import (
 	"github.com/DkreativeCoders/dmessanger-service/pkg/utils"
 	"github.com/dgrijalva/jwt-go"
 	"time"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/config/otp"
 )
 
 //INewService return an interface that's why Constrictor/Method name is preceded with I
-func INewService(repository irepository.IUserRepository, uuid uuid.IUuid, mailService mail.IMail, tokenService iservice.ITokenService, tokenRepository irepository.ITokenRepository) iservice.IUserService {
-	return service{repository, uuid, mailService, tokenService, tokenRepository}
+func INewService(repository irepository.IUserRepository, uuid uuid.IUuid, mailService mail.IMail, tokenService iservice.ITokenService, tokenRepository irepository.ITokenRepository, otp otp.IOtp,) iservice.IUserService {
+	return service{repository, uuid, mailService, tokenService, tokenRepository, otp}
 }
 
 type service struct {
@@ -26,6 +27,7 @@ type service struct {
 	mailService     mail.IMail
 	tokenService    iservice.ITokenService
 	tokenRepository irepository.ITokenRepository
+	otp otp.IOtp
 }
 
 func (s service) EnableUser(id int) error {
@@ -148,16 +150,17 @@ func (s service) ForgotPassword(email string) error {
 		return err
 	}
 
-	token := s.uuid.GenerateUniqueId()
-	_, err = s.tokenService.CreateTokenWithExpirationInHours(user.ID, s.uuid.GenerateUniqueId(), 1)
+	uniqueID := s.uuid.GenerateUniqueId()
+	token := s.otp.GenerateOTP()
+	fmt.Println("Chop life")
+	fmt.Println(user)
+	_, err = s.tokenService.CreateTokenWithExpirationInHours(user.ID, uniqueID, token, 1)
 
 	if err != nil {
 		return err
 	}
 
 	confirmationEmail := mail.NewEMailMessage(mail.ForgotPasswordSubject, ForgotPasswordMailBody(token), email, nil)
-
-	fmt.Println(ForgotPasswordMailBody(token))
 
 	_, err = s.mailService.SendEMail(*confirmationEmail)
 
@@ -233,7 +236,7 @@ func (s service) Login(request dto.LoginRequest) (*domain.TokenResponse, error) 
 
 func (s service) ResetPassword(token string, request dto.ResetPasswordRequest) error {
 
-	tokenData, err := s.tokenRepository.FindByToken(token)
+	tokenData, err := s.tokenRepository.FindByOtp(token)
 	if err != nil {
 		return errors.New("Invalid token")
 	}

@@ -61,7 +61,7 @@ func NewServer() (*http.Server, *gorm.DB) {
 	//Initialize the repository for any the service
 	userRepository := orm.NewOrmUserRepository(dbConnection)
 	//Initialize the Service for any the handler
-	userService := service.INewService(userRepository, uuid, mailService, tokenService, tokenRepository)
+	userService := service.INewService(userRepository, uuid, mailService, tokenService, tokenRepository, otp)
 	//pass in the route and the user service
 	chttp.NewUserHandler(router, userService)
 

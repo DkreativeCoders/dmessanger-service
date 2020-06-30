@@ -39,6 +39,14 @@ func (o ormTokenRepository) FindByToken(tk string) (*domain.Token, error) {
 	return &token, nil
 }
 
+func (o ormTokenRepository) FindByOtp(otp string) (*domain.Token, error) {
+	var token domain.Token
+	if dbc := o.db.Where("otp = ?", otp).Find(&token); dbc.Error != nil {
+		return nil, dbc.Error
+	}
+	return &token, nil
+}
+
 func (o ormTokenRepository) UpdateToken(tk domain.Token) (*domain.Token, error) {
 	var token domain.Token
 	if dbc := o.db.Where("token = ?", tk.Token).Find(&token); dbc.Error != nil {

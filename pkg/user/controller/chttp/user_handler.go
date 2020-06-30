@@ -259,7 +259,7 @@ func (u userControllerHandler) forgotPassword(w http.ResponseWriter, r *http.Req
 	if err != nil {
 		response = defaultresponse.NewResponseDto(false, err.Error())
 	} else {
-		response = defaultresponse.NewResponseDto(true, "Successful")
+		response = defaultresponse.NewResponseDto(true, "An email has been sent to the provided email address with instructions on how to reset your password")
 	}
 
 	json.NewEncoder(w).Encode(response)
@@ -300,7 +300,7 @@ func (u userControllerHandler) resetPassword(w http.ResponseWriter, r *http.Requ
 	if err != nil {
 		response = defaultresponse.NewResponseDto(false, err.Error())
 	} else {
-		response = defaultresponse.NewResponseDto(true, "Successful")
+		response = defaultresponse.NewResponseDto(true, "Password reset successfully")
 	}
 
 	json.NewEncoder(w).Encode(response)

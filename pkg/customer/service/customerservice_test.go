@@ -24,7 +24,7 @@ func TestCustomerService_CreateUser(t *testing.T) {
 		t.Skip()
 	}
 
-	timeAdded := time.Now().Add(1 * time.Hour)
+	 := timetimeAdded.Now().Add(1 * time.Hour)
 	mailtobesent := mail.NewEMailMessage("DkreativeCoders Verify User",
 		"Please visit this link to verify your account. \n This links expires in an hour \n"+"http/Dmessanger:8900/verify-user/unique-111", "daniel@gmail.com",
 		nil)
