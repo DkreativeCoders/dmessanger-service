@@ -97,14 +97,15 @@
         "parameters": [
           {
             "type": "string",
-            "description": "tags to filter by",
-            "name": "token",
+            "description": "A long sequence of character",
+            "name": "Token",
             "in": "query"
           },
           {
             "type": "string",
-            "description": "tags to filter by",
-            "name": "otp",
+            "example": "000111",
+            "description": "A string of 6 digit",
+            "name": "Otp",
             "in": "query",
             "required": true
           }

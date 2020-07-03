@@ -83,17 +83,6 @@ func (c customerControllerHandler) activate(w http.ResponseWriter, r *http.Reque
 	// - application/json
 	// Produces:
 	// - application/json
-	// parameters:
-	// - name: token
-	//   in: query
-	//   description: a long sequence of character
-	//   required: false
-	//   type: string
-	// - name: otp
-	//   in: query
-	//   description: a 6 string
-	//   required: true
-	//   type: string
 	// Responses:
 	//   default:
 	//     "$ref": "#/responses/responseDto"

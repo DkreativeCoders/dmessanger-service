@@ -2,6 +2,7 @@ package chttp
 
 import (
 	"encoding/json"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/constanst"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/defaultresponse"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/iservice"
@@ -18,12 +19,12 @@ func NewUserHandler(router *mux.Router, userService iservice.IUserService) {
 		userService: userService,
 	}
 
-	router.HandleFunc("/api/v1/users", handler.create).Methods("POST")
-	router.HandleFunc("/api/v1/users", handler.getAll).Methods("GET")
-	router.HandleFunc("/api/v1/users/update-password/{userID}", handler.updatePassword).Methods("PATCH")
-	router.HandleFunc("/api/v1/users/enable-user/{userID}", handler.enableUser).Methods("PATCH")
-	router.HandleFunc("/api/v1/users/disable-user/{userID}", handler.disableUser).Methods("PATCH")
-	router.HandleFunc("/api/v1/login", handler.authenticateUser).Methods(http.MethodPost,http.MethodOptions)
+	router.HandleFunc(constanst.ApiVersion1+"users", handler.create).Methods("POST")
+	router.HandleFunc(constanst.ApiVersion1+"users", handler.getAll).Methods("GET")
+	router.HandleFunc(constanst.ApiVersion1+"users/update-password/{userID}", handler.updatePassword).Methods("PATCH")
+	router.HandleFunc(constanst.ApiVersion1+"users/enable-user/{userID}", handler.enableUser).Methods("PATCH")
+	router.HandleFunc(constanst.ApiVersion1+"users/disable-user/{userID}", handler.disableUser).Methods("PATCH")
+	router.HandleFunc(constanst.ApiVersion1+"login", handler.authenticateUser).Methods(http.MethodPost,http.MethodOptions)
 
 	//return userControllerHandler{userService}
 }
