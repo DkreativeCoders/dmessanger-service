@@ -11,7 +11,7 @@
     "title": "De-messenger",
     "version": "0.0.1"
   },
-  "host": "localhost:8900,dmessanger-service.herokuapp.com",
+  "host": "dmessanger-service.herokuapp.com",
   "basePath": "/api",
   "paths": {
     "/api/v1/authenticate": {
@@ -78,6 +78,38 @@
           "422": {
             "$ref": "#/responses/customerErrorResponse"
           },
+          "default": {
+            "$ref": "#/responses/responseDto"
+          }
+        }
+      }
+    },
+    "/api/v1/customers/verify": {
+      "put": {
+        "description": "Activate customer",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "activateCustomer",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "tags to filter by",
+            "name": "token",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "tags to filter by",
+            "name": "otp",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
           "default": {
             "$ref": "#/responses/responseDto"
           }
@@ -158,32 +190,6 @@
             "type": "integer",
             "format": "int64",
             "name": "UserID",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "default": {
-            "$ref": "#/responses/responseDto"
-          }
-        }
-      }
-    },
-    "/verify-user/{Token}": {
-      "put": {
-        "description": "Activate customer",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "operationId": "activateCustomer",
-        "parameters": [
-          {
-            "type": "integer",
-            "format": "int64",
-            "name": "Token",
             "in": "path",
             "required": true
           }

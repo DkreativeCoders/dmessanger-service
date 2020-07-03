@@ -18,7 +18,7 @@ func NewCustomerHandler(router *mux.Router, customerService iservice.ICustomerSe
 	router.HandleFunc(constanst.ApiVersion1+"customers", handler.create).Methods("POST")
 
 	// verify user handler
-	router.HandleFunc(constanst.ApiVersion1+"verify-user", handler.activate).Queries("token", "{token}", "otp", "{otp}").Methods("PUT")
+	router.HandleFunc(constanst.ApiVersion1+"/customers/verify", handler.activate).Queries("token", "{token}", "otp", "{otp}").Methods("PUT")
 
 	//return userControllerHandler{userService}
 }
@@ -75,7 +75,7 @@ func (c customerControllerHandler) create(w http.ResponseWriter, r *http.Request
 }
 
 func (c customerControllerHandler) activate(w http.ResponseWriter, r *http.Request) {
-	// swagger:operation PUT /verify-user activateCustomer
+	// swagger:operation PUT /api/v1/customers/verify activateCustomer
 	//
 	// Activate customer
 	// ---
@@ -83,6 +83,17 @@ func (c customerControllerHandler) activate(w http.ResponseWriter, r *http.Reque
 	// - application/json
 	// Produces:
 	// - application/json
+	// parameters:
+	// - name: token
+	//   in: query
+	//   description: a long sequence of character
+	//   required: false
+	//   type: string
+	// - name: otp
+	//   in: query
+	//   description: a 6 string
+	//   required: true
+	//   type: string
 	// Responses:
 	//   default:
 	//     "$ref": "#/responses/responseDto"
