@@ -92,7 +92,25 @@ func (ur *UserRepository) Update(user domain.User) (*domain.User, error) {
 }
 
 func (ur *UserRepository) FindByEmail(email string) (*domain.User, error) {
-	return nil, nil
+	args := ur.Called(email)
+
+	var r0 *domain.User
+	if userFunc, ok := args.Get(0).(func(string) *domain.User); ok {
+		r0 = userFunc(email)
+	} else {
+		if args.Get(0) != nil {
+			r0 = args.Get(0).(*domain.User)
+		}
+	}
+
+	var r1 error
+	if errFunc, ok := args.Get(1).(func(string) error); ok {
+		r1 = errFunc(email)
+	} else {
+		r1 = args.Error(1)
+	}
+
+	return r0, r1
 }
 func (ur *UserRepository) FindUserExist(email string) bool {
 	return true

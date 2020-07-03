@@ -12,6 +12,7 @@ import (
 	"github.com/DkreativeCoders/dmessanger-service/pkg/config/uuid"
 	otp2 "github.com/DkreativeCoders/dmessanger-service/pkg/config/otp"
 	"time"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/config/mail"
 )
 
 //Todo: modify CreateUser test
@@ -480,6 +481,9 @@ func TestService_ForgotPassword(t *testing.T) {
 		expiration time.Duration
 		tokenServiceCreateReturnOutPut *domain.Token
 		tokenServiceCreateReturnError error
+		otp string
+		mailError error
+		mailFeedback string
 	}{
 		{
 			"Test with valid input",
@@ -492,6 +496,9 @@ func TestService_ForgotPassword(t *testing.T) {
 			1,
 			&domain.Token{Model: gorm.Model{ID: 0}, UserId: 0, Token: "unique-111", ExpiresOn: timeAdded},
 			nil,
+			"otp",
+			nil,
+			"",
 		},
 	}
 
@@ -504,16 +511,16 @@ func TestService_ForgotPassword(t *testing.T) {
 			mailService := mocks.IMail{}
 			tokenService := mocks.ITokenService{}
 			tokenRepo := mocks.ITokenRepository{}
-			otp := otp2.NewOTPService()
+			otp := mocks.IOtp{}
+			otp.On("GenerateOTP").Return(testCase.otp)
 			uuidService.On("GenerateUniqueId").Return(testCase.uniqueIdGenerated)
 			userRepo.On("FindUserExist", testCase.email).Return(testCase.findUserExistResponse)
 			userRepo.On("FindByEmail", testCase.email).Return(testCase.findByEmailResponse, testCase.findByEmailErr)
-			tokenService.On("CreateTokenWithExpirationInHours", testCase.findByEmailResponse.ID, testCase.uniqueIdGenerated, testCase.expiration).Return(testCase.tokenServiceCreateReturnOutPut, testCase.tokenServiceCreateReturnError)
-			//TODO mock mail mailService.On("SendEMail", testCase.mailServiceSendMailInput).Return(testCase.mailServiceSendMailOutput, testCase.mailServiceSendMailError)
-			//ODO mock otp mailService.On("SendEMail", testCase.mailServiceSendMailInput).Return(testCase.mailServiceSendMailOutput, testCase.mailServiceSendMailError)
-
+			tokenService.On("CreateTokenWithExpirationInHours", testCase.findByEmailResponse.ID, testCase.uniqueIdGenerated, testCase.otp, testCase.expiration).Return(testCase.tokenServiceCreateReturnOutPut, testCase.tokenServiceCreateReturnError)
+			confirmationEmail := mail.NewEMailMessage(mail.ForgotPasswordSubject, service.ForgotPasswordMailBody(testCase.otp), testCase.email, nil)
+			mailService.On("SendEMail", *confirmationEmail).Return(testCase.mailFeedback, testCase.mailError)
 			// Create userService and inject mock repo
-			userService := service.INewService(&userRepo, &uuidService, &mailService, &tokenService, &tokenRepo, otp)
+			userService := service.INewService(&userRepo, &uuidService, &mailService, &tokenService, &tokenRepo, &otp)
 
 			// Actual method call
 			output := userService.ForgotPassword(testCase.email)
