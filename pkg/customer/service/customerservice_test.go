@@ -3,7 +3,6 @@ package service
 import (
 	"errors"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/config/mail"
-	otp2 "github.com/DkreativeCoders/dmessanger-service/pkg/config/otp"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/customer/dto"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/mocks"
@@ -24,9 +23,10 @@ func TestCustomerService_CreateUser(t *testing.T) {
 		t.Skip()
 	}
 
+	otpNumber :="000111"
 	timeAdded := time.Now().Add(1 * time.Hour)
 	mailtobesent := mail.NewEMailMessage("DkreativeCoders Verify User",
-		"Please visit this link to verify your account. \n This links expires in an hour \n"+"http/Dmessanger:8900/verify-user/unique-111", "daniel@gmail.com",
+		"Please visit this link to verify your account. \n This links expires in an hour \n"+"https://dmessanger-service.herokuapp.com/verify-user/unique-111\n You can also use this OTP to verify your account via your mobile Device "+otpNumber, "daniel@gmail.com",
 		nil)
 
 	testCases := []struct {
@@ -136,19 +136,24 @@ func TestCustomerService_CreateUser(t *testing.T) {
 			mailService.On("SendEMail", testCase.mailServiceSendMailInput).Return(testCase.mailServiceSendMailOutput, testCase.mailServiceSendMailError)
 
 			//Todo: OTP service to be replaced with mock
-			otp := otp2.NewOTPService()
+			otpService := mocks.IOtp{}
+			otpService.On("GenerateOTP").Return(otpNumber)
+
+
 
 			// Create userService and inject mock repo
-			customerService := INewCustomerService(&customerRepo, &userRepo, &tokenRepo, &tokenService, &mailService, &uuidService, otp)
+			customerService := INewCustomerService(&customerRepo, &userRepo, &tokenRepo, &tokenService, &mailService, &uuidService, &otpService)
 
 			// Actual method call
 			output, err := customerService.CreateUser(testCase.request)
+
 
 			if err != nil {
 				assert.Equal(t, testCase.expectedValueErrorResponse, err)
 			}
 			// Expected output
 			expected := testCase.expectedValueDataResponse
+
 			assert.Equal(t, expected, output)
 		})
 	}

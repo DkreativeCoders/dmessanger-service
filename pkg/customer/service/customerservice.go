@@ -129,7 +129,7 @@ func (s customerService) sendCustomerEmail(customer domain.Customer) (string, er
 func (s customerService) createMail(customer domain.Customer, linkToSend, otp string) *mail.EMailMessage {
 	subject := "DkreativeCoders Verify User"
 	text := "Please visit this link to verify your account. \n This links expires in an hour \n" + linkToSend +
-		"\n You can also use this OTP to verify your account " + otp
+		"\n You can also use this OTP to verify your account via your mobile Device " + otp
 	recipient := customer.Email
 	email := mail.NewEMailMessage(subject, text, recipient, nil)
 	return email

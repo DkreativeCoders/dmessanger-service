@@ -3,6 +3,7 @@ package chttp
 import (
 	"encoding/json"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/customer/dto"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/constanst"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/defaultresponse"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/iservice"
 	"github.com/gorilla/mux"
@@ -14,10 +15,10 @@ func NewCustomerHandler(router *mux.Router, customerService iservice.ICustomerSe
 		customerService: customerService,
 	}
 
-	router.HandleFunc("/api/v1/customers", handler.create).Methods("POST")
+	router.HandleFunc(constanst.ApiVersion1+"customers", handler.create).Methods("POST")
 
 	// verify user handler
-	router.HandleFunc("/verify-user/token", handler.activate).Queries("token", "{token}", "otp", "{otp}").Methods("PUT")
+	router.HandleFunc(constanst.ApiVersion1+"/customers/verify", handler.activate).Queries("token", "{token}", "otp", "{otp}").Methods("PUT")
 
 	//return userControllerHandler{userService}
 }
@@ -74,7 +75,7 @@ func (c customerControllerHandler) create(w http.ResponseWriter, r *http.Request
 }
 
 func (c customerControllerHandler) activate(w http.ResponseWriter, r *http.Request) {
-	// swagger:operation PUT /verify-user/{Token} activateCustomer
+	// swagger:operation PUT /api/v1/customers/verify activateCustomer
 	//
 	// Activate customer
 	// ---
