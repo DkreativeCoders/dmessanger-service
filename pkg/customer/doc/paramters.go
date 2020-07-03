@@ -12,6 +12,9 @@ type CreateUserRequestWrapper struct {
 // The activate user url parameter
 // swagger:parameters activateCustomer
 type ActivateUserRequestWrapper struct {
-	// in: path
-	Token int
+	// in: query
+	token int
+
+	// in: query
+	otp string
 }
