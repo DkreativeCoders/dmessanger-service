@@ -27,6 +27,7 @@ func NewUserHandler(router *mux.Router, userService iservice.IUserService) {
 	router.HandleFunc(constanst.ApiVersion1+"login", handler.authenticateUser).Methods(http.MethodPost,http.MethodOptions)
 
 	//return userControllerHandler{userService}
+
 }
 
 
