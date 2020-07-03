@@ -1,10 +1,8 @@
 package service
 
 import (
-	"bou.ke/monkey"
 	"errors"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/config/mail"
-	otp2 "github.com/DkreativeCoders/dmessanger-service/pkg/config/otp"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/customer/dto"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/mocks"
@@ -25,16 +23,10 @@ func TestCustomerService_CreateUser(t *testing.T) {
 		t.Skip()
 	}
 
-	//totp := gotp.NewDefaultTOTP("4S62BZNFXXSZLCRO")
-	//otp2.NewOTPService()
-
-	monkey.Patch(otp2.NewOTPService().GenerateOTP, func() string {
-		return "000111"
-	})
-
+	otpNumber :="000111"
 	timeAdded := time.Now().Add(1 * time.Hour)
 	mailtobesent := mail.NewEMailMessage("DkreativeCoders Verify User",
-		"Please visit this link to verify your account. \n This links expires in an hour \n"+"https://dmessanger-service.herokuapp.com/verify-user/unique-111\n You can also use this OTP to verify your account via your mobile Device 000111", "daniel@gmail.com",
+		"Please visit this link to verify your account. \n This links expires in an hour \n"+"https://dmessanger-service.herokuapp.com/verify-user/unique-111\n You can also use this OTP to verify your account via your mobile Device "+otpNumber, "daniel@gmail.com",
 		nil)
 
 	testCases := []struct {
@@ -144,10 +136,13 @@ func TestCustomerService_CreateUser(t *testing.T) {
 			mailService.On("SendEMail", testCase.mailServiceSendMailInput).Return(testCase.mailServiceSendMailOutput, testCase.mailServiceSendMailError)
 
 			//Todo: OTP service to be replaced with mock
-			otp := otp2.NewOTPService()
+			otpService := mocks.IOtp{}
+			otpService.On("GenerateOTP").Return(otpNumber)
+
+
 
 			// Create userService and inject mock repo
-			customerService := INewCustomerService(&customerRepo, &userRepo, &tokenRepo, &tokenService, &mailService, &uuidService, otp)
+			customerService := INewCustomerService(&customerRepo, &userRepo, &tokenRepo, &tokenService, &mailService, &uuidService, &otpService)
 
 			// Actual method call
 			output, err := customerService.CreateUser(testCase.request)
@@ -158,8 +153,6 @@ func TestCustomerService_CreateUser(t *testing.T) {
 			}
 			// Expected output
 			expected := testCase.expectedValueDataResponse
-
-			monkey.Unpatch(otp2.NewOTPService().GenerateOTP)
 
 			assert.Equal(t, expected, output)
 		})
