@@ -3,6 +3,9 @@ package service
 import (
 	"errors"
 	"fmt"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/config/mail"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/config/otp"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/config/uuid"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/irepository"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/iservice"
@@ -14,12 +17,17 @@ import (
 )
 
 //INewService return an interface that's why Constrictor/Method name is preceded with I
-func INewService(repository irepository.IUserRepository) iservice.IUserService {
-	return service{repository}
+func INewService(repository irepository.IUserRepository, uuid uuid.IUuid, mailService mail.IMail, tokenService iservice.ITokenService, tokenRepository irepository.ITokenRepository, otp otp.IOtp) iservice.IUserService {
+	return service{repository, uuid, mailService, tokenService, tokenRepository, otp}
 }
 
 type service struct {
-	repository irepository.IUserRepository
+	repository      irepository.IUserRepository
+	uuid            uuid.IUuid
+	mailService     mail.IMail
+	tokenService    iservice.ITokenService
+	tokenRepository irepository.ITokenRepository
+	otp             otp.IOtp
 }
 
 func (s service) EnableUser(id int) error {
@@ -113,7 +121,7 @@ func (s service) UpdatePassword(id int, request dto.UpdatePasswordRequest) error
 		return err
 	}
 
-	if(user.Password == request.NewPassword) {
+	if user.Password == request.NewPassword {
 		return errors.New("Please select a new password")
 	}
 
@@ -127,6 +135,49 @@ func (s service) UpdatePassword(id int, request dto.UpdatePasswordRequest) error
 	}
 
 	return errors.New("Incorrect password supplied")
+}
+
+func (s service) ForgotPassword(email string) error {
+
+	var userExists = s.repository.FindUserExist(email)
+
+	if !userExists {
+		return errors.New("User not found")
+	}
+
+	user, err := s.repository.FindByEmail(email)
+
+	if err != nil {
+		return err
+	}
+
+	uniqueID := s.uuid.GenerateUniqueId()
+	token := s.otp.GenerateOTP()
+
+	_, err = s.tokenService.CreateTokenWithExpirationInHours(user.ID, uniqueID, token, 1)
+
+	if err != nil {
+		return err
+	}
+
+	confirmationEmail := mail.NewEMailMessage(mail.ForgotPasswordSubject, forgotPasswordMailBody(token), email, nil)
+
+	_, err = s.mailService.SendEMail(*confirmationEmail)
+
+	//TODO inspect feedback
+
+	if err != nil {
+		return errors.New("error occurred try to send mail, try again later")
+	}
+
+	fmt.Println(err)
+
+	return nil
+}
+
+func forgotPasswordMailBody(token string) string {
+	link := "http/Dmessanger:8900/reset-password/" + token
+	return "Please visit this link to reset your password. \n This links expires in an hour \n " + link + " \n Please ignore this mail if you didn't initiate this request."
 }
 
 func (s service) Login(request dto.LoginRequest) (*domain.TokenResponse, error) {
@@ -181,4 +232,43 @@ func (s service) Login(request dto.LoginRequest) (*domain.TokenResponse, error) 
 	}
 
 	return tokenResp, nil
+}
+
+func (s service) ResetPassword(token string, request dto.ResetPasswordRequest) error {
+
+	tokenData, err := s.tokenRepository.FindByOtp(token)
+
+	if tokenData == nil {
+		return errors.New("Invalid token")
+	}
+
+	if err != nil {
+		return err
+	}
+
+	if time.Now().After(tokenData.ExpiresOn) {
+		return errors.New("token expired")
+	}
+
+	user, err := s.repository.FindByID(int(tokenData.UserId))
+	if err != nil {
+		return err
+	}
+
+	user.Password = request.NewPassword
+	_, err = s.repository.Update(*user)
+
+	if err != nil {
+		return err
+	}
+
+	//expire token
+	tokenData.ExpiresOn = time.Now()
+	_, err = s.tokenRepository.UpdateToken(*tokenData)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

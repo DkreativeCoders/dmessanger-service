@@ -61,7 +61,7 @@ func NewServer() (*http.Server, *gorm.DB) {
 	//Initialize the repository for any the service
 	userRepository := orm.NewOrmUserRepository(dbConnection)
 	//Initialize the Service for any the handler
-	userService := service.INewService(userRepository)
+	userService := service.INewService(userRepository, uuid, mailService, tokenService, tokenRepository, otp)
 	//pass in the route and the user service
 	chttp.NewUserHandler(router, userService)
 
@@ -80,14 +80,12 @@ func NewServer() (*http.Server, *gorm.DB) {
 	fmt.Println(port)
 	//router.Use(loggingMiddleware)
 
-
-	corx:=handlers.CORS(
+	corx := handlers.CORS(
 		handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}),
 		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}),
 		handlers.AllowedOrigins([]string{"*"}))(router)
 
 	log.Fatal(http.ListenAndServe(":"+port, corx))
-
 
 	//err := http.ListenAndServe(":"+port, (corx)(router)) //Launch the app, visit localhost:8000/api
 	//if err != nil {
@@ -113,4 +111,3 @@ func loggingMiddleware(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 	})
 }
-

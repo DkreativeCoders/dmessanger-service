@@ -37,3 +37,8 @@ func (request *LoginRequest) Validate() error {
 	//
 	return nil
 }
+
+//swagger:model reset-password-request-model
+type ResetPasswordRequest struct {
+	NewPassword string `json:"NewPassword"`
+}

@@ -12,9 +12,9 @@ type sendGrid struct {
 	apiKey string
 }
 
-func NewSendGridNoArgs() IMail{
+func NewSendGridNoArgs() IMail {
 	err := godotenv.Load()
-	if err != nil{
+	if err != nil {
 		panic(err)
 	}
 	apiKey := os.Getenv("SENDGRID_API_KEY")
@@ -22,11 +22,11 @@ func NewSendGridNoArgs() IMail{
 	return &sendGrid{apiKey: apiKey}
 }
 
-func NewSendGrid(apiKey string) *sendGrid{
+func NewSendGrid(apiKey string) *sendGrid {
 	return &sendGrid{apiKey: apiKey}
 }
 
-func (s sendGrid) SendMail(subject, text string, to ...string) (string, error){
+func (s sendGrid) SendMail(subject, text string, to ...string) (string, error) {
 	// Email sender
 	from := mail.NewEmail("Dkreative Coders", "dkreativecoders@gmail.com")
 
@@ -44,14 +44,14 @@ func (s sendGrid) SendMail(subject, text string, to ...string) (string, error){
 	client := sendgrid.NewSendClient(s.apiKey)
 
 	response, err := client.Send(message)
-	if err != nil{
+	if err != nil {
 		return "", err
 	}
 
 	return response.Body, nil
 }
 
-func (s sendGrid) SendEMail(email EMailMessage) (string, error){
+func (s sendGrid) SendEMail(email EMailMessage) (string, error) {
 	// Email sender
 	from := mail.NewEmail("Dkreative Coders", "dkreativecoders@gmail.com")
 
@@ -60,7 +60,7 @@ func (s sendGrid) SendEMail(email EMailMessage) (string, error){
 
 	// Html text content
 	// The html content is the email's body
-	htmlContent :=  email.text
+	htmlContent := email.text
 
 	// New single mail
 	message := mail.NewSingleEmail(from, email.subject, recipient, email.text, htmlContent)
@@ -69,13 +69,13 @@ func (s sendGrid) SendEMail(email EMailMessage) (string, error){
 	client := sendgrid.NewSendClient(s.apiKey)
 
 	response, err := client.Send(message)
-	if err != nil{
+	if err != nil {
 		return "", err
 	}
 
 	return response.Body, nil
 }
 
-func (s sendGrid) SendMailWithHtMlTemplate() (string, error){
+func (s sendGrid) SendMailWithHtMlTemplate() (string, error) {
 	return "", nil
 }

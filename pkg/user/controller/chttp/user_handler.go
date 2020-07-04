@@ -24,12 +24,13 @@ func NewUserHandler(router *mux.Router, userService iservice.IUserService) {
 	router.HandleFunc(constanst.ApiVersion1+"users/update-password/{userID}", handler.updatePassword).Methods("PATCH")
 	router.HandleFunc(constanst.ApiVersion1+"users/enable-user/{userID}", handler.enableUser).Methods("PATCH")
 	router.HandleFunc(constanst.ApiVersion1+"users/disable-user/{userID}", handler.disableUser).Methods("PATCH")
-	router.HandleFunc(constanst.ApiVersion1+"login", handler.authenticateUser).Methods(http.MethodPost,http.MethodOptions)
+	router.HandleFunc(constanst.ApiVersion1+"login", handler.authenticateUser).Methods(http.MethodPost, http.MethodOptions)
+	router.HandleFunc(constanst.ApiVersion1+"users/forgot-password/{email}", handler.forgotPassword).Methods("POST")
+	router.HandleFunc(constanst.ApiVersion1+"users/reset-password/{token}", handler.resetPassword).Methods("POST")
 
 	//return userControllerHandler{userService}
 
 }
-
 
 type userControllerHandler struct {
 	userService iservice.IUserService
@@ -53,7 +54,6 @@ func (u userControllerHandler) authenticateUser(w http.ResponseWriter, r *http.R
 	//     "$ref": "#/responses/badRequestResponse"
 	//   401:
 	//     "$ref": "#/responses/unAuthenticatedResponse"
-
 
 	//setupResponse(&w, r)
 	//if r.Method == "OPTIONS" {
@@ -232,6 +232,77 @@ func (u userControllerHandler) updatePassword(w http.ResponseWriter, r *http.Req
 		response = defaultresponse.NewResponseDto(false, serviceError.Error())
 	} else {
 		response = defaultresponse.NewResponseDto(true, "Successful")
+	}
+
+	json.NewEncoder(w).Encode(response)
+
+}
+
+func (u userControllerHandler) forgotPassword(w http.ResponseWriter, r *http.Request) {
+	// swagger:operation POST /api/v1/users/forgot-password/{Email} forgotPassword
+	//
+	// Initate process to reset a user's password
+	// ---
+	// Consumes:
+	//	- application/json
+	// Produces:
+	//  - application/json
+	// Responses:
+	//   default:
+	//     "$ref": "#/responses/responseDto"
+
+	vars := mux.Vars(r)
+	email := vars["email"]
+	w.Header().Add("Content-Type", "application/json")
+
+	err := u.userService.ForgotPassword(email)
+	var response *defaultresponse.ResponseData
+
+	if err != nil {
+		response = defaultresponse.NewResponseDto(false, err.Error())
+	} else {
+		response = defaultresponse.NewResponseDto(true, "An email has been sent to the provided email address with instructions on how to reset your password")
+	}
+
+	json.NewEncoder(w).Encode(response)
+
+}
+
+func (u userControllerHandler) resetPassword(w http.ResponseWriter, r *http.Request) {
+	// swagger:operation POST /api/v1/users/reset-password/{Token} resetPassword
+	//
+	// Reset a user's password
+	// ---
+	// Consumes:
+	//	- application/json
+	// Produces:
+	//  - application/json
+	// Responses:
+	//   default:
+	//     "$ref": "#/responses/responseDto"
+
+	vars := mux.Vars(r)
+	token := vars["token"]
+	w.Header().Add("Content-Type", "application/json")
+
+	var resetPasswordRequest dto.ResetPasswordRequest
+
+	err := json.NewDecoder(r.Body).Decode(&resetPasswordRequest)
+
+	if err != nil {
+		response := defaultresponse.NewResponseDto(false, "Error while decoding request body")
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	err = u.userService.ResetPassword(token, resetPasswordRequest)
+
+	var response *defaultresponse.ResponseData
+
+	if err != nil {
+		response = defaultresponse.NewResponseDto(false, err.Error())
+	} else {
+		response = defaultresponse.NewResponseDto(true, "Password reset successfully")
 	}
 
 	json.NewEncoder(w).Encode(response)

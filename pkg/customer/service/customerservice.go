@@ -22,7 +22,7 @@ func INewCustomerService(
 	mailService mail.IMail,
 	uuid uuid.IUuid,
 	otp otp.IOtp,
-	) iservice.ICustomerService {
+) iservice.ICustomerService {
 	return customerService{
 		repository,
 		userRepository,
@@ -41,7 +41,7 @@ type customerService struct {
 	tokenService       iservice.ITokenService
 	mailService        mail.IMail
 	uuid               uuid.IUuid
-	otp				   otp.IOtp
+	otp                otp.IOtp
 }
 
 //refactor and test case needed

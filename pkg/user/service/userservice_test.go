@@ -2,13 +2,17 @@ package service_test
 
 import (
 	"errors"
+	otp2 "github.com/DkreativeCoders/dmessanger-service/pkg/config/otp"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/config/uuid"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/mocks"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/user/dto"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/user/service"
 	"github.com/jinzhu/gorm"
 	"github.com/stretchr/testify/assert"
+	mock "github.com/stretchr/testify/mock"
 	"testing"
+	"time"
 )
 
 //Todo: modify CreateUser test
@@ -66,8 +70,14 @@ func TestService_CreateUser(t *testing.T) {
 			userRepo := mocks.UserRepository{}
 			userRepo.On("Save", testCase.repoInputData).Return(testCase.repoReturnData, testCase.repoReturnErr)
 
+			uuid := uuid.INewUuid()
+			mailService := mocks.IMail{}
+			tokenService := mocks.ITokenService{}
+			tokenRepo := mocks.ITokenRepository{}
+			otp := otp2.NewOTPService()
+
 			// Create userService and inject mock repo
-			userService := service.INewService(&userRepo)
+			userService := service.INewService(&userRepo, uuid, &mailService, &tokenService, &tokenRepo, otp)
 
 			// Actual method call
 			output, _ := userService.CreateUser(testCase.repoInputData)
@@ -113,8 +123,14 @@ func TestService_GetUser(t *testing.T) {
 			userRepo := mocks.UserRepository{}
 			userRepo.On("FindByID", testCase.repoInputData).Return(testCase.repoReturnData, testCase.repoReturnErr)
 
+			uuid := uuid.INewUuid()
+			mailService := mocks.IMail{}
+			tokenService := mocks.ITokenService{}
+			tokenRepo := mocks.ITokenRepository{}
+			otp := otp2.NewOTPService()
+
 			// Create userService and inject mock repo
-			userService := service.INewService(&userRepo)
+			userService := service.INewService(&userRepo, uuid, &mailService, &tokenService, &tokenRepo, otp)
 
 			// Actual method call
 			output, err := userService.GetUser(testCase.repoInputData)
@@ -164,8 +180,14 @@ func TestService_GetAllUser(t *testing.T) {
 		userRepo := mocks.UserRepository{}
 		userRepo.On("FindAll").Return(testCase.repoReturnData)
 
+		uuid := uuid.INewUuid()
+		mailService := mocks.IMail{}
+		tokenService := mocks.ITokenService{}
+		tokenRepo := mocks.ITokenRepository{}
+		otp := otp2.NewOTPService()
+
 		// Create userService and inject mock repo
-		userService := service.INewService(&userRepo)
+		userService := service.INewService(&userRepo, uuid, &mailService, &tokenService, &tokenRepo, otp)
 
 		// Actual method call
 		output := userService.GetAllUser()
@@ -255,8 +277,14 @@ func TestService_UpdatePassword(t *testing.T) {
 			userRepo.On("Update", testCase.repoUpdateData).Return(&testCase.repoUpdateData, testCase.repoUpdateError)
 
 			// Create userService and inject mock repo
-			userService := service.INewService(&userRepo)
+			uuid := uuid.INewUuid()
+			mailService := mocks.IMail{}
+			tokenService := mocks.ITokenService{}
+			tokenRepo := mocks.ITokenRepository{}
+			otp := otp2.NewOTPService()
 
+			// Create userService and inject mock repo
+			userService := service.INewService(&userRepo, uuid, &mailService, &tokenService, &tokenRepo, otp)
 			// Actual method call
 			output := userService.UpdatePassword(testCase.userId, testCase.requestBody)
 
@@ -412,7 +440,14 @@ func TestService_Login(t *testing.T) {
 			userRepo.On("FindByEmail", testCase.repoFindByEmail).Return(testCase.repoReturnData, testCase.repoReturnErr)
 
 			// Create userService and inject mock repo
-			userService := service.INewService(&userRepo)
+			uuid := uuid.INewUuid()
+			mailService := mocks.IMail{}
+			tokenService := mocks.ITokenService{}
+			tokenRepo := mocks.ITokenRepository{}
+			otp := otp2.NewOTPService()
+
+			// Create userService and inject mock repo
+			userService := service.INewService(&userRepo, uuid, &mailService, &tokenService, &tokenRepo, otp)
 
 			// Actual method call
 			output, err := userService.Login(testCase.requestBody)
@@ -427,6 +462,173 @@ func TestService_Login(t *testing.T) {
 				assert.Equal(t, expected.TokenType, output.TokenType)
 			}
 
+		})
+	}
+}
+
+func TestService_ForgotPassword(t *testing.T) {
+
+	timeAdded := time.Now().Add(1 * time.Hour)
+
+	var tests = []struct {
+		name                           string
+		email                          string
+		expectedResponse               error
+		findUserExistResponse          bool
+		findByEmailResponse            *domain.User
+		findByEmailErr                 error
+		uniqueIdGenerated              string
+		expiration                     time.Duration
+		tokenServiceCreateReturnOutPut *domain.Token
+		tokenServiceCreateReturnError  error
+		otp                            string
+		mailError                      error
+		mailFeedback                   string
+	}{
+		{
+			"Test with invalid email email",
+			"johndoe@yahoo.com",
+			errors.New("User not found"),
+			false,
+			&domain.User{Model: gorm.Model{ID: 1}, FirstName: "Adam", LastName: "Mark", Age: "24", Email: "johndoe@yahoo.com", PhoneNumber: "01-2345-6789", Password: "newpassword", Address: "401, Hebert Mark Way"},
+			nil,
+			"uuid",
+			1,
+			&domain.Token{Model: gorm.Model{ID: 0}, UserId: 0, Token: "unique-111", ExpiresOn: timeAdded},
+			nil,
+			"otp",
+			nil,
+			"",
+		},
+		{
+			"Test with valid input",
+			"johndoe@yahoo.com",
+			nil,
+			true,
+			&domain.User{Model: gorm.Model{ID: 1}, FirstName: "Adam", LastName: "Mark", Age: "24", Email: "johndoe@yahoo.com", PhoneNumber: "01-2345-6789", Password: "newpassword", Address: "401, Hebert Mark Way"},
+			nil,
+			"uuid",
+			1,
+			&domain.Token{Model: gorm.Model{ID: 0}, UserId: 0, Token: "unique-111", ExpiresOn: timeAdded},
+			nil,
+			"otp",
+			nil,
+			"",
+		},
+	}
+
+	for _, testCase := range tests {
+
+		t.Run(testCase.name, func(t *testing.T) {
+			// Create dependency userRepo with mock implementation
+			userRepo := mocks.UserRepository{}
+			uuidService := mocks.IUuid{}
+			mailService := mocks.IMail{}
+			tokenService := mocks.ITokenService{}
+			tokenRepo := mocks.ITokenRepository{}
+			otp := mocks.IOtp{}
+			otp.On("GenerateOTP").Return(testCase.otp)
+			uuidService.On("GenerateUniqueId").Return(testCase.uniqueIdGenerated)
+			userRepo.On("FindUserExist", testCase.email).Return(testCase.findUserExistResponse)
+			userRepo.On("FindByEmail", testCase.email).Return(testCase.findByEmailResponse, testCase.findByEmailErr)
+			tokenService.On("CreateTokenWithExpirationInHours", testCase.findByEmailResponse.ID, testCase.uniqueIdGenerated, testCase.otp, testCase.expiration).Return(testCase.tokenServiceCreateReturnOutPut, testCase.tokenServiceCreateReturnError)
+			mailService.On("SendEMail", mock.AnythingOfType("mail.EMailMessage")).Return(testCase.mailFeedback, testCase.mailError)
+			// Create userService and inject mock repo
+			userService := service.INewService(&userRepo, &uuidService, &mailService, &tokenService, &tokenRepo, &otp)
+
+			// Actual method call
+			output := userService.ForgotPassword(testCase.email)
+
+			// Expected output
+			expected := testCase.expectedResponse
+
+			assert.Equal(t, expected, output)
+		})
+	}
+}
+
+func TestService_ResetPassword(t *testing.T) {
+
+	timeAdded := time.Now()
+	newPassword := "new password"
+
+	var tests = []struct {
+		name                 string
+		token                string
+		request              dto.ResetPasswordRequest
+		findByOtpResponse    *domain.Token
+		findByOtpError       error
+		findUserByIdResponse *domain.User
+		findUserByIDError    error
+		updatedUser          *domain.User
+		updateTokenError     error
+		expectedResponse     error
+		dummyOtpResponse     *domain.Token
+	}{
+		{
+			"Test with valid input",
+			"token",
+			dto.ResetPasswordRequest{NewPassword: newPassword},
+			&domain.Token{Model: gorm.Model{ID: 1}, UserId: 1, Token: "unique-111", ExpiresOn: timeAdded.Add(1 * time.Hour)},
+			nil,
+			&domain.User{Model: gorm.Model{ID: 1}, FirstName: "Adam", LastName: "Mark", Age: "24", Email: "johndoe@yahoo.com", PhoneNumber: "01-2345-6789", Password: "newpassword", Address: "401, Hebert Mark Way"},
+			nil,
+			&domain.User{Model: gorm.Model{ID: 1}, FirstName: "Adam", LastName: "Mark", Age: "24", Email: "johndoe@yahoo.com", PhoneNumber: "01-2345-6789", Password: newPassword, Address: "401, Hebert Mark Way"},
+			nil,
+			nil,
+			&domain.Token{Model: gorm.Model{ID: 1}, UserId: 1, Token: "unique-111", ExpiresOn: timeAdded.Add(1 * time.Hour)},
+		},
+		{
+			"Test with expired Token",
+			"token",
+			dto.ResetPasswordRequest{NewPassword: newPassword},
+			&domain.Token{Model: gorm.Model{ID: 1}, UserId: 1, Token: "unique-111", ExpiresOn: timeAdded},
+			nil,
+			&domain.User{Model: gorm.Model{ID: 1}, FirstName: "Adam", LastName: "Mark", Age: "24", Email: "johndoe@yahoo.com", PhoneNumber: "01-2345-6789", Password: "newpassword", Address: "401, Hebert Mark Way"},
+			nil,
+			&domain.User{Model: gorm.Model{ID: 1}, FirstName: "Adam", LastName: "Mark", Age: "24", Email: "johndoe@yahoo.com", PhoneNumber: "01-2345-6789", Password: newPassword, Address: "401, Hebert Mark Way"},
+			nil,
+			errors.New("token expired"),
+			&domain.Token{Model: gorm.Model{ID: 1}, UserId: 1, Token: "unique-111", ExpiresOn: timeAdded.Add(1 * time.Hour)},
+		},
+		{
+			"Test with expired Token",
+			"token",
+			dto.ResetPasswordRequest{NewPassword: newPassword},
+			nil,
+			nil,
+			&domain.User{Model: gorm.Model{ID: 1}, FirstName: "Adam", LastName: "Mark", Age: "24", Email: "johndoe@yahoo.com", PhoneNumber: "01-2345-6789", Password: "newpassword", Address: "401, Hebert Mark Way"},
+			nil,
+			&domain.User{Model: gorm.Model{ID: 1}, FirstName: "Adam", LastName: "Mark", Age: "24", Email: "johndoe@yahoo.com", PhoneNumber: "01-2345-6789", Password: newPassword, Address: "401, Hebert Mark Way"},
+			nil,
+			errors.New("Invalid token"),
+			&domain.Token{Model: gorm.Model{ID: 1}, UserId: 1, Token: "unique-111", ExpiresOn: timeAdded.Add(1 * time.Hour)},
+		},
+	}
+
+	for _, testCase := range tests {
+
+		t.Run(testCase.name, func(t *testing.T) {
+			// Create dependency userRepo with mock implementation
+			userRepo := mocks.UserRepository{}
+			uuidService := mocks.IUuid{}
+			mailService := mocks.IMail{}
+			tokenService := mocks.ITokenService{}
+			tokenRepo := mocks.ITokenRepository{}
+			otp := mocks.IOtp{}
+			tokenRepo.On("FindByOtp", testCase.token).Return(testCase.findByOtpResponse, testCase.findByOtpError)
+			userRepo.On("FindByID", int(testCase.dummyOtpResponse.UserId)).Return(testCase.findUserByIdResponse, testCase.findUserByIDError)
+			userRepo.On("Update", *testCase.updatedUser).Return(testCase.updatedUser, nil)
+			tokenRepo.On("UpdateToken", mock.AnythingOfType("domain.Token")).Return(nil, nil)
+			userService := service.INewService(&userRepo, &uuidService, &mailService, &tokenService, &tokenRepo, &otp)
+
+			// Actual method call
+			output := userService.ResetPassword(testCase.token, testCase.request)
+
+			// Expected output
+			expected := testCase.expectedResponse
+
+			assert.Equal(t, expected, output)
 		})
 	}
 }

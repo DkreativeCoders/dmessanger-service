@@ -64,7 +64,6 @@ func (u ormUserRepository) Update(user domain.User) (*domain.User, error) {
 		return nil, dbc.Error
 	}
 
-	u.db.Save(user)
 	fmt.Println("Updated user")
 	//return &user
 	return &user, nil

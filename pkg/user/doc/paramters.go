@@ -30,3 +30,18 @@ type LoginRequestWrapper struct {
 	// in: body
 	Body dto.LoginRequest
 }
+
+// swagger:parameters forgotPassword
+type UserEmailParam struct {
+	// in: path
+	Email string
+}
+
+// swagger:parameters resetPassword
+type ResetPasswordRequestWrapper struct {
+	// in: body
+	Body dto.ResetPasswordRequest
+
+	// in: path
+	Token string
+}

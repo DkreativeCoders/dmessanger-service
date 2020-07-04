@@ -9,6 +9,6 @@ type Token struct {
 	gorm.Model
 	UserId    uint
 	Token     string
-	OTP 	  string
+	OTP       string
 	ExpiresOn time.Time
 }
