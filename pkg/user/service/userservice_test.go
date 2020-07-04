@@ -2,7 +2,6 @@ package service_test
 
 import (
 	"errors"
-	"github.com/DkreativeCoders/dmessanger-service/pkg/config/mail"
 	otp2 "github.com/DkreativeCoders/dmessanger-service/pkg/config/otp"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/config/uuid"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain"
@@ -533,8 +532,7 @@ func TestService_ForgotPassword(t *testing.T) {
 			userRepo.On("FindUserExist", testCase.email).Return(testCase.findUserExistResponse)
 			userRepo.On("FindByEmail", testCase.email).Return(testCase.findByEmailResponse, testCase.findByEmailErr)
 			tokenService.On("CreateTokenWithExpirationInHours", testCase.findByEmailResponse.ID, testCase.uniqueIdGenerated, testCase.otp, testCase.expiration).Return(testCase.tokenServiceCreateReturnOutPut, testCase.tokenServiceCreateReturnError)
-			confirmationEmail := mail.NewEMailMessage(mail.ForgotPasswordSubject, service.ForgotPasswordMailBody(testCase.otp), testCase.email, nil)
-			mailService.On("SendEMail", *confirmationEmail).Return(testCase.mailFeedback, testCase.mailError)
+			mailService.On("SendEMail", mock.AnythingOfType("mail.EMailMessage")).Return(testCase.mailFeedback, testCase.mailError)
 			// Create userService and inject mock repo
 			userService := service.INewService(&userRepo, &uuidService, &mailService, &tokenService, &tokenRepo, &otp)
 
