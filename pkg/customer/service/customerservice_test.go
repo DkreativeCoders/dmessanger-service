@@ -19,11 +19,11 @@ func TestCustomerService_CreateUser(t *testing.T) {
 	//	mock tokenRepository
 	//	mock mailService
 
-	if testing.Short(){
+	if testing.Short() {
 		t.Skip()
 	}
 
-	otpNumber :="000111"
+	otpNumber := "000111"
 	timeAdded := time.Now().Add(1 * time.Hour)
 	mailtobesent := mail.NewEMailMessage("DkreativeCoders Verify User",
 		"Please visit this link to verify your account. \n This links expires in an hour \n"+"https://dmessanger-service.herokuapp.com/verify-user/unique-111\n You can also use this OTP to verify your account via your mobile Device "+otpNumber, "daniel@gmail.com",
@@ -139,14 +139,11 @@ func TestCustomerService_CreateUser(t *testing.T) {
 			otpService := mocks.IOtp{}
 			otpService.On("GenerateOTP").Return(otpNumber)
 
-
-
 			// Create userService and inject mock repo
 			customerService := INewCustomerService(&customerRepo, &userRepo, &tokenRepo, &tokenService, &mailService, &uuidService, &otpService)
 
 			// Actual method call
 			output, err := customerService.CreateUser(testCase.request)
-
 
 			if err != nil {
 				assert.Equal(t, testCase.expectedValueErrorResponse, err)

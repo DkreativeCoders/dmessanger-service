@@ -2,8 +2,8 @@ package chttp
 
 import (
 	"encoding/json"
-	"github.com/DkreativeCoders/dmessanger-service/pkg/customer/dto"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/constanst"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/customer/dto"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/defaultresponse"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/iservice"
 	"github.com/gorilla/mux"
