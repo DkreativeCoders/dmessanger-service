@@ -160,7 +160,7 @@ func (s service) ForgotPassword(email string) error {
 		return err
 	}
 
-	confirmationEmail := mail.NewEMailMessage(mail.ForgotPasswordSubject, ForgotPasswordMailBody(token), email, nil)
+	confirmationEmail := mail.NewEMailMessage(mail.ForgotPasswordSubject, forgotPasswordMailBody(token), email, nil)
 
 	_, err = s.mailService.SendEMail(*confirmationEmail)
 
@@ -175,7 +175,7 @@ func (s service) ForgotPassword(email string) error {
 	return nil
 }
 
-func ForgotPasswordMailBody(token string) string {
+func forgotPasswordMailBody(token string) string {
 	link := "http/Dmessanger:8900/reset-password/" + token
 	return "Please visit this link to reset your password. \n This links expires in an hour \n " + link + " \n Please ignore this mail if you didn't initiate this request."
 }

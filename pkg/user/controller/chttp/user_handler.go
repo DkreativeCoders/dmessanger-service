@@ -25,8 +25,8 @@ func NewUserHandler(router *mux.Router, userService iservice.IUserService) {
 	router.HandleFunc(constanst.ApiVersion1+"users/enable-user/{userID}", handler.enableUser).Methods("PATCH")
 	router.HandleFunc(constanst.ApiVersion1+"users/disable-user/{userID}", handler.disableUser).Methods("PATCH")
 	router.HandleFunc(constanst.ApiVersion1+"login", handler.authenticateUser).Methods(http.MethodPost, http.MethodOptions)
-	router.HandleFunc("users/forgot-password/{email}", handler.forgotPassword).Methods("POST")
-	router.HandleFunc("users/reset-password/{token}", handler.resetPassword).Methods("POST")
+	router.HandleFunc(constanst.ApiVersion1+"users/forgot-password/{email}", handler.forgotPassword).Methods("POST")
+	router.HandleFunc(constanst.ApiVersion1+"users/reset-password/{token}", handler.resetPassword).Methods("POST")
 
 	//return userControllerHandler{userService}
 
