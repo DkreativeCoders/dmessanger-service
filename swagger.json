@@ -11,7 +11,7 @@
     "title": "De-messenger",
     "version": "0.0.1"
   },
-  "host": "localhost:8900,dmessanger-service.herokuapp.com",
+  "host": "dmessanger-service.herokuapp.com",
   "basePath": "/api",
   "paths": {
     "/api/v1/authenticate": {
@@ -84,6 +84,39 @@
         }
       }
     },
+    "/api/v1/customers/verify": {
+      "put": {
+        "description": "Activate customer",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "activateCustomer",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "A long sequence of character",
+            "name": "Token",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "example": "000111",
+            "description": "A string of 6 digit",
+            "name": "Otp",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "default": {
+            "$ref": "#/responses/responseDto"
+          }
+        }
+      }
+    },
     "/api/v1/users/disable-user/{UserID}": {
       "put": {
         "description": "Sets the isEnabled field of a user's to false",
@@ -136,63 +169,6 @@
         }
       }
     },
-    "/api/v1/users/forgot-password/{Email}": {
-      "post": {
-        "description": "Initate process to reset a user's password",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "operationId": "forgotPassword",
-        "parameters": [
-          {
-            "type": "string",
-            "name": "Email",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "default": {
-            "$ref": "#/responses/responseDto"
-          }
-        }
-      }
-    },
-    "/api/v1/users/reset-password/{Token}": {
-      "post": {
-        "description": "Reset a user's password",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "operationId": "resetPassword",
-        "parameters": [
-          {
-            "name": "Body",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/reset-password-request-model"
-            }
-          },
-          {
-            "type": "string",
-            "name": "Token",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "default": {
-            "$ref": "#/responses/responseDto"
-          }
-        }
-      }
-    },
     "/api/v1/users/update-password/{UserID}": {
       "put": {
         "description": "Updates a user's password",
@@ -215,32 +191,6 @@
             "type": "integer",
             "format": "int64",
             "name": "UserID",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "default": {
-            "$ref": "#/responses/responseDto"
-          }
-        }
-      }
-    },
-    "/verify-user/{Token}": {
-      "put": {
-        "description": "Activate customer",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "operationId": "activateCustomer",
-        "parameters": [
-          {
-            "type": "integer",
-            "format": "int64",
-            "name": "Token",
             "in": "path",
             "required": true
           }
