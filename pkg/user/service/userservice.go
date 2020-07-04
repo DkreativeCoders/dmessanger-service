@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/config/mail"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/config/otp"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/config/uuid"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/irepository"
@@ -13,11 +14,10 @@ import (
 	"github.com/DkreativeCoders/dmessanger-service/pkg/utils"
 	"github.com/dgrijalva/jwt-go"
 	"time"
-	"github.com/DkreativeCoders/dmessanger-service/pkg/config/otp"
 )
 
 //INewService return an interface that's why Constrictor/Method name is preceded with I
-func INewService(repository irepository.IUserRepository, uuid uuid.IUuid, mailService mail.IMail, tokenService iservice.ITokenService, tokenRepository irepository.ITokenRepository, otp otp.IOtp,) iservice.IUserService {
+func INewService(repository irepository.IUserRepository, uuid uuid.IUuid, mailService mail.IMail, tokenService iservice.ITokenService, tokenRepository irepository.ITokenRepository, otp otp.IOtp) iservice.IUserService {
 	return service{repository, uuid, mailService, tokenService, tokenRepository, otp}
 }
 
@@ -27,7 +27,7 @@ type service struct {
 	mailService     mail.IMail
 	tokenService    iservice.ITokenService
 	tokenRepository irepository.ITokenRepository
-	otp otp.IOtp
+	otp             otp.IOtp
 }
 
 func (s service) EnableUser(id int) error {
@@ -146,7 +146,7 @@ func (s service) ForgotPassword(email string) error {
 	}
 
 	user, err := s.repository.FindByEmail(email)
-	
+
 	if err != nil {
 		return err
 	}

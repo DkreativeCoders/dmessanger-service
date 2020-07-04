@@ -89,7 +89,7 @@ func (c customerControllerHandler) activate(w http.ResponseWriter, r *http.Reque
 	token := r.FormValue("token")
 	otp := r.FormValue("otp")
 
-	if token == ""{
+	if token == "" {
 		token = otp
 	}
 

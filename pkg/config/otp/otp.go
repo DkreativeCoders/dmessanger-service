@@ -5,11 +5,11 @@ import "github.com/xlzd/gotp"
 type otpService struct {
 }
 
-func NewOTPService() IOtp{
+func NewOTPService() IOtp {
 	return otpService{}
 }
 
-func(o otpService) GenerateOTP() string{
+func (o otpService) GenerateOTP() string {
 	totp := gotp.NewDefaultTOTP("4S62BZNFXXSZLCRO")
 	return totp.Now()
 }

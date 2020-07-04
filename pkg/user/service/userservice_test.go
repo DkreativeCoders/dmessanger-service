@@ -2,18 +2,18 @@ package service_test
 
 import (
 	"errors"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/config/mail"
+	otp2 "github.com/DkreativeCoders/dmessanger-service/pkg/config/otp"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/config/uuid"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/mocks"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/user/dto"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/user/service"
 	"github.com/jinzhu/gorm"
 	"github.com/stretchr/testify/assert"
-	"testing"
-	"github.com/DkreativeCoders/dmessanger-service/pkg/config/uuid"
-	otp2 "github.com/DkreativeCoders/dmessanger-service/pkg/config/otp"
-	"time"
-	"github.com/DkreativeCoders/dmessanger-service/pkg/config/mail"
 	mock "github.com/stretchr/testify/mock"
+	"testing"
+	"time"
 )
 
 //Todo: modify CreateUser test
@@ -76,7 +76,7 @@ func TestService_CreateUser(t *testing.T) {
 			tokenService := mocks.ITokenService{}
 			tokenRepo := mocks.ITokenRepository{}
 			otp := otp2.NewOTPService()
-			
+
 			// Create userService and inject mock repo
 			userService := service.INewService(&userRepo, uuid, &mailService, &tokenService, &tokenRepo, otp)
 
@@ -129,7 +129,7 @@ func TestService_GetUser(t *testing.T) {
 			tokenService := mocks.ITokenService{}
 			tokenRepo := mocks.ITokenRepository{}
 			otp := otp2.NewOTPService()
-			
+
 			// Create userService and inject mock repo
 			userService := service.INewService(&userRepo, uuid, &mailService, &tokenService, &tokenRepo, otp)
 
@@ -186,7 +186,7 @@ func TestService_GetAllUser(t *testing.T) {
 		tokenService := mocks.ITokenService{}
 		tokenRepo := mocks.ITokenRepository{}
 		otp := otp2.NewOTPService()
-		
+
 		// Create userService and inject mock repo
 		userService := service.INewService(&userRepo, uuid, &mailService, &tokenService, &tokenRepo, otp)
 
@@ -283,7 +283,7 @@ func TestService_UpdatePassword(t *testing.T) {
 			tokenService := mocks.ITokenService{}
 			tokenRepo := mocks.ITokenRepository{}
 			otp := otp2.NewOTPService()
-			
+
 			// Create userService and inject mock repo
 			userService := service.INewService(&userRepo, uuid, &mailService, &tokenService, &tokenRepo, otp)
 			// Actual method call
@@ -446,7 +446,7 @@ func TestService_Login(t *testing.T) {
 			tokenService := mocks.ITokenService{}
 			tokenRepo := mocks.ITokenRepository{}
 			otp := otp2.NewOTPService()
-			
+
 			// Create userService and inject mock repo
 			userService := service.INewService(&userRepo, uuid, &mailService, &tokenService, &tokenRepo, otp)
 
@@ -472,19 +472,19 @@ func TestService_ForgotPassword(t *testing.T) {
 	timeAdded := time.Now().Add(1 * time.Hour)
 
 	var tests = []struct {
-		name             string
-		email           string
-		expectedResponse error
-		findUserExistResponse   bool
-		findByEmailResponse    *domain.User
-		findByEmailErr error
-		uniqueIdGenerated string
-		expiration time.Duration
+		name                           string
+		email                          string
+		expectedResponse               error
+		findUserExistResponse          bool
+		findByEmailResponse            *domain.User
+		findByEmailErr                 error
+		uniqueIdGenerated              string
+		expiration                     time.Duration
 		tokenServiceCreateReturnOutPut *domain.Token
-		tokenServiceCreateReturnError error
-		otp string
-		mailError error
-		mailFeedback string
+		tokenServiceCreateReturnError  error
+		otp                            string
+		mailError                      error
+		mailFeedback                   string
 	}{
 		{
 			"Test with invalid email email",
@@ -549,24 +549,23 @@ func TestService_ForgotPassword(t *testing.T) {
 	}
 }
 
-
 func TestService_ResetPassword(t *testing.T) {
 
 	timeAdded := time.Now()
 	newPassword := "new password"
 
 	var tests = []struct {
-		name             string
-		token           string
-		request dto.ResetPasswordRequest
-		findByOtpResponse   *domain.Token
-		findByOtpError    error
+		name                 string
+		token                string
+		request              dto.ResetPasswordRequest
+		findByOtpResponse    *domain.Token
+		findByOtpError       error
 		findUserByIdResponse *domain.User
-		findUserByIDError error
-		updatedUser *domain.User
-		updateTokenError error
-		expectedResponse error
-		dummyOtpResponse   *domain.Token
+		findUserByIDError    error
+		updatedUser          *domain.User
+		updateTokenError     error
+		expectedResponse     error
+		dummyOtpResponse     *domain.Token
 	}{
 		{
 			"Test with valid input",
@@ -635,5 +634,3 @@ func TestService_ResetPassword(t *testing.T) {
 		})
 	}
 }
-
-
