@@ -146,14 +146,14 @@ func (s service) ForgotPassword(email string) error {
 	}
 
 	user, err := s.repository.FindByEmail(email)
+	
 	if err != nil {
 		return err
 	}
 
 	uniqueID := s.uuid.GenerateUniqueId()
 	token := s.otp.GenerateOTP()
-	fmt.Println("Chop life")
-	fmt.Println(user)
+
 	_, err = s.tokenService.CreateTokenWithExpirationInHours(user.ID, uniqueID, token, 1)
 
 	if err != nil {
@@ -237,8 +237,13 @@ func (s service) Login(request dto.LoginRequest) (*domain.TokenResponse, error) 
 func (s service) ResetPassword(token string, request dto.ResetPasswordRequest) error {
 
 	tokenData, err := s.tokenRepository.FindByOtp(token)
-	if err != nil {
+
+	if tokenData == nil {
 		return errors.New("Invalid token")
+	}
+
+	if err != nil {
+		return err
 	}
 
 	if time.Now().After(tokenData.ExpiresOn) {
@@ -251,11 +256,19 @@ func (s service) ResetPassword(token string, request dto.ResetPasswordRequest) e
 	}
 
 	user.Password = request.NewPassword
-	s.repository.Update(*user)
+	_, err = s.repository.Update(*user)
+
+	if err != nil {
+		return err
+	}
 
 	//expire token
 	tokenData.ExpiresOn = time.Now()
-	s.tokenRepository.UpdateToken(*tokenData)
+	_, err = s.tokenRepository.UpdateToken(*tokenData)
+
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

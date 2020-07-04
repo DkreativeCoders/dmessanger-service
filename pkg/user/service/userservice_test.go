@@ -13,6 +13,7 @@ import (
 	otp2 "github.com/DkreativeCoders/dmessanger-service/pkg/config/otp"
 	"time"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/config/mail"
+	mock "github.com/stretchr/testify/mock"
 )
 
 //Todo: modify CreateUser test
@@ -486,6 +487,21 @@ func TestService_ForgotPassword(t *testing.T) {
 		mailFeedback string
 	}{
 		{
+			"Test with invalid email email",
+			"johndoe@yahoo.com",
+			errors.New("User not found"),
+			false,
+			&domain.User{Model: gorm.Model{ID: 1}, FirstName: "Adam", LastName: "Mark", Age: "24", Email: "johndoe@yahoo.com", PhoneNumber: "01-2345-6789", Password: "newpassword", Address: "401, Hebert Mark Way"},
+			nil,
+			"uuid",
+			1,
+			&domain.Token{Model: gorm.Model{ID: 0}, UserId: 0, Token: "unique-111", ExpiresOn: timeAdded},
+			nil,
+			"otp",
+			nil,
+			"",
+		},
+		{
 			"Test with valid input",
 			"johndoe@yahoo.com",
 			nil,
@@ -532,4 +548,92 @@ func TestService_ForgotPassword(t *testing.T) {
 		})
 	}
 }
+
+
+func TestService_ResetPassword(t *testing.T) {
+
+	timeAdded := time.Now()
+	newPassword := "new password"
+
+	var tests = []struct {
+		name             string
+		token           string
+		request dto.ResetPasswordRequest
+		findByOtpResponse   *domain.Token
+		findByOtpError    error
+		findUserByIdResponse *domain.User
+		findUserByIDError error
+		updatedUser *domain.User
+		updateTokenError error
+		expectedResponse error
+		dummyOtpResponse   *domain.Token
+	}{
+		{
+			"Test with valid input",
+			"token",
+			dto.ResetPasswordRequest{NewPassword: newPassword},
+			&domain.Token{Model: gorm.Model{ID: 1}, UserId: 1, Token: "unique-111", ExpiresOn: timeAdded.Add(1 * time.Hour)},
+			nil,
+			&domain.User{Model: gorm.Model{ID: 1}, FirstName: "Adam", LastName: "Mark", Age: "24", Email: "johndoe@yahoo.com", PhoneNumber: "01-2345-6789", Password: "newpassword", Address: "401, Hebert Mark Way"},
+			nil,
+			&domain.User{Model: gorm.Model{ID: 1}, FirstName: "Adam", LastName: "Mark", Age: "24", Email: "johndoe@yahoo.com", PhoneNumber: "01-2345-6789", Password: newPassword, Address: "401, Hebert Mark Way"},
+			nil,
+			nil,
+			&domain.Token{Model: gorm.Model{ID: 1}, UserId: 1, Token: "unique-111", ExpiresOn: timeAdded.Add(1 * time.Hour)},
+		},
+		{
+			"Test with expired Token",
+			"token",
+			dto.ResetPasswordRequest{NewPassword: newPassword},
+			&domain.Token{Model: gorm.Model{ID: 1}, UserId: 1, Token: "unique-111", ExpiresOn: timeAdded},
+			nil,
+			&domain.User{Model: gorm.Model{ID: 1}, FirstName: "Adam", LastName: "Mark", Age: "24", Email: "johndoe@yahoo.com", PhoneNumber: "01-2345-6789", Password: "newpassword", Address: "401, Hebert Mark Way"},
+			nil,
+			&domain.User{Model: gorm.Model{ID: 1}, FirstName: "Adam", LastName: "Mark", Age: "24", Email: "johndoe@yahoo.com", PhoneNumber: "01-2345-6789", Password: newPassword, Address: "401, Hebert Mark Way"},
+			nil,
+			errors.New("token expired"),
+			&domain.Token{Model: gorm.Model{ID: 1}, UserId: 1, Token: "unique-111", ExpiresOn: timeAdded.Add(1 * time.Hour)},
+		},
+		{
+			"Test with expired Token",
+			"token",
+			dto.ResetPasswordRequest{NewPassword: newPassword},
+			nil,
+			nil,
+			&domain.User{Model: gorm.Model{ID: 1}, FirstName: "Adam", LastName: "Mark", Age: "24", Email: "johndoe@yahoo.com", PhoneNumber: "01-2345-6789", Password: "newpassword", Address: "401, Hebert Mark Way"},
+			nil,
+			&domain.User{Model: gorm.Model{ID: 1}, FirstName: "Adam", LastName: "Mark", Age: "24", Email: "johndoe@yahoo.com", PhoneNumber: "01-2345-6789", Password: newPassword, Address: "401, Hebert Mark Way"},
+			nil,
+			errors.New("Invalid token"),
+			&domain.Token{Model: gorm.Model{ID: 1}, UserId: 1, Token: "unique-111", ExpiresOn: timeAdded.Add(1 * time.Hour)},
+		},
+	}
+
+	for _, testCase := range tests {
+
+		t.Run(testCase.name, func(t *testing.T) {
+			// Create dependency userRepo with mock implementation
+			userRepo := mocks.UserRepository{}
+			uuidService := mocks.IUuid{}
+			mailService := mocks.IMail{}
+			tokenService := mocks.ITokenService{}
+			tokenRepo := mocks.ITokenRepository{}
+			otp := mocks.IOtp{}
+			tokenRepo.On("FindByOtp", testCase.token).Return(testCase.findByOtpResponse, testCase.findByOtpError)
+			userRepo.On("FindByID", int(testCase.dummyOtpResponse.UserId)).Return(testCase.findUserByIdResponse, testCase.findUserByIDError)
+			userRepo.On("Update", *testCase.updatedUser).Return(testCase.updatedUser, nil)
+			tokenRepo.On("UpdateToken", mock.AnythingOfType("domain.Token")).Return(nil, nil)
+			userService := service.INewService(&userRepo, &uuidService, &mailService, &tokenService, &tokenRepo, &otp)
+
+			// Actual method call
+			output := userService.ResetPassword(testCase.token, testCase.request)
+
+			// Expected output
+			expected := testCase.expectedResponse
+
+			assert.Equal(t, expected, output)
+		})
+	}
+}
+
 

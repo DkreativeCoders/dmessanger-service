@@ -113,5 +113,14 @@ func (ur *UserRepository) FindByEmail(email string) (*domain.User, error) {
 	return r0, r1
 }
 func (ur *UserRepository) FindUserExist(email string) bool {
-	return true
+	ret := ur.Called(email)
+
+	var r0 bool
+	if rf, ok := ret.Get(0).(func(string) bool); ok {
+		r0 = rf(email)
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+
+	return r0
 }
