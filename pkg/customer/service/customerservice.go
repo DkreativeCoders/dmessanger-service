@@ -100,7 +100,9 @@ func (s customerService) ActivateUser(tk string) error {
 
 	// Activate user
 	user.IsActive = true
-	s.userRepository.Update(*user)
+	if _, err := s.userRepository.Update(*user); err != nil{
+		return err
+	}
 
 	return nil
 }
