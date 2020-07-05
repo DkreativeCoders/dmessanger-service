@@ -103,9 +103,11 @@ func (s service) GetAllUser() map[string]interface{} {
 
 //
 func (s service) GetUser(id int) (*domain.User, error) {
-	var user domain.User
-	return &user, nil
-
+	user, err := s.repository.FindByID(id)
+	if err != nil{
+		return nil, err
+	}
+	return user, nil
 }
 
 func (s service) UpdatePassword(id int, request dto.UpdatePasswordRequest) error {

@@ -18,7 +18,7 @@ func NewCustomerHandler(router *mux.Router, customerService iservice.ICustomerSe
 	router.HandleFunc(constanst.ApiVersion1+"customers", handler.create).Methods("POST")
 
 	// verify user handler
-	router.HandleFunc(constanst.ApiVersion1+"/customers/verify", handler.activate).Queries("token", "{token}", "otp", "{otp}").Methods("PUT")
+	router.HandleFunc(constanst.ApiVersion1+"customers/verify", handler.activate).Queries("token", "{token}", "otp", "{otp}").Methods("PUT")
 
 	//return userControllerHandler{userService}
 }
@@ -58,10 +58,18 @@ func (c customerControllerHandler) create(w http.ResponseWriter, r *http.Request
 		return
 		//return
 	}
-	customer, errorRes := c.customerService.CreateUser(request)
 
+	customer, errorRes := c.customerService.CreateUser(request)
 	if errorRes != nil {
 		errResponse := defaultresponse.NewResponseDto(false, errorRes.Error())
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		json.NewEncoder(w).Encode(errResponse)
+		return
+	}
+
+	errRes := c.customerService.SendActivationMail(*customer)
+	if errRes != nil {
+		errResponse := defaultresponse.NewResponseDto(false, errRes.Error())
 		w.WriteHeader(http.StatusUnprocessableEntity)
 		json.NewEncoder(w).Encode(errResponse)
 		return

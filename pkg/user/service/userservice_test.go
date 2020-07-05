@@ -18,57 +18,70 @@ import (
 //Todo: modify CreateUser test
 func TestService_CreateUser(t *testing.T) {
 
-	if testing.Short() {
-		t.Skip("Skipped test temporarily: Passing tests necessary for CI setup")
-	}
-
 	testCases := []struct {
 		name           string
-		repoInputData  domain.User
-		repoReturnData *domain.User
-		repoReturnErr  error
-		expectedVal    map[string]interface{}
+
+		repoFindUserExistInput string
+		repoFindUserExistReturn bool
+
+		repoSaveInput  domain.User
+		repoSaveReturn *domain.User
+		repoSaveReturnErr  error
+
+		expectedReturn *domain.User
+		expectedReturnErr error
 	}{
 		{
 			"Test with valid user input",
+			"amark@gmail.com",
+			false,
 			domain.User{FirstName: "Adam", LastName: "Mark", Age: "24", Email: "amark@gmail.com", PhoneNumber: "01-2345-6789", Password: "password", Address: "401, Hebert Mark Way"},
 			&domain.User{Model: gorm.Model{ID: 0}, FirstName: "Adam", LastName: "Mark", Age: "24", Email: "amark@gmail.com", PhoneNumber: "01-2345-6789", Password: "password", Address: "401, Hebert Mark Way"},
 			nil,
-			map[string]interface{}{
-				"status":  true,
-				"message": "success",
-				"data":    &domain.User{Model: gorm.Model{ID: 0}, FirstName: "Adam", LastName: "Mark", Age: "24", Email: "amark@gmail.com", PhoneNumber: "01-2345-6789", Password: "password", Address: "401, Hebert Mark Way"},
-			},
-		},
-		{
-			"Test with error from repository",
-			domain.User{Model: gorm.Model{ID: 0}, FirstName: "Adam", LastName: "Mark", Age: "24", Email: "amark@gmail.com", PhoneNumber: "01-2345-6789", Password: "password", Address: "401, Hebert Mark Way"},
+			&domain.User{Model: gorm.Model{ID: 0}, FirstName: "Adam", LastName: "Mark", Age: "24", Email: "amark@gmail.com", PhoneNumber: "01-2345-6789", Password: "password", Address: "401, Hebert Mark Way"},
 			nil,
-			errors.New("user already exist"),
-			map[string]interface{}{
-				"status":        false,
-				"message":       "Error",
-				"error_message": errors.New("user already exist"),
-			},
+
 		},
 		{
 			"Test with empty first name",
+			"amark@gmail.com",
+			false,
 			domain.User{FirstName: "", LastName: "Mark", Age: "24", Email: "amark@gmail.com", PhoneNumber: "01-2345-6789", Password: "password", Address: "401, Hebert Mark Way"},
 			&domain.User{Model: gorm.Model{ID: 0}, FirstName: "", LastName: "Mark", Age: "24", Email: "amark@gmail.com", PhoneNumber: "01-2345-6789", Password: "password", Address: "401, Hebert Mark Way"},
 			nil,
-			map[string]interface{}{
-				"status":  false,
-				"message": "User First name should be on the payload",
-			},
+			nil,
+			errors.New("user first name should be on the payload"),
 		},
+		{
+			"Test when user exists",
+			"amark@gmail.com",
+			true,
+			domain.User{Model: gorm.Model{ID: 0}, FirstName: "Adam", LastName: "Mark", Age: "24", Email: "amark@gmail.com", PhoneNumber: "01-2345-6789", Password: "password", Address: "401, Hebert Mark Way"},
+			nil,
+			errors.New("user exists"),
+			nil,
+			errors.New("user Already Exist with email"),
+		},
+		{
+			"Test when save to db fails",
+			"amark@gmail.com",
+			false,
+			domain.User{FirstName: "Adam", LastName: "Mark", Age: "24", Email: "amark@gmail.com", PhoneNumber: "01-2345-6789", Password: "password", Address: "401, Hebert Mark Way"},
+			nil,
+			errors.New("user not created"),
+			nil,
+			errors.New("user not created"),
+		},
+
 	}
 
 	for _, testCase := range testCases {
 
 		t.Run(testCase.name, func(t *testing.T) {
 			// Create dependency userRepo with mock implementation
-			userRepo := mocks.UserRepository{}
-			userRepo.On("Save", testCase.repoInputData).Return(testCase.repoReturnData, testCase.repoReturnErr)
+			userRepo := mocks.IUserRepository{}
+			userRepo.On("Save", testCase.repoSaveInput).Return(testCase.repoSaveReturn, testCase.repoSaveReturnErr)
+			userRepo.On("FindUserExist", testCase.repoFindUserExistInput).Return(testCase.repoFindUserExistReturn)
 
 			uuid := uuid.INewUuid()
 			mailService := mocks.IMail{}
@@ -80,12 +93,13 @@ func TestService_CreateUser(t *testing.T) {
 			userService := service.INewService(&userRepo, uuid, &mailService, &tokenService, &tokenRepo, otp)
 
 			// Actual method call
-			output, _ := userService.CreateUser(testCase.repoInputData)
+			output, err := userService.CreateUser(testCase.repoSaveInput)
 
 			// Expected output
-			expected := testCase.expectedVal
+			expected := testCase.expectedReturn
 
 			assert.Equal(t, expected, output)
+			assert.Equal(t, testCase.expectedReturnErr, err)
 		})
 	}
 }
@@ -94,15 +108,13 @@ func TestService_CreateUser(t *testing.T) {
 //Todo: add more test cases
 func TestService_GetUser(t *testing.T) {
 
-	if testing.Short() {
-		t.Skip("Skipped test temporarily: Passing tests necessary for CI setup")
-	}
-
 	testCases := []struct {
 		name           string
+
 		repoInputData  int
 		repoReturnData *domain.User
 		repoReturnErr  error
+
 		expectedVal    *domain.User
 		expectedErr    error
 	}{
@@ -114,13 +126,21 @@ func TestService_GetUser(t *testing.T) {
 			&domain.User{Model: gorm.Model{ID: 0}, FirstName: "Adam", LastName: "Mark", Age: "24", Email: "amark@gmail.com", PhoneNumber: "01-2345-6789", Password: "password", Address: "401, Hebert Mark Way"},
 			nil,
 		},
+		{
+			"Test with valid user input",
+			102,
+			nil,
+			errors.New("user not found"),
+			nil,
+			errors.New("user not found"),
+		},
 	}
 
 	for _, testCase := range testCases {
 
 		t.Run(testCase.name, func(t *testing.T) {
 			// Create dependency userRepo with mock implementation
-			userRepo := mocks.UserRepository{}
+			userRepo := mocks.IUserRepository{}
 			userRepo.On("FindByID", testCase.repoInputData).Return(testCase.repoReturnData, testCase.repoReturnErr)
 
 			uuid := uuid.INewUuid()
@@ -134,10 +154,9 @@ func TestService_GetUser(t *testing.T) {
 
 			// Actual method call
 			output, err := userService.GetUser(testCase.repoInputData)
-			if err != nil {
-				assert.Equal(t, testCase.expectedVal, err)
-			}
+
 			assert.Equal(t, testCase.expectedVal, output)
+			assert.Equal(t, testCase.expectedErr, err)
 		})
 	}
 }
@@ -177,7 +196,7 @@ func TestService_GetAllUser(t *testing.T) {
 	}
 
 	for _, testCase := range testCases {
-		userRepo := mocks.UserRepository{}
+		userRepo := mocks.IUserRepository{}
 		userRepo.On("FindAll").Return(testCase.repoReturnData)
 
 		uuid := uuid.INewUuid()
@@ -272,7 +291,7 @@ func TestService_UpdatePassword(t *testing.T) {
 
 		t.Run(testCase.name, func(t *testing.T) {
 			// Create dependency userRepo with mock implementation
-			userRepo := mocks.UserRepository{}
+			userRepo := mocks.IUserRepository{}
 			userRepo.On("FindByID", testCase.userId).Return(testCase.repoReturnData, testCase.repoReturnErr)
 			userRepo.On("Update", testCase.repoUpdateData).Return(&testCase.repoUpdateData, testCase.repoUpdateError)
 
@@ -521,7 +540,7 @@ func TestService_ForgotPassword(t *testing.T) {
 
 		t.Run(testCase.name, func(t *testing.T) {
 			// Create dependency userRepo with mock implementation
-			userRepo := mocks.UserRepository{}
+			userRepo := mocks.IUserRepository{}
 			uuidService := mocks.IUuid{}
 			mailService := mocks.IMail{}
 			tokenService := mocks.ITokenService{}
@@ -610,7 +629,7 @@ func TestService_ResetPassword(t *testing.T) {
 
 		t.Run(testCase.name, func(t *testing.T) {
 			// Create dependency userRepo with mock implementation
-			userRepo := mocks.UserRepository{}
+			userRepo := mocks.IUserRepository{}
 			uuidService := mocks.IUuid{}
 			mailService := mocks.IMail{}
 			tokenService := mocks.ITokenService{}

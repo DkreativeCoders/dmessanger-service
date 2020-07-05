@@ -5,11 +5,12 @@ import (
 	"github.com/DkreativeCoders/dmessanger-service/pkg/config/mail"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/config/otp"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/config/uuid"
+	"github.com/DkreativeCoders/dmessanger-service/pkg/constanst"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/customer/dto"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/irepository"
 	"github.com/DkreativeCoders/dmessanger-service/pkg/domain/iservice"
-	"log"
+	"os"
 	"time"
 )
 
@@ -69,14 +70,39 @@ func (s customerService) CreateUser(request dto.CustomerRequest) (*domain.Custom
 	if err != nil {
 		return nil, err
 	}
-	//
-	result, err := s.sendCustomerEmail(*newCustomer)
-	//
-	if err != nil {
-		return nil, err
-	}
-	log.Print(result)
+
 	return newCustomer, nil
+}
+
+func (s customerService) SendActivationMail(customer domain.Customer) error {
+	// Generate unique id and otp
+	uniqueId := s.uuid.GenerateUniqueId()
+	otp := s.otp.GenerateOTP()
+
+	// Create unique token for customer
+	_, err := s.tokenService.CreateTokenWithExpirationInHours(customer.UserId, uniqueId, otp, 1)
+	if err != nil {
+		return err
+	}
+
+	// Create customer verification link
+	var linkToSend string
+	hostName := os.Getenv("HOST_NAME")
+	if hostName == ""{
+		linkToSend = "https://dmessanger-service.herokuapp.com/api/v1/customers/verify?token=" + uniqueId
+	}else{
+		linkToSend = hostName + constanst.ApiVersion1 + "customers/verify?token=" + uniqueId
+	}
+
+	// Create email
+	email := s.createMail(customer, linkToSend, otp)
+
+	// Send activation mail
+	_, er := s.mailService.SendEMail(*email)
+	if er != nil {
+		return errors.New("error occurred while trying to send mail, try again later")
+	}
+	return nil
 }
 
 func (s customerService) ActivateUser(tk string) error {
@@ -100,44 +126,18 @@ func (s customerService) ActivateUser(tk string) error {
 
 	// Activate user
 	user.IsActive = true
-	s.userRepository.Update(*user)
+	if _, err := s.userRepository.Update(*user); err != nil{
+		return err
+	}
 
 	return nil
 }
 
-func (s customerService) sendCustomerEmail(customer domain.Customer) (string, error) {
-
-	uniqueId, linkToSend := s.generateLinkToSendToUser()
-	otp := s.otp.GenerateOTP()
-
-	_, err := s.tokenService.CreateTokenWithExpirationInHours(customer.UserId, uniqueId, otp, 1)
-	if err != nil {
-		return "", err
-	}
-	email := s.createMail(customer, linkToSend, otp)
-
-	feedback, err := s.mailService.SendEMail(*email)
-
-	if err != nil {
-		return "", errors.New("error occurred try to send mail, try again later")
-	}
-
-	return "Mail sent successfully" + feedback, nil
-
-}
-
 func (s customerService) createMail(customer domain.Customer, linkToSend, otp string) *mail.EMailMessage {
-	subject := "DkreativeCoders Verify User"
-	text := "Please visit this link to verify your account. \n This links expires in an hour \n" + linkToSend +
+	subject := "DMessanger User Verification"
+	text := "Please visit this link to verify your account. \n This links expires in an hour \n" + linkToSend + "." +
 		"\n You can also use this OTP to verify your account via your mobile Device " + otp
 	recipient := customer.Email
 	email := mail.NewEMailMessage(subject, text, recipient, nil)
 	return email
-}
-
-func (s customerService) generateLinkToSendToUser() (string, string) {
-	uniqueId := s.uuid.GenerateUniqueId()
-	linkToSend := "https://dmessanger-service.herokuapp.com/verify-user/" + uniqueId
-
-	return uniqueId, linkToSend
 }
